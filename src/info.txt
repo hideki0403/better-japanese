@@ -1,0 +1,13 @@
+{
+  "Name": "カスタム日本語訳Mod",
+  "ID": "BetterJapanese",
+  "Author": "yukineko",
+  "Description": "日本語訳を非公式のものに変更するModです",
+  "ModVersion": 1,
+  "GameVersion": 2.048,
+  "Date": "4/6/2022",
+  "Dependencies": [],
+  "LanguagePacks": ["lang.js"],
+  "Disabled": 0,
+  "AllowSteamAchievs": 1
+}
