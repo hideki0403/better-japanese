@@ -1,0 +1,14 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+    },
+    "extends": [
+        "plugin:json/recommended"
+    ]
+}
