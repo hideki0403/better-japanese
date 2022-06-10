@@ -1,11 +1,11 @@
 var betterJapanese = {
     name: 'betterJapanese',
     apiUrl: {
-        release: 'https://hideki0403.github.io/better-japanese',
+        release: 'https://pages.yukineko.me/better-japanese',
         dev: '../mods/local/better-japanese/translate.json'
     },
     config: {
-        version: '0.0.1',
+        hash: '0',
         enable: true
     },
     isDev: true,
@@ -69,10 +69,10 @@ var betterJapanese = {
         console.log('[BetterJapanese] Checking updates')
 
         if(this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
-        var res = await fetch(`${this.apiUrl.release}/api/version`).then(res => res.json())
-        if(res.version !== this.config.version) {
+        var res = await fetch(`${this.apiUrl.release}/api/release`).then(res => res.json())
+        if(res.hash !== this.config.hash) {
             if (this.updateLanguagePack(res.url)) {
-                this.config.version = res.version
+                this.config.hash = res.hash
                 this.save()
             }
         }
