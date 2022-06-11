@@ -9,6 +9,6 @@
     "rules": {
     },
     "extends": [
-        "plugin:json/recommended"
+        "plugin:jsonc/recommended-with-json5"
     ]
 }
