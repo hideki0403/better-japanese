@@ -8,7 +8,9 @@ var betterJapanese = {
         hash: '0',
         enable: true
     },
-    isDev: true,
+    isDev: false,
+    initialized: false,
+    fallbackTimer: 0,
 
     init: function () {
         var origin = eval('Game.UpdateMenu.toString()').split('\n')
@@ -20,10 +22,14 @@ var betterJapanese = {
 
         eval(`Game.UpdateMenu = ${origin.join('\n')}`)
 
-        console.log('[BetterJapanese] Initialized')
-        this.checkUpdate()
+        this.fallbackTimer = setTimeout(() => {
+            this.checkUpdate()
+            this.initialized = true
+        }, 5000)
 
-        if(this.isDev) this.addDevButton()
+        send({ id: 'init bridge' })
+
+        this.log('Initialized')
     },
 
     register: function () {
@@ -66,15 +72,17 @@ var betterJapanese = {
     },
 
     checkUpdate: async function () {
-        console.log('[BetterJapanese] Checking updates')
+        this.log('Checking updates')
 
         if(this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
-        var res = await fetch(`${this.apiUrl.release}/api/release`).then(res => res.json())
+        var res = await fetch(`${this.apiUrl.release}/api/release`).then(res => res.json()).catch(() => this.config.hash)
         if(res.hash !== this.config.hash) {
             if (this.updateLanguagePack(res.url)) {
                 this.config.hash = res.hash
                 this.save()
             }
+        } else {
+            this.log('No updates available')
         }
     },
 
@@ -95,13 +103,29 @@ var betterJapanese = {
             var lang = await fetch(url).then(res => res.json())
             localStorage.setItem('BJPLangPack', JSON.stringify(Object.assign(base, lang)))
         } catch {
-            console.log('[BetterJapanese] Update failed')
+            this.log('Update failed')
             return false
         }
 
-        console.log('[BetterJapanese] Update successfull')
+        this.log('Update successfull')
         return true
+    },
+
+    log: function (msg) {
+        console.log(`%c[BetterJapanese]%c ${msg}`, 'color: yellow', '')
     }
 }
+
+window.api.receive('fromMain', (msg) => {
+    if (msg.id === 'greenworks loaded' && !betterJapanese.initialized) {
+        betterJapanese.isDev = !!msg.data.DEV
+        betterJapanese.log(`DevMode: ${betterJapanese.isDev}`)
+        betterJapanese.checkUpdate()
+        if (betterJapanese.isDev) betterJapanese.addDevButton()
+
+        clearTimeout(betterJapanese.fallbackTimer)
+        betterJapanese.initialized = true
+    }
+})
 
 betterJapanese.register()
