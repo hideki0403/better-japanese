@@ -1,0 +1,36 @@
+name: Publish new locales
+
+on:
+  push:
+    branches:
+      - 'release'
+    paths:
+      - 'locales/*.json5'
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+            fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+          cache: npm
+      
+      - name: npm ci
+        run: npm ci
+
+      - name: create artifact
+        run: npm run publish
+        env:
+          TARGET_LOCALE: ja
+          BASE_URL: 'https://pages.yukineko.me/better-japanese' # DO NOT put trailing slash
+
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish
