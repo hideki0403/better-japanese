@@ -42,7 +42,7 @@ jobs:
       
       - name: archive artifact
         if: steps.check-tag.outputs.exists == 'false'
-        run: zip -r better-japanese.zip ./build/*
+        run: zip -rj better-japanese.zip ./build
 
       - name: create release
         if: steps.check-tag.outputs.exists == 'false'

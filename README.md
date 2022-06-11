@@ -11,7 +11,6 @@ Steam版CookieClickerの日本語訳を非公式のものに置き換えるMod
 **開発者モードを有効にすると翻訳作業をサポートする機能が有効になります。**  
 詳しくは「その他」→「開発者モードについて」をご覧ください。
 
-
 ## リリース
 新しいバージョンをリリースする際は`package.json`の`version`プロパティを編集してください。
 
@@ -33,4 +32,11 @@ CookieClicker自体の開発者モードをONにすると、BetterJapaneseの開
 - まず `npm start` してから`dist`ディレクトリが作成されたことを確認します。
 - 管理者権限でコマンドプロンプトを開いて `mklink /d "<CookieClickerのローカルModのディレクトリ>/better-japanese" "<このディレクトリ>/dist"` をするといい感じになります。
   
-シンボリックリンクが正しく張れていれば、2回目以降はこの操作をする必要はありません。
+シンボリックリンクを正しく張れていれば、2回目以降はこの操作をする必要はありません。  
+
+## 謝辞
+このModを作成するにあたり、以下のWebサイトを参考にさせて頂きました。  
+この場をお借りして感謝申し上げます。  
+
+- [Cookie Clicker 日本語Wiki](https://w.atwiki.jp/cookieclickerjpn/)
+- [CookieClicker 日本語版](https://natto0wtr.web.fc2.com/CookieClicker/)
