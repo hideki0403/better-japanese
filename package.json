@@ -1,0 +1,32 @@
+{
+  "name": "better-japanese",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./tools/start.js",
+    "build": "node ./tools/build.js",
+    "publish": "node ./tools/publish.js",
+    "test": "npx eslint ./locales/*.json5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hideki0403/better-japanese.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hideki0403/better-japanese/issues"
+  },
+  "homepage": "https://github.com/hideki0403/better-japanese#readme",
+  "devDependencies": {
+    "chokidar": "^3.5.3",
+    "debug": "^4.3.4",
+    "eslint": "^8.17.0",
+    "eslint-plugin-jsonc": "^2.3.0",
+    "fs-extra": "^10.1.0",
+    "json5": "^2.2.1",
+    "md5-file": "^5.0.0"
+  }
+}
