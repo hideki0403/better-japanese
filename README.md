@@ -24,13 +24,13 @@ Steam版CookieClickerの日本語訳を非公式のものに置き換えるMod
 - ローカルの翻訳ファイルの読み込み (`translate.json`)
 - 翻訳ファイルの再読み込みボタン
   
-以下の方法で開発者モードを有効にすることが出来ます。
+以下のいずれかの方法で開発者モードを有効にすることが出来ます。
 
-1. CookieClicker本体の開発者モードをONにする  
+- CookieClicker本体の開発者モードをONにする  
 CookieClicker本体の開発者モードをONにすると、BetterJapaneseの開発者モードもONになります。  
 `<CookieClickerがインストールされているディレクトリ>/resources/app/start.js`の12行目にある`let DEV=0`を`let DEV=1`に変更することで有効に出来ます。
 
-2. `main.js`を編集する  
+- `main.js`を編集する  
 `main.js`の`isDev`フラグ (`betterJapanese.isDev`) を`true`に書き換えると開発者モードを有効にできます。
 
 ### 挙動について
