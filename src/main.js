@@ -13,6 +13,8 @@ var betterJapanese = {
     fallbackTimer: 0,
 
     init: function () {
+        this.load()
+
         var origin = eval('Game.UpdateMenu.toString()').split('\n')
         origin.splice(origin.length - 1, 0, `
             if(Game.onMenu == 'prefs'){
@@ -43,7 +45,6 @@ var betterJapanese = {
     load: function () {
         var conf = localStorage.getItem('BJPConfig')
         if (conf) this.config = JSON.parse(conf)
-        
     },
 
     injectMenu: function () {
