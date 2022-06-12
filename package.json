@@ -7,6 +7,7 @@
     "start": "node ./tools/start.js",
     "build": "node ./tools/build.js",
     "publish": "node ./tools/publish.js",
+    "init": "git checkout develop && npm install",
     "test": "npx eslint ./locales/*.json5"
   },
   "repository": {
