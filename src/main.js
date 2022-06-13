@@ -58,7 +58,7 @@ var betterJapanese = {
     toggleButton: function () {
         var button = l('betterJPButton')
         this.config.enable = !this.config.enable
-        button.innerHTML = `非公式日本語訳 ${this.config.enable ? 'ON' : 'OFF'}`
+        button.innerHTML = `日本語訳の改善 ${this.config.enable ? 'ON' : 'OFF'}`
         button.className = `smallFancyButton prefButton option ${(this.config.enable ? 'on' : 'off')}`
         BeautifyAll()
         Game.RefreshStore()
@@ -89,7 +89,7 @@ var betterJapanese = {
     },
 
     showUpdateNotification: function () {
-        Game.Notify('非公式日本語訳Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
+        Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
     },
 
     reload: function () {
