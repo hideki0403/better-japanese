@@ -78,7 +78,7 @@ var betterJapanese = {
         if(this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
         var res = await fetch(`${this.apiUrl.release}/api/release.json`).then(res => res.json()).catch(() => this.config.hash)
         if(res.hash !== this.config.hash) {
-            if (this.updateLanguagePack(res.url)) {
+            if (await this.updateLanguagePack(res.url)) {
                 this.config.hash = res.hash
                 this.save()
             }
