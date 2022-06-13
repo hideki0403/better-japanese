@@ -1,0 +1,13 @@
+{
+  "Name": "日本語訳改善Mod",
+  "ID": "BetterJapanese",
+  "Author": "yukineko, NATTO",
+  "Description": "日本語訳を非公式のものに置き換え、改善するModです",
+  "ModVersion": 1,
+  "GameVersion": 2.048,
+  "Date": "13/6/2022",
+  "Dependencies": [],
+  "LanguagePacks": ["lang.js"],
+  "Disabled": 0,
+  "AllowSteamAchievs": 1
+}
