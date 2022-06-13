@@ -76,15 +76,21 @@ var betterJapanese = {
         this.log('Checking updates')
 
         if(this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
-        var res = await fetch(`${this.apiUrl.release}/api/release`).then(res => res.json()).catch(() => this.config.hash)
+        var res = await fetch(`${this.apiUrl.release}/api/release.json`).then(res => res.json()).catch(() => this.config.hash)
         if(res.hash !== this.config.hash) {
-            if (this.updateLanguagePack(res.url)) {
+            if (await this.updateLanguagePack(res.url)) {
                 this.config.hash = res.hash
                 this.save()
+                this.showUpdateNotification()
             }
         } else {
             this.log('No updates available')
         }
+    },
+
+    showUpdateNotification: function () {
+        // WIP
+        Game.Notify('言語ファイルをアップデートしました。\n再読み込み後から有効になります。')
     },
 
     reloadLanguagePack: async function () {
@@ -119,7 +125,7 @@ var betterJapanese = {
 
 window.api.receive('fromMain', (msg) => {
     if (msg.id === 'greenworks loaded' && !betterJapanese.initialized) {
-        betterJapanese.isDev = !!msg.data.DEV
+        betterJapanese.isDev = betterJapanese.isDev || !!msg.data.DEV
         betterJapanese.log(`DevMode: ${betterJapanese.isDev}`)
         betterJapanese.checkUpdate()
         if (betterJapanese.isDev) betterJapanese.addDevButton()
