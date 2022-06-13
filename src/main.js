@@ -15,14 +15,7 @@ var betterJapanese = {
     init: function () {
         this.load()
 
-        var origin = eval('Game.UpdateMenu.toString()').split('\n')
-        origin.splice(origin.length - 1, 0, `
-            if(Game.onMenu == 'prefs'){
-                betterJapanese.injectMenu()
-            }
-        `)
-
-        eval(`Game.UpdateMenu = ${origin.join('\n')}`)
+        Game.registerHook('create', betterJapanese.initAfterLoad)
 
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
@@ -32,6 +25,21 @@ var betterJapanese = {
         send({ id: 'init bridge' })
 
         this.log('Initialized')
+    },
+
+    initAfterLoad: function(){
+        var updateMenuOrigin = Game.UpdateMenu
+        Game.UpdateMenu = function(){
+            updateMenuOrigin()
+            if(Game.onMenu == 'prefs'){
+                betterJapanese.injectMenu()
+            }
+        }
+        var sayTimeOrigin = Game.sayTime
+        Game.sayTime = function(time, detail){
+            return sayTimeOrigin(time, detail).replaceAll(', ', '')
+        }
+        Game.removeHook('create', betterJapanese.initAfterLoad)
     },
 
     register: function () {
@@ -50,19 +58,25 @@ var betterJapanese = {
     injectMenu: function () {
         var button = l('monospaceButton')
         var element = document.createElement('div')
-        element.innerHTML = `<a class="smallFancyButton prefButton option ${this.config.enable ? 'on' : 'off'}" id="betterJPButton" ${Game.clickStr}="betterJapanese.toggleButton()">日本語訳の改善 ${this.config.enable ? 'ON' : 'OFF'}</a><label>(日本語訳を非公式翻訳版に置き換えます)</label>`
-
+        element.innerHTML = betterJapanese.writeButton('enable', 'enableJPButton', '日本語訳の改善', 
+            function(){
+                BeautifyAll();
+                Game.RefreshStore();
+                Game.upgradesToRebuild=1;
+            }.toString()
+            )+'<label>(日本語訳を非公式翻訳版に置き換えます)</label>'
         button.parentNode.insertBefore(element, button.previousElementSibling)
     },
 
-    toggleButton: function () {
-        var button = l('betterJPButton')
-        this.config.enable = !this.config.enable
-        button.innerHTML = `日本語訳の改善 ${this.config.enable ? 'ON' : 'OFF'}`
-        button.className = `smallFancyButton prefButton option ${(this.config.enable ? 'on' : 'off')}`
-        BeautifyAll()
-        Game.RefreshStore()
-        Game.upgradesToRebuild = 1
+    writeButton: function(prefName, button, desc, callback){//本家のWritePrefButtonとほぼ同じ
+        return `<a class="smallFancyButton prefButton option${this.config[prefName] ? '' : ' off'}" id="${button}" ${Game.clickStr}="betterJapanese.toggleButton(${prefName},${button},${desc});${callback}">${desc}${this.config[prefName] ? ON : OFF}</a>`
+    },
+
+    toggleButton: function (prefName, button, desc) {
+        var button = l(button)
+        this.config[prefName] = !this.config[prefName]
+        button.innerHTML = desc + (this.config.enable ? ON : OFF)
+        button.className = `smallFancyButton prefButton option${(this.config.enable ? '' : ' off')}`
         PlaySound('snd/tick.mp3')
     },
 
