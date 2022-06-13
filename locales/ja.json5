@@ -3479,7 +3479,7 @@
 	"Buildings are %1% more expensive for an hour.": "1時間、施設が %1% 高くなる。",
 	"Pop one of your wrinklers.": "くっついている虫を1匹失う。",
 	"Spells backfire %1 times more for the next %2 minutes.": "%2分間、逆効果の確率が %1倍 になる。",
-	"You magic <b>%1</b> out of thin air.": "どこからともなく<b>'+Beautify(val)+'クッキー'+(val==1?'':'')+'</b>生み出した。",
+	"You magic <b>%1</b> out of thin air.": "どこからともなく<b>%1</b>生み出した。",
 	"Promising fate!": "運命は微笑む!",
 	"Zap! Buffs lengthened.": "ピューン!バフが伸びた。",
 	"A new %1<br>bursts out of the ground.": "新たな%1が<br>地面から飛び出す。",
