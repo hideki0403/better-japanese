@@ -50,7 +50,7 @@ var betterJapanese = {
     injectMenu: function () {
         var button = l('monospaceButton')
         var element = document.createElement('div')
-        element.innerHTML = `<a class="smallFancyButton prefButton option ${this.config.enable ? 'on' : 'off'}" id="betterJPButton" ${Game.clickStr}="betterJapanese.toggleButton()">非公式日本語訳 ${this.config.enable ? 'ON' : 'OFF'}</a><label>(日本語訳を非公式翻訳版に置き換えます)</label>`
+        element.innerHTML = `<a class="smallFancyButton prefButton option ${this.config.enable ? 'on' : 'off'}" id="betterJPButton" ${Game.clickStr}="betterJapanese.toggleButton()">日本語訳の改善 ${this.config.enable ? 'ON' : 'OFF'}</a><label>(日本語訳を非公式翻訳版に置き換えます)</label>`
 
         button.parentNode.insertBefore(element, button.previousElementSibling)
     },
