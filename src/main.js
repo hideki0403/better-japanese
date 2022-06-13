@@ -119,7 +119,7 @@ var betterJapanese = {
 
 window.api.receive('fromMain', (msg) => {
     if (msg.id === 'greenworks loaded' && !betterJapanese.initialized) {
-        betterJapanese.isDev = !!msg.data.DEV
+        betterJapanese.isDev = betterJapanese.isDev || !!msg.data.DEV
         betterJapanese.log(`DevMode: ${betterJapanese.isDev}`)
         betterJapanese.checkUpdate()
         if (betterJapanese.isDev) betterJapanese.addDevButton()
