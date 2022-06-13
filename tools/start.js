@@ -8,6 +8,7 @@ const chokidar = require('chokidar')
 const rootDir = path.join(__dirname, '../')
 const distDir = path.join(rootDir, './dist/')
 const srcDir = path.join(rootDir, './src/')
+const assetsDir = path.join(rootDir, './static/')
 const localeFile = path.join(rootDir, `./locales/${targetLanguage}.json5`)
 const json5 = require('json5')
 const ESLINT = require('eslint').ESLint
@@ -28,13 +29,14 @@ async function copyFiles(file) {
     }
 
     fs.copySync(srcDir, distDir)
+    fs.copySync(assetsDir, distDir)
     fs.writeJSONSync(path.join(distDir, 'translate.json'), json5.parse(fs.readFileSync(localeFile, 'utf-8')))
     return true
 }
 
 copyFiles()
 
-const watcher = chokidar.watch([srcDir, localeFile])
+const watcher = chokidar.watch([srcDir, assetsDir, localeFile])
 
 watcher.on('ready', () => log('ready'))
 
