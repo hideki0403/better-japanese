@@ -81,10 +81,16 @@ var betterJapanese = {
             if (await this.updateLanguagePack(res.url)) {
                 this.config.hash = res.hash
                 this.save()
+                this.showUpdateNotification()
             }
         } else {
             this.log('No updates available')
         }
+    },
+
+    showUpdateNotification: function () {
+        // WIP
+        Game.Notify('言語ファイルをアップデートしました。\n再読み込み後から有効になります。')
     },
 
     reloadLanguagePack: async function () {
