@@ -89,12 +89,17 @@ var betterJapanese = {
     },
 
     showUpdateNotification: function () {
-        // WIP
-        Game.Notify('言語ファイルをアップデートしました。\n再読み込み後から有効になります。')
+        Game.Notify('非公式日本語訳Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
+    },
+
+    reload: function () {
+        Game.toSave = true
+        Game.toReload = true
     },
 
     reloadLanguagePack: async function () {
         await this.checkUpdate()
+        this.showUpdateNotification()
         ModLanguage('JA', JSON.parse(localStorage.getItem('BJPLangPack')))
     },
 
