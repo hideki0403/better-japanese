@@ -11,6 +11,7 @@ var betterJapanese = {
     isDev: false,
     initialized: false,
     fallbackTimer: 0,
+    origins: {},
 
     init: function () {
         this.load()
@@ -26,17 +27,23 @@ var betterJapanese = {
     },
 
     initAfterLoad: function(){
-        var updateMenuOrigin = Game.UpdateMenu
+        betterJapanese.origins.updateMenu = Game.UpdateMenu
+        betterJapanese.origins.sayTime = Game.sayTime
+
+        // メニューに独自ボタンを実装
         Game.UpdateMenu = function(){
-            updateMenuOrigin()
+            betterJapanese.origins.updateMenu()
             if(Game.onMenu == 'prefs'){
                 betterJapanese.injectMenu()
             }
         }
-        var sayTimeOrigin = Game.sayTime
+
+        // 時間表記からカンマを取り除く
         Game.sayTime = function(time, detail){
-            return sayTimeOrigin(time, detail).replaceAll(', ', '')
+            return betterJapanese.origins.sayTime(time, detail).replaceAll(', ', '')
         }
+
+        // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
 
