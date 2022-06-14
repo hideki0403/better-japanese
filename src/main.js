@@ -11,11 +11,10 @@ var betterJapanese = {
     isDev: false,
     initialized: false,
     fallbackTimer: 0,
+    origins: {},
 
     init: function () {
         this.load()
-
-        Game.registerHook('create', betterJapanese.initAfterLoad)
 
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
@@ -28,22 +27,29 @@ var betterJapanese = {
     },
 
     initAfterLoad: function(){
-        var updateMenuOrigin = Game.UpdateMenu
+        betterJapanese.origins.updateMenu = Game.UpdateMenu
+        betterJapanese.origins.sayTime = Game.sayTime
+
+        // メニューに独自ボタンを実装
         Game.UpdateMenu = function(){
-            updateMenuOrigin()
+            betterJapanese.origins.updateMenu()
             if(Game.onMenu == 'prefs'){
                 betterJapanese.injectMenu()
             }
         }
-        var sayTimeOrigin = Game.sayTime
+
+        // 時間表記からカンマを取り除く
         Game.sayTime = function(time, detail){
-            return sayTimeOrigin(time, detail).replaceAll(', ', '')
+            return betterJapanese.origins.sayTime(time, detail).replaceAll(', ', '')
         }
+
+        // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
 
     register: function () {
         Game.registerMod(this.name, this)
+        Game.registerHook('create', betterJapanese.initAfterLoad)
     },
 
     save: function () {
@@ -56,27 +62,50 @@ var betterJapanese = {
     },
 
     injectMenu: function () {
-        var button = l('monospaceButton')
-        var element = document.createElement('div')
-        element.innerHTML = betterJapanese.writeButton('enable', 'enableJPButton', '日本語訳の改善', 
-            function(){
-                BeautifyAll();
-                Game.RefreshStore();
-                Game.upgradesToRebuild=1;
-            }.toString()
-            )+'<label>(日本語訳を非公式翻訳版に置き換えます)</label>'
-        button.parentNode.insertBefore(element, button.previousElementSibling)
+        this.writeButton('toggleBJPButton', 'enable', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます', () => {
+            BeautifyAll()
+            Game.RefreshStore()
+            Game.upgradesToRebuild=1
+        })
     },
 
-    writeButton: function(prefName, button, desc, callback){//本家のWritePrefButtonとほぼ同じ
-        return `<a class="smallFancyButton prefButton option${this.config[prefName] ? '' : ' off'}" id="${button}" ${Game.clickStr}="betterJapanese.toggleButton(${prefName},${button},${desc});${callback}">${desc}${this.config[prefName] ? ON : OFF}</a>`
+    writeButton: function (buttonId, targetProp, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
+        //本家のWritePrefButtonとほぼ同じ
+
+        // ボタンを追加する先の要素を指定 (デフォルトはmonospaceButton)
+        var targetElement = l(targetElementName)
+
+        // 仕様の都合上、最初に改行タグを追加
+        targetElement.parentNode.insertBefore(document.createElement('br'), targetElement.previousElementSibling)
+
+        // ボタンを生成
+        var elementButton = document.createElement('a')
+        elementButton.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
+        elementButton.id = buttonId
+
+        var onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
+
+        // Callbackが存在し、なおかつ与えられた引数がfunctionであればCallbackを追加
+        if(callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
+
+        elementButton.setAttribute(Game.clickStr, onclickStr)
+        
+        elementButton.innerText = `${desc} ${this.config[targetProp] ? 'ON' : 'OFF'}`
+        targetElement.parentNode.insertBefore(elementButton, targetElement.previousElementSibling)
+
+        // ラベルがあれば生成
+        if(label) {
+            var elementLabel = document.createElement('label')
+            elementLabel.innerText = `(${label})`
+            targetElement.parentNode.insertBefore(elementLabel, targetElement.previousElementSibling)
+        }
     },
 
-    toggleButton: function (prefName, button, desc) {
-        var button = l(button)
-        this.config[prefName] = !this.config[prefName]
-        button.innerHTML = desc + (this.config.enable ? ON : OFF)
-        button.className = `smallFancyButton prefButton option${(this.config.enable ? '' : ' off')}`
+    toggleButton: function (buttonId, targetProp, desc) {
+        var button = l(buttonId)
+        this.config[targetProp] = !this.config[targetProp]
+        button.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
+        button.innerText = `${desc} ${this.config[targetProp] ? 'ON' : 'OFF'}`
         PlaySound('snd/tick.mp3')
     },
 
