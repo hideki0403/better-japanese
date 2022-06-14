@@ -15,8 +15,6 @@ var betterJapanese = {
     init: function () {
         this.load()
 
-        Game.registerHook('create', betterJapanese.initAfterLoad)
-
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
             this.initialized = true
@@ -44,6 +42,7 @@ var betterJapanese = {
 
     register: function () {
         Game.registerMod(this.name, this)
+        Game.registerHook('create', betterJapanese.initAfterLoad)
     },
 
     save: function () {
