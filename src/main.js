@@ -135,6 +135,11 @@ var betterJapanese = {
             return negative?'-'+output:output+decimal;
         }
 
+        for(let i=1;i<Game.AllBGs.length;i++){
+            Game.AllBGs[i].enName = Game.AllBGs[i].name;
+            Game.AllBGs[i].name = loc(Game.AllBGs[i].enName);
+        }
+
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
