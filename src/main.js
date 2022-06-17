@@ -6,29 +6,23 @@ var betterJapanese = {
     },
     config: {
         hash: '0',
-        enable: true
+        replaceJP: true,
+        numberJP: true,
+        shortFormatJP: false,
+        secondFormatJP: true
     },
     isDev: false,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
+    formats: {
+        prefix: ['', '万', '億', '兆', '京', '垓', '秭', '穣', '溝', '澗', '正', '載', '極', '恒河沙'], // 万進法用の単位
+        suffixes: [], // 上数用の単位
+        short: [] // 塵劫記用の単位
+    },
 
     init: function() {
         this.load()
-
-        // 万進法用の単位
-        betterJapanese.formatJpPrefixes = ['', '万', '億', '兆', '京', '垓', '秭', '穣', '溝', '澗', '正', '載', '極', '恒河沙']
-        // 上数用の単位
-        betterJapanese.formatJpSuffixes = []
-        for(let suf of ['頻波羅', '矜羯羅', '阿伽羅']) {
-            let len = betterJapanese.formatJpSuffixes.push(suf) - 1
-            for(let i = 0; i < len; i++) {
-                betterJapanese.formatJpSuffixes.push(betterJapanese.formatJpSuffixes[i] + suf)
-            }
-        }
-        betterJapanese.formatJpSuffixes = ['', ...betterJapanese.formatJpSuffixes]
-        // 塵劫記用の単位
-        betterJapanese.formatJpShort = [...betterJapanese.formatJpPrefixes, '阿僧祇', '那由多', '不可思議', '無量大数']
 
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
@@ -48,7 +42,7 @@ var betterJapanese = {
         // メニューに独自ボタンを実装
         Game.UpdateMenu = function() {
             betterJapanese.origins.updateMenu()
-            if(Game.onMenu == 'prefs') {
+            if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
             }
         }
@@ -57,48 +51,26 @@ var betterJapanese = {
         Game.sayTime = function(time, detail) {
             return betterJapanese.origins.sayTime(time, detail).replaceAll(', ', '')
         }
-        
-        // 接尾辞挿入の4桁区切り版、secondで第二単位の使用を指定
-        betterJapanese.formatEveryFourthPower = function(prefixes, suffixes, second)
-        {
-            return function(value)
-            {
-                if(!isFinite(value)) return '無限大'// loc("Infinity")
-                if(value > 10 ** (prefixes.length * suffixes.length * 4)) {
-                    return value.toPrecision(3).toString()
-                }
-                if(value < 1) {// 小数点の場合は最大小数第3位まででそのまま出力
-                    return (Math.round(value * 1000) / 1000).toString()
-                }
-                let numeral = Math.floor(Math.log10(value) / 4)
-                let preIndex = numeral % prefixes.length
-                let sufIndex = Math.floor(numeral / prefixes.length)
-                let dispNum = Math.round(value * 10000 / (10 ** (numeral * 4)))
-                if(second) {
-                    if(preIndex) {
-                        return Math.floor(dispNum / 10000) + prefixes[preIndex] + (dispNum % 10000) + prefixes[preIndex - 1] + suffixes[sufIndex]
-                    }else{
-                        if(sufIndex) {
-                            return Math.floor(dispNum / 10000) + suffixes[sufIndex] + (dispNum % 10000) + prefixes[prefixes.length - 1] + suffixes[sufIndex - 1]
-                        }else{
-                            return value
-                        }
-                    }
-                }else{
-                    return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
-                }
+
+        // 単位関係の初期化
+        for (let suf of ['頻波羅', '矜羯羅', '阿伽羅']) {
+            let len = betterJapanese.formats.suffixes.push(suf) - 1
+            for (let i = 0; i < len; i++) {
+                betterJapanese.formats.suffixes.push(betterJapanese.formats.suffixes[i] + suf)
             }
         }
-        
+
+        betterJapanese.formats.suffixes = ['', ...betterJapanese.formats.suffixes]
+
+        // 塵劫記用の単位
+        betterJapanese.formats.short = [...betterJapanese.formats.prefix, '阿僧祇', '那由多', '不可思議', '無量大数']
+
         // 本家の挿入関数に追加
         numberFormatters = [
             formatEveryThirdPower(formatShort),
             formatEveryThirdPower(formatLong),
             rawFormatter,
-            betterJapanese.formatEveryFourthPower(betterJapanese.formatJpShort, [''], false),
-            betterJapanese.formatEveryFourthPower(betterJapanese.formatJpShort, [''], true),
-            betterJapanese.formatEveryFourthPower(betterJapanese.formatJpPrefixes, betterJapanese.formatJpSuffixes, false),
-            betterJapanese.formatEveryFourthPower(betterJapanese.formatJpPrefixes, betterJapanese.formatJpSuffixes, true)
+            betterJapanese.formatEveryFourthPower()
         ]
 
         // 設定によって日本語単位を使用するように変更、同時にカンマ区切りも場合によって変更
@@ -109,28 +81,12 @@ var betterJapanese = {
             if (floats > 0 && Math.abs(val) < 1000 && Math.floor(fixed) != fixed) decimal = '.' + (fixed.toString()).split('.')[1]
             val = Math.floor(Math.abs(val))
             if (floats > 0 && fixed == val + 1) val++
-            let format = 0
-            if(Game.prefs.format) {
-                format = 2
-            }else{
-                if(betterJapanese.config.numberJP) {
-                    if(betterJapanese.config.shortFormatJP) {
-                        format = 3
-                    }else{
-                        format = 5
-                    }
-                    if(betterJapanese.config.secondFormatJP) {
-                        format++
-                    }
-                }else{
-                    format = 1
-                }
-            }
+            let format = Game.prefs.format ? 2 : betterJapanese.config.numberJP ? 3 : 1
             var formatter = numberFormatters[format]
             var output = (val.toString().indexOf('e+') != -1 && format == 2) ? val.toPrecision(3).toString() : formatter(val).toString()
-            if(Game.prefs.format || (betterJapanese.config.numberJP && betterJapanese.config.secondFormatJP)) {
+            if (Game.prefs.format || (betterJapanese.config.numberJP && betterJapanese.config.secondFormatJP)) {
                 output = output.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-            }else{
+            } else {
                 output = output.replace(/^(\d)(\d{3})/, '$1,$2')
             }
             if (output == '0') negative = false
@@ -138,7 +94,7 @@ var betterJapanese = {
         }
 
         // 背景の名前を翻訳
-        for(let i = 1; i < Game.AllBGs.length; i++) {
+        for (let i = 1; i < Game.AllBGs.length; i++) {
             Game.AllBGs[i].enName = Game.AllBGs[i].name
             Game.AllBGs[i].name = loc(Game.AllBGs[i].enName)
         }
@@ -161,16 +117,20 @@ var betterJapanese = {
         if (conf) this.config = JSON.parse(conf)
     },
 
+    log: function(msg) {
+        console.log(`%c[BetterJapanese]%c ${msg}`, 'color: yellow', '')
+    },
+
     injectMenu: function() {
         let updateAll = () => {
             BeautifyAll()
             Game.RefreshStore()
             Game.upgradesToRebuild = 1
         }
-        this.writeButton('toggleBJPButton', 'enable', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます', updateAll)
-        this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います', updateAll)
-        this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います', updateAll)
-        this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます`, updateAll)
+        this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます。変更は再起動後に適用されます。', updateAll)
+        this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
+        this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
+        this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
     },
 
     writeButton: function(buttonId, targetProp, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
@@ -190,15 +150,15 @@ var betterJapanese = {
         var onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
 
         // Callbackが存在し、なおかつ与えられた引数がfunctionであればCallbackを追加
-        if(callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
+        if (callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
 
         elementButton.setAttribute(Game.clickStr, onclickStr)
-        
+
         elementButton.innerText = `${desc} ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
         targetElement.parentNode.insertBefore(elementButton, targetElement.previousElementSibling)
 
         // ラベルがあれば生成
-        if(label) {
+        if (label) {
             var elementLabel = document.createElement('label')
             elementLabel.innerText = `(${label})`
             targetElement.parentNode.insertBefore(elementLabel, targetElement.previousElementSibling)
@@ -222,13 +182,13 @@ var betterJapanese = {
     checkUpdate: async function() {
         this.log('Checking updates')
 
-        if(this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
+        if (this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
         var res = await fetch(this.apiUrl.release).then(res => res.json()).catch((err) => {
             this.log(`An error occurred while checking for updates: ${err}`)
             return this.config
         })
 
-        if(res.hash !== this.config.hash) {
+        if (res.hash !== this.config.hash) {
             if (await this.updateLanguagePack(res.url)) {
                 this.config.hash = res.hash
                 this.save()
@@ -274,8 +234,47 @@ var betterJapanese = {
         return true
     },
 
-    log: function(msg) {
-        console.log(`%c[BetterJapanese]%c ${msg}`, 'color: yellow', '')
+    formatEveryFourthPower: function() {
+        // 接尾辞挿入の4桁区切り版、secondで第二単位の使用を指定
+        return function(value) {
+            var prefixes = betterJapanese.config.shortFormatJP ? betterJapanese.formats.short : betterJapanese.formats.prefix
+            var suffixes = betterJapanese.config.shortFormatJP ? [''] : betterJapanese.formats.suffixes
+            var second = betterJapanese.config.secondFormatJP
+
+            // infinityの場合は無限大を返す
+            if (!isFinite(value)) return '無限大'// loc("Infinity")
+
+
+            if (value > 10 ** (prefixes.length * suffixes.length * 4)) {
+                return value.toPrecision(3).toString()
+            }
+
+            // 小数点の場合は最大小数第3位まででそのまま出力
+            if (value < 1) {
+                return (Math.round(value * 1000) / 1000).toString()
+            }
+
+            let numeral = Math.floor(Math.log10(value) / 4)
+            let preIndex = numeral % prefixes.length
+            let sufIndex = Math.floor(numeral / prefixes.length)
+            let dispNum = Math.round(value * 10000 / (10 ** (numeral * 4)))
+
+            if (second) {
+                // 第二単位を付ける
+                if (preIndex) {
+                    return Math.floor(dispNum / 10000) + prefixes[preIndex] + (dispNum % 10000) + prefixes[preIndex - 1] + suffixes[sufIndex]
+                } else {
+                    if (sufIndex) {
+                        return Math.floor(dispNum / 10000) + suffixes[sufIndex] + (dispNum % 10000) + prefixes[prefixes.length - 1] + suffixes[sufIndex - 1]
+                    } else {
+                        return value
+                    }
+                }
+            } else {
+                // 第二単位を付けない
+                return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
+            }
+        }
     }
 }
 
