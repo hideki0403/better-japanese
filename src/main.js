@@ -67,6 +67,9 @@ var betterJapanese = {
                 if(value > 10 ** (prefixes.length * suffixes.length * 4)){
                     return value.toPrecision(3).toString()
                 }
+                if(value < 1){//小数点の場合は最大小数第3位まででそのまま出力
+                    return (Math.round(value * 1000) / 1000).toString()
+                }
                 let numeral = Math.floor(Math.log10(value) / 4)
                 let preIndex = numeral % prefixes.length
                 let sufIndex = Math.floor(numeral / prefixes.length)
@@ -135,6 +138,7 @@ var betterJapanese = {
             return negative?'-'+output:output+decimal;
         }
 
+        //背景の名前を翻訳
         for(let i=1;i<Game.AllBGs.length;i++){
             Game.AllBGs[i].enName = Game.AllBGs[i].name;
             Game.AllBGs[i].name = loc(Game.AllBGs[i].enName);
