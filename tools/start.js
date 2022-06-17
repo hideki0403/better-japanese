@@ -13,16 +13,18 @@ const localeFile = path.join(rootDir, `./locales/${targetLanguage}.json5`)
 const json5 = require('json5')
 const ESLINT = require('eslint').ESLint
 const eslint = new ESLINT()
-log.enabled = true;
+log.enabled = true
 
-(async () => {
+async function initFormatter() {
     formatter = await eslint.loadFormatter('stylish')
-})()
+}
+
+initFormatter()
 
 if (!fs.existsSync(distDir)) fs.mkdirSync(distDir)
 
 async function copyFiles(file) {
-    if (file && file.match('.json5')) {
+    if (file && file.match(/.(json5|js)/)) {
         var result = formatter.format(await eslint.lintFiles(file))
         console.log(result)
         if (!!result) return false
