@@ -1,4 +1,5 @@
 {
+    "root": false,
     "env": {
         "browser": true,
         "es2021": true
@@ -7,6 +8,68 @@
         "ecmaVersion": "latest"
     },
     "rules": {
+        "semi": [
+            "error",
+            "never",
+            {
+                "beforeStatementContinuationChars": "never"
+            }
+        ],
+        "semi-spacing": [
+            "error",
+            {
+                "after": true,
+                "before": false
+            }
+        ],
+        "semi-style": [
+            "error",
+            "first"
+        ],
+        "no-extra-semi": "error",
+        "no-unexpected-multiline": "error",
+        "no-unreachable": "error",
+        "space-infix-ops": [
+            "error",
+            {
+                "int32Hint": false
+            }
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "never",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "space-before-blocks": [
+            "error",
+            "always"
+        ],
+        "quotes": [
+            2,
+            "single"
+        ],
+        "comma-spacing": [
+            "error",
+            {
+                "after": true,
+                "before": false
+            }
+        ],
+        "spaced-comment": "error",
+        "operator-linebreak": [
+            "error",
+            "none"
+        ],
+        "no-multi-spaces": "error",
+        "key-spacing": [
+            "error",
+            {
+                "afterColon": true
+            }
+        ]
     },
     "extends": [
         "plugin:jsonc/recommended-with-json5"
