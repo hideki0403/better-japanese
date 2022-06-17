@@ -8,7 +8,8 @@
     "build": "node ./tools/build.js",
     "publish": "node ./tools/publish.js",
     "init": "git checkout develop && npm install",
-    "test": "npx eslint ./locales/*.json5"
+    "test": "npx eslint ./locales/*.json5",
+    "autofix": "npx eslint ./src/*.js --fix"
   },
   "repository": {
     "type": "git",
