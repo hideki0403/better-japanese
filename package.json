@@ -9,7 +9,8 @@
     "publish": "node ./tools/publish.js",
     "init": "git checkout develop && npm install",
     "test": "npx eslint ./",
-    "autofix": "npx eslint ./src/*.js --fix"
+    "autofix": "npx eslint ./src/*.js --fix",
+    "diff": "node ./tools/diff.js"
   },
   "repository": {
     "type": "git",
