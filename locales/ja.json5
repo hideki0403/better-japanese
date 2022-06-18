@@ -591,7 +591,7 @@
 	"Show": "表示",
 	"Hide": "非表示",
 	"Names in white were submitted by our supporters on Patreon.": "白い名前はPatreonの支援者を示しています。",
-	"You can also press %1 to bulk-buy or sell %2 of a building at a time, or %3 for %4.": "%1を押すことで%2個単位で、%3を押すことで%3個単位でまとめ買い、まとめ売りができます。",
+	"You can also press %1 to bulk-buy or sell %2 of a building at a time, or %3 for %4.": "%1を押すことで%2個単位で、%3を押すことで%4個単位でまとめ買い、まとめ売りができます。",
 	"Clicking is <b>%1%</b> more powerful.": "クリックによる生産が <b>%1%</b> より強くなる。",
 	"All cookie production <b>multiplied by %1</b>.": "生産量が <b>%1倍</b> になる。",
 	"+%1 CpS": "CpS +%1",
