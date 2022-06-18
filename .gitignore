@@ -132,3 +132,6 @@ dist
 # Build
 build
 publish
+
+# diff
+untranslated.json
