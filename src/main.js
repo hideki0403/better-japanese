@@ -34,7 +34,7 @@ var betterJapanese = {
         this.log('Initialized')
     },
 
-    initAfterLoad: function() {
+    initAfterLoad: async function() {
         betterJapanese.origins.updateMenu = Game.UpdateMenu
         betterJapanese.origins.sayTime = Game.sayTime
         betterJapanese.origins.beautify = Beautify
@@ -97,6 +97,43 @@ var betterJapanese = {
         for (let i = 1; i < Game.AllBGs.length; i++) {
             Game.AllBGs[i].enName = Game.AllBGs[i].name
             Game.AllBGs[i].name = loc(Game.AllBGs[i].enName)
+        }
+
+        // カスタムCSSを適用
+        var customStyle = document.createElement('style')
+        customStyle.innerHTML = `
+        .framed q:before {
+            display:inline-block;
+            content:"「" !important;
+            font-size:14px;
+            font-family:Georgia;
+            font-weight:bold;
+        }
+
+        .framed q:after {
+            display:inline-block;
+            content:"」" !important;
+            font-size:14px;
+            font-family:Georgia;
+            font-weight:bold;
+            margin-top:-2px;
+        }
+        `
+
+        document.head.appendChild(customStyle)
+
+        // 在庫市場のquoteを実装
+        while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
+        var M = Game.Objects['Bank'].minigame
+        M.goodTooltip = function(id) {
+            return function() {
+                var me = M.goodsById[id]
+                var delta = M.goodDelta(id)
+                var val = M.getGoodPrice(me)
+                icon = me.icon || [0, 0]
+                var str = '<div style="padding:8px 4px;min-width:350px;" id="tooltipMarketGood">' + '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div>' + '<div class="name">' + me.name + ' <span style="font-size:12px;opacity:0.8;">(' + loc('from %1', '<span style="font-variant:small-caps;">' + me.company + '</span>') + ')</span> <span class="bankSymbol">' + me.symbol + ' <span class="bankSymbolNum' + (delta >= 0 ? ' bankSymbolUp' : delta < 0 ? ' bankSymbolDown' : '') + '">' + (delta + '' + (delta == Math.floor(delta) ? '.00' : (delta * 10) == Math.floor(delta * 10) ? '0' : '') + '%') + '</span></span></div>' + '<div class="line"></div><div class="description">' + '<q>' + loc(me.desc) + '</q>' + '<div class="line"></div><div style="font-size:11px;">&bull; <div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> ' + loc('%1: currently worth <b>$%2</b> per unit.', [me.name, Beautify(val, 2)]) + '<br>&bull; ' + loc('You currently own %1 (worth <b>$%2</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(me.stock) + '</b>x ' + me.name, Beautify(val * me.stock, 2)]) + '<br>&bull; ' + loc('Your warehouses can store up to %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(M.getGoodMaxStock(me)) + '</b>x ' + me.name) + '<br>&bull; ' + loc('You may increase your storage space by upgrading your offices and by buying more %1. You also get %2 extra storage space per %3 level (currently: <b>+%4</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-me.building.iconColumn * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + me.building.plural, 10, me.building.single, (me.building.level * 10)]) + '<br>&bull; ' + loc('The average worth of this stock and how high it can peak depends on the building it is tied to, along with the level of your %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-15 * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + Game.Objects['Bank'].plural) + '</div>' + '<div style="font-size:11px;opacity:0.5;margin-top:3px;">' + loc('%1 the hide button to toggle all other stocks.', loc('Shift-click')) + '</div>' + '</div></div>'
+                return str
+            }
         }
 
         // hookを削除
