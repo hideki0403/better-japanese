@@ -244,7 +244,6 @@ var betterJapanese = {
             // infinityの場合は無限大を返す
             if (!isFinite(value)) return '無限大'// loc("Infinity")
 
-
             if (value > 10 ** (prefixes.length * suffixes.length * 4)) {
                 return value.toPrecision(3).toString()
             }
@@ -261,15 +260,14 @@ var betterJapanese = {
 
             if (second) {
                 // 第二単位を付ける
-                if (preIndex) {
-                    return Math.floor(dispNum / 10000) + prefixes[preIndex] + (dispNum % 10000) + prefixes[preIndex - 1] + suffixes[sufIndex]
-                } else {
-                    if (sufIndex) {
-                        return Math.floor(dispNum / 10000) + suffixes[sufIndex] + (dispNum % 10000) + prefixes[prefixes.length - 1] + suffixes[sufIndex - 1]
-                    } else {
-                        return value
-                    }
-                }
+                if (!preIndex && !sufIndex) return value
+
+                let str = Math.floor(dispNum / 10000) + (preIndex ? prefixes[preIndex] : suffixes[sufIndex])
+                if (dispNum % 10000) str += (dispNum % 10000) + prefixes[preIndex ? preIndex - 1 : prefixes.length - 1]
+                str += suffixes[preIndex ? sufIndex : sufIndex - 1]
+
+                return str !== 'NaN' ? str : value.toPrecision(3).toString()
+
             } else {
                 // 第二単位を付けない
                 return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
