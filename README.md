@@ -1,5 +1,5 @@
 # BetterJapanese
-Steam版CookieClickerの日本語訳を非公式のものに置き換えるMod
+Steam版CookieClickerの日本語訳を非公式のものに置き換えたり、単位を日本語化できるMod
 
 [![Create Release](https://github.com/hideki0403/better-japanese/actions/workflows/release.yml/badge.svg)](https://github.com/hideki0403/better-japanese/actions/workflows/release.yml)
 [![Publish new locales](https://github.com/hideki0403/better-japanese/actions/workflows/publish.yml/badge.svg)](https://github.com/hideki0403/better-japanese/actions/workflows/publish.yml)
