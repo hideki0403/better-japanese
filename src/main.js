@@ -136,6 +136,36 @@ var betterJapanese = {
             }
         }
 
+        // 更新履歴の翻訳
+        let logUpdates = ''
+        let logPerUpdate = ''
+        let logIndex = ''
+        let logResult = []
+        let logId = 0
+        while (typeof (logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof (logResult = loc(logIndex)) === 'object' && logResult.length > 1)
+        {
+            logPerUpdate = `<div class="subsection update${logIndex === `[Update notes ${logId}]small` ? ' small' : ''}">`
+            logPerUpdate += `<div class="title">${logResult[0]}</div>`
+            logResult.shift()
+            for (let str of logResult)
+            {
+                if(str.indexOf('[Update Log General Names]') >= 0)
+                {
+                    str = str.replaceAll('[Update Log General Names]', choose(loc('[Update Log General Names]')))
+                }
+                logPerUpdate += `<div class="listing">${str}</div>`
+            }
+            logUpdates = `${logPerUpdate}</div>${logUpdates}`
+            logId++
+        }
+        if(logUpdates.length > 0)
+        {
+            betterJapanese.origins.updateLog = Game.updateLog
+            Game.updateLog = Game.updateLog.substring(0, Game.updateLog.search(/<div class="subsection update(?: small)?">/))
+            Game.updateLog = Game.updateLog.substring(0, Game.updateLog.lastIndexOf('<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">'))
+            Game.updateLog += `</div>${logUpdates}</div>`
+        }
+
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
