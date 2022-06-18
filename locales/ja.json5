@@ -579,7 +579,7 @@
 	"all combined, these boosts account for <b>%1</b> per second (<b>%2%</b> of total CpS)": "すべて合わせて、これらのブーストは毎秒 <b>%1</b> を占める(CpS全体の <b>%2%</b>)",
 	"owned: %1": "所持数 : %1",
 	"free: %1!": "無料 : %1!",
-	"Level %1 %2": "レベル%1%2",
+	"Level %1 %2": "%2 (Lv. %1)",
 	"Granting <b>+%1% %2 CpS</b>.": "<b>%2のCpS +%1%</b> 上昇中。",
 	"Click to level up for %1.": "クリックすると %1 消費してレベルアップします。",
 	"Levelling up this building unlocks a minigame.": "この建物のレベルを上げることでミニゲームが解放されます。",
@@ -3714,7 +3714,7 @@
 	"Summon an unlucky wrath cookie.": "レッドクッキーを1枚召喚する。",
 	"All active buffs are shortened by %1% (up to %2 minutes shorter).": "発動中のすべてのバフの有効時間を %1%(最大 %2分間 の短縮) 短縮する。",
 	"Lose a random building.": "ランダムで施設を1つ失う。",
-	"Upgrades are %1% more expensive for an hour.": "1時間、アップグレードが %1% 高くなる。",
+	"Upgrades are %1% more expensive for an hour.": "1時間、アップグレードが %1% 高くなる。<q>何の呪文?金持ちのさ!</q>",
 	"Buildings are %1% more expensive for an hour.": "1時間、施設が %1% 高くなる。",
 	"Pop one of your wrinklers.": "くっついている虫を1匹失う。",
 	"Spells backfire %1 times more for the next %2 minutes.": "%2分間、逆効果の確率が %1倍 になる。",
@@ -4253,5 +4253,24 @@
 	"[Tier]Synergy I": "シナジー I",
 	"[Tier]Synergy II": "シナジー II",
 	"[Tier]Fortune": "幸運",
-	"[Tier]Self-referential": "自己言及"
+	"[Tier]Self-referential": "自己言及",
+	
+	// 在庫市場のquote
+	"<b>Old Mills</b> is a trusted staple of the grain industry. Finding their roots in humble pioneer farms centuries ago and honing their know-how ever since, the Old Mills organic crops have reached a standard of quality that even yours struggle to equal.": "<b>Old Mills</b>は穀作農業において信頼ある主要な企業だ。数世紀前の粗野な開拓者の農場をルーツとしており、それ以来ノウハウを磨き、Old Millsの有機作物はあなたでさえ達成に苦心している品質基準に届いている。",
+	"<b>Cocoa Excavations</b> is an international chocolate mining venture whose extraction sites always seem, somehow, to pop up in war-torn countries. Their high-grade chocolate is renowned the world over and has even been marketed, to some success, as suitable gems for engagement rings.": "<b>Cocoa Excavations</b>は国際的チョコレート採鉱ベンチャー企業で、その採掘場所はなぜか、常に戦争で荒廃した国に出現するようだ。社の高級チョコレートは世界的に有名で、婚約指輪に最適な宝石として販売され成功を収めている。",
+	"<b>Bovine Industries</b> is a formerly-agricultural conglomerate that now deals in mechanized dairy mass production. Whistleblowers have drawn attention to the way the milk cows employed by this company are treated, describing it as \"not quite cruel or anything, but definitely unusual\".": "<b>Bovine Industries</b>はかつて農業複合企業で、現在は機械化による乳製品の大量生産を扱っている。会社で所有している乳牛の取り扱い方に関して内部告発者が注目を集めており、「残酷とまではいかないが、間違いなく異常だ」と述べている。",
+	"The <b>Candy Trust</b> is a corporate banking group backed by, and specialized in, the trade of high-grade sugar. The origin of said sugar is legally protected by an armada of lawyers, though some suspect they secretly scrape it off of the bank bills coming in before processing it.": "<b>Candy Trust</b>は高級砂糖の取引に裏打ちされた、それに特化した法人銀行グループである。砂糖の原産地は弁護士団によって法的に守られているが、処理する前に入ってくる銀行紙幣から砂糖を密かに削りとっていると疑う人もいる。",
+	"Hidden between hills and fog somewhere, the secretive <b>Hazel Monastery</b> has, for centuries, maintained nut crops of the highest quality. The monastery nuts are carefully tended to, harvested and shelled by its monks, who are all required to take a vow of nut allergy as a lifelong test of piety.": "どこかの丘と霧の間に隠れ、秘密の<b>Hazel Monastery</b>は数世紀にわたり最高品質のナッツを保全してきた。修道院のナッツは修道士に注意深く手入れされ、収穫され、殻が向かれる。その修道士たちは、生涯にわたる信心のテストとしてナッツアレルギーの誓いを立てなければならない。",
+	"Salt is a versatile substance, with properties both mundane and mystical. This is why the bearded crackpots at <b>Wacky Reagants</b> have perfected the art of turning magic powder into salt, which is then sold to anyone promising to put it to good use - whether it be warding off banshees and ghouls or seasoning a Sunday roast.": "塩は用途の広い物質で、世俗的な性質と神秘的な性質の両方を併せ持つ。それゆえに、<b>Wacky Reagants</b>のあごひげを生やした変人たちはマジックパウダーを塩に変換する技術を完成させた。バンシーやグールを退治したり、サンデーローストに味付けをしたりと、有効活用してくれると約束してくれる人に販売している。",
+	"After the news broke of vanilla not being native to Earth, <b>Cosmic Exports</b> was the first company to discover its true origin planet - and has struck an exclusive deal with its tentacled inhabitants to ship its valuable, unadulterated beans all over the local quadrant.": "バニラは地球原産ではないというニュースが報じられた後、<b>Cosmic Exports</b>は真の原産の惑星を発見した最初の企業で、星にある四分の一以上の高価で無添加の豆を出荷するという独占契約を、触手の生えた星の住人と結んでいる。",
+	"At <b>Organic Gnostics</b>, an egg is seen as a promise. A promise of life and nourishment, of infinite potential, of calcium and protein. An egg can become many things... especially when you're properly funded and don't believe there's room in science for rules or ethics.": "<b>Organic Gnostics</b>において、卵は約束とみなされている。生命と栄養の、無限の可能性の、そしてカルシウムとタンパク質の約束だ。卵は多くのものに変わることができる…特にあなたが適切な資金提供を受け、科学に規則や倫理の余地がないと信じているならば。",
+	"The <b>Dimensional Exchange</b> employs a vast team of ragtag daredevils to dive into dangerous underworlds in search of strange native spices. Chief among those is cinnamon, a powder so delicious its true nature can only be unspeakably abominable.": "<b>Dimensional Exchange</b>では、奇妙な本来のスパイスを探すために危険な下層世界へ潜る命知らずの大規模チームを雇用している。その中でも主要なものはシナモンで、それは真の本性が言葉にならないほど忌まわしいものでしかないような美味しい粉である。",
+	"Once specialized in cosmetics for the elderly, the eggheads at <b>Precision Aging</b> have repurposed their timeshift technology and developed a process allowing them to accelerate, slow down, and even reverse the various phase changes of milk. Their flagship offering, whole cream, is said to be within 0.002% of theoretical ripening optimums.": "<b>Precision Aging</b>のインテリたちはかつては高齢者向けの化粧品を専門としていたが、タイムシフトの技術を再利用し、ミルクの様々な段階の変化を加速、減速、さらには逆転させられるプロセスを開発した。その主力商品であるホールクリームは理論上の熟成最適値の0.002%以内であると言われている。",
+	"<b>Pectin Research</b> is a military-backed laboratory initially created with the aim of enhancing and miniaturizing army rations, but now open for public bulk trading. It has recently made forays in the field of highly-concentrated fruit jams, available in a variety of flavors.": "<b>Pectin Research</b>は初めは軍用レーションの質の向上と小型化を目的として設立された軍支援の研究所だったが、現在では一般向けの大量取引をするようになっている。最近では、様々なフレーバーを持つ高濃度フルーツジャムの分野に進出した。",
+	"What was once two college kids messing around with mirrors in their dad's garage is now a world-famous megacorporation. <b>Dazzle Corp</b>'s groundbreaking experiments in photonic annealing have led to the creation years ago of a new kind of matter, once derided as impossible by physicists and cooks alike: white chocolate.": "かつて2人の大学生の若者が父親のガレージで鏡をいじっていたものが、今では世界的に有名な大企業だ。<b>Dazzle Corp</b>が行ったフォトニックアニーリングの画期的な実験により、数年前、それまでは物理学者や料理人に不可能だと揶揄されていた新種の物質「ホワイトチョコレート」が創られることとなった。",
+	"The folks at <b>Prosperity Hive</b> deal in honey, and it's always worked for them. With a work culture so relaxed you're almost tempted to ditch the cookie business and join them, these people have little in common with the proverbial busy bee - though their rates do sting quite a bit.": "<b>Prosperity Hive</b>の人々はハチミツを取り扱っており、ずっと加工してきた。あなたがクッキービジネスを捨てて彼らに加わりたくなるほどにリラックスした職場の文化があり、彼ら人間たちは俗にいう忙しい蜂とほとんど共通点はない。 - もっとも、彼らの相場はかなり手痛いが。",
+	"Interesting. It appears there's still a company out there trying to sell cookies even with your stranglehold on the market. No matter - you figure <b>Selfmade Bakeries</b>' largely inferior product will make decent fodder for the mouse traps in your factories.": "これは興味深い。あなたが市場を独占してもなおクッキーを売ろうとする会社がまだほかに存在しているようだ。さして重要ではないが、あなたは<b>Selfmade Bakeries</b>の大幅に劣った製品があなたの工場のネズミ捕りの餌としてちょうどいいと考えている。",
+	"In a post-material world, the market of ideas is where value is created. <b>Figments Associated</b> understands that, and is the prime designer (and patenter) of baking recipes, ingredient nomenclature, custom cooking procedures, and other kitchen processes.": "ポストマテリアルの世界では、アイデアの市場こそが価値の創造される場所である。<b>Figments Associated</b>はそのことを理解しており、菓子を焼くレシピ、材料の学名命名法、特別な調理手順、その他のキッチンのプロセスについての優良なデザイナー(及び特許権者)である。",
+	"Avoid the uncouth nastiness of mass layoffs and hostile takeovers by delegating the purchase, management, and eventual dissolution of other companies to the boys at <b>Polyvalent Acquisitions</b>. Let 'em deal with it!": "他社の買収、管理、最終的な解散を<b>Polyvalent Acquisitions</b>の社員に任せることで、大量解雇や対立者の乗っ取りにおける不快な思いをせずにすむ。彼らに対処させよう!",
+	"Get those juices flowing: from market research to advertising, the think tanks at <b>Great Minds</b> will lend their talents to the highest bidder. It's intellectual property on tap.": "市場調査から広告まで、<b>Great Minds</b>の頭脳集団が、その才能を最高入札者へ発揮してくれます。知的財産はいつでもご利用可能です。"
 }
