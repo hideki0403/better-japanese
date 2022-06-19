@@ -1,4 +1,4 @@
-var betterJapanese = {
+const betterJapanese = {
     name: 'betterJapanese',
     apiUrl: {
         release: 'https://pages.yukineko.me/better-japanese/api/release.json',
@@ -75,15 +75,15 @@ var betterJapanese = {
 
         // 設定によって日本語単位を使用するように変更、同時にカンマ区切りも場合によって変更
         Beautify = function(val, floats) {
-            var negative = (val < 0)
-            var decimal = ''
-            var fixed = val.toFixed(floats)
+            let negative = (val < 0)
+            let decimal = ''
+            let fixed = val.toFixed(floats)
             if (floats > 0 && Math.abs(val) < 1000 && Math.floor(fixed) != fixed) decimal = '.' + (fixed.toString()).split('.')[1]
             val = Math.floor(Math.abs(val))
             if (floats > 0 && fixed == val + 1) val++
             let format = Game.prefs.format ? 2 : betterJapanese.config.numberJP ? 3 : 1
-            var formatter = numberFormatters[format]
-            var output = (val.toString().indexOf('e+') != -1 && format == 2) ? val.toPrecision(3).toString() : formatter(val).toString()
+            let formatter = numberFormatters[format]
+            let output = (val.toString().indexOf('e+') != -1 && format == 2) ? val.toPrecision(3).toString() : formatter(val).toString()
             if (Game.prefs.format || (betterJapanese.config.numberJP && betterJapanese.config.secondFormatJP)) {
                 output = output.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             } else {
@@ -100,7 +100,7 @@ var betterJapanese = {
         }
 
         // カスタムCSSを適用
-        var customStyle = document.createElement('style')
+        let customStyle = document.createElement('style')
         customStyle.innerHTML = `
         .framed q:before {
             display:inline-block;
@@ -124,14 +124,14 @@ var betterJapanese = {
 
         // 在庫市場のquoteを実装
         while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
-        var M = Game.Objects['Bank'].minigame
+        let M = Game.Objects['Bank'].minigame
         M.goodTooltip = function(id) {
             return function() {
-                var me = M.goodsById[id]
-                var delta = M.goodDelta(id)
-                var val = M.getGoodPrice(me)
+                let me = M.goodsById[id]
+                let delta = M.goodDelta(id)
+                let val = M.getGoodPrice(me)
                 icon = me.icon || [0, 0]
-                var str = '<div style="padding:8px 4px;min-width:350px;" id="tooltipMarketGood">' + '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div>' + '<div class="name">' + me.name + ' <span style="font-size:12px;opacity:0.8;">(' + loc('from %1', '<span style="font-variant:small-caps;">' + me.company + '</span>') + ')</span> <span class="bankSymbol">' + me.symbol + ' <span class="bankSymbolNum' + (delta >= 0 ? ' bankSymbolUp' : delta < 0 ? ' bankSymbolDown' : '') + '">' + (delta + '' + (delta == Math.floor(delta) ? '.00' : (delta * 10) == Math.floor(delta * 10) ? '0' : '') + '%') + '</span></span></div>' + '<div class="line"></div><div class="description">' + '<q>' + loc(me.desc) + '</q>' + '<div class="line"></div><div style="font-size:11px;">&bull; <div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> ' + loc('%1: currently worth <b>$%2</b> per unit.', [me.name, Beautify(val, 2)]) + '<br>&bull; ' + loc('You currently own %1 (worth <b>$%2</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(me.stock) + '</b>x ' + me.name, Beautify(val * me.stock, 2)]) + '<br>&bull; ' + loc('Your warehouses can store up to %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(M.getGoodMaxStock(me)) + '</b>x ' + me.name) + '<br>&bull; ' + loc('You may increase your storage space by upgrading your offices and by buying more %1. You also get %2 extra storage space per %3 level (currently: <b>+%4</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-me.building.iconColumn * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + me.building.plural, 10, me.building.single, (me.building.level * 10)]) + '<br>&bull; ' + loc('The average worth of this stock and how high it can peak depends on the building it is tied to, along with the level of your %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-15 * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + Game.Objects['Bank'].plural) + '</div>' + '<div style="font-size:11px;opacity:0.5;margin-top:3px;">' + loc('%1 the hide button to toggle all other stocks.', loc('Shift-click')) + '</div>' + '</div></div>'
+                let str = '<div style="padding:8px 4px;min-width:350px;" id="tooltipMarketGood">' + '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div>' + '<div class="name">' + me.name + ' <span style="font-size:12px;opacity:0.8;">(' + loc('from %1', '<span style="font-variant:small-caps;">' + me.company + '</span>') + ')</span> <span class="bankSymbol">' + me.symbol + ' <span class="bankSymbolNum' + (delta >= 0 ? ' bankSymbolUp' : delta < 0 ? ' bankSymbolDown' : '') + '">' + (delta + '' + (delta == Math.floor(delta) ? '.00' : (delta * 10) == Math.floor(delta * 10) ? '0' : '') + '%') + '</span></span></div>' + '<div class="line"></div><div class="description">' + '<q>' + loc(me.desc) + '</q>' + '<div class="line"></div><div style="font-size:11px;">&bull; <div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> ' + loc('%1: currently worth <b>$%2</b> per unit.', [me.name, Beautify(val, 2)]) + '<br>&bull; ' + loc('You currently own %1 (worth <b>$%2</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(me.stock) + '</b>x ' + me.name, Beautify(val * me.stock, 2)]) + '<br>&bull; ' + loc('Your warehouses can store up to %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(M.getGoodMaxStock(me)) + '</b>x ' + me.name) + '<br>&bull; ' + loc('You may increase your storage space by upgrading your offices and by buying more %1. You also get %2 extra storage space per %3 level (currently: <b>+%4</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-me.building.iconColumn * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + me.building.plural, 10, me.building.single, (me.building.level * 10)]) + '<br>&bull; ' + loc('The average worth of this stock and how high it can peak depends on the building it is tied to, along with the level of your %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-15 * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + Game.Objects['Bank'].plural) + '</div>' + '<div style="font-size:11px;opacity:0.5;margin-top:3px;">' + loc('%1 the hide button to toggle all other stocks.', loc('Shift-click')) + '</div>' + '</div></div>'
                 return str
             }
         }
@@ -142,15 +142,12 @@ var betterJapanese = {
         let logIndex = ''
         let logResult = []
         let logId = 0
-        while (typeof (logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof (logResult = loc(logIndex)) === 'object' && logResult.length > 1)
-        {
+        while (typeof (logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof (logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
             logPerUpdate = `<div class="subsection update${logIndex === `[Update notes ${logId}]small` ? ' small' : ''}">`
             logPerUpdate += `<div class="title">${logResult[0]}</div>`
             logResult.shift()
-            for (let str of logResult)
-            {
-                if(str.indexOf('[Update Log General Names]') >= 0)
-                {
+            for (let str of logResult) {
+                if(str.indexOf('[Update Log General Names]') >= 0) {
                     str = str.replaceAll('[Update Log General Names]', choose(loc('[Update Log General Names]')))
                 }
                 logPerUpdate += `<div class="listing">${str}</div>`
@@ -158,8 +155,7 @@ var betterJapanese = {
             logUpdates = `${logPerUpdate}</div>${logUpdates}`
             logId++
         }
-        if(logUpdates.length > 0)
-        {
+        if(logUpdates.length > 0) {
             betterJapanese.origins.updateLog = Game.updateLog
             Game.updateLog = Game.updateLog.substring(0, Game.updateLog.search(/<div class="subsection update(?: small)?">/))
             Game.updateLog = Game.updateLog.substring(0, Game.updateLog.lastIndexOf('<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">'))
@@ -170,15 +166,12 @@ var betterJapanese = {
         let upgrade = Game.Upgrades['Endless book of prose']
         upgrade.desc = loc('%1 are <b>twice</b> as efficient.', cap(upgrade.buildingTie1.plural))
         upgrade.originDescFunc = upgrade.descFunc
-        upgrade.descFunc = function()
-        {
-
-            var str = loc(FindLocStringByPart(`Upgrade quote ${this.id}`), Game.bakeryName)
-            var n = 26
-            var i = Math.floor(Game.T * 0.1)
+        upgrade.descFunc = function() {
+            let str = loc(FindLocStringByPart(`Upgrade quote ${this.id}`), Game.bakeryName)
+            let n = 26
+            let i = Math.floor(Game.T * 0.1)
             let originDesc = this.originDescFunc()
-            if(originDesc.indexOf('<q>') >= 0)
-            {
+            if(originDesc.indexOf('<q>') >= 0) {
                 originDesc = originDesc.substring(0, originDesc.indexOf('<q>'))
             }
             return `${originDesc}<q style="font-family:Courier;">${str.substr(i % str.length, n) + (i % str.length > (str.length - n) ? str.substr(0, i % str.length - (str.length - n)) : '')}</q>`
@@ -187,38 +180,33 @@ var betterJapanese = {
         // マウス達をクリックするマウス達のフレーバーテキスト翻訳
         upgrade = Game.Upgrades['Mice clicking mice']
         upgrade.desc = betterJapanese.createSynergyUpgradeDesc(upgrade)
-        upgrade.descFunc = function()
-        {
+        upgrade.descFunc = function() {
             Math.seedrandom(Game.seed + '-blasphemouse')
-            if (Math.random() < 0.3)
-            {
+            if (Math.random() < 0.3) {
                 Math.seedrandom()
                 return `${this.desc}<q>${loc(FindLocStringByPart(`Upgrade quote ${this.id}`))}</q>`
             }
-            else
-            {
-                Math.seedrandom()
-                return `${this.desc}<q>${loc('Mice clicking mice (Absolutely blasphemouse!)')}</q>`
-            }
+            
+            Math.seedrandom()
+            return `${this.desc}<q>${loc('Mice clicking mice (Absolutely blasphemouse!)')}</q>`
         }
 
         // 富くじ演算のフレーバーテキスト翻訳
         upgrade = Game.Upgrades['Tombola computing']
         upgrade.desc = betterJapanese.createSynergyUpgradeDesc(upgrade)
-        upgrade.descFunc = function()
-        {
+        upgrade.descFunc = function() {
             Math.seedrandom(Game.seed + '-tombolacomputing')
             let str = loc(FindLocStringByPart(`Upgrade quote ${this.id}`), [
-                    Math.floor(Math.random() * 100),
-                    Math.floor(Math.random() * 100),
-                    Math.floor(Math.random() * 100),
-                    Math.floor(Math.random() * 100),
-                    parseLoc(choose(loc('Tombola computing (Base)')), [
-                            Math.floor(Math.random() * 5 + 2),
-                            choose(loc('Tombola computing (Color)')),
-                            choose(loc('Tombola computing (Living)'))
-                        ])
+                Math.floor(Math.random() * 100),
+                Math.floor(Math.random() * 100),
+                Math.floor(Math.random() * 100),
+                Math.floor(Math.random() * 100),
+                parseLoc(choose(loc('Tombola computing (Base)')), [
+                    Math.floor(Math.random() * 5 + 2),
+                    choose(loc('Tombola computing (Color)')),
+                    choose(loc('Tombola computing (Living)'))
                 ])
+            ])
             Math.seedrandom()
             return `${this.desc}<q>${str}</q>`
         }
@@ -229,22 +217,17 @@ var betterJapanese = {
 
         // 猫の場合「購入済み」タグが変化することを翻訳にも反映
         betterJapanese.origins.crateTooltip = Game.crateTooltip
-        Game.crateTooltip = function(me, context)
-        {
+        Game.crateTooltip = function(me, context) {
             let tooptipText = betterJapanese.origins.crateTooltip(me, context)
-            if(Game.sesame)
-            {
+            if(Game.sesame) {
                 tooptipText = Game.substring(0, '<div style="font-size:9px;">')
                 tooptipText += `<div style="font-size:9px;">ID : ${me.id} | 順序 : ${Math.floor(me.order)}${me.tier ? ` | ティア : ${me.tier}` : ''}</div>`
             }
-            if(me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten)
-            {
+            if(me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten) {
                 return tooptipText.replace(`<div class="tag" style="background-color:#fff;">${loc('Purchased')}</div>`, `<div class="tag" style="background-color:#fff;">${loc('[Tag]Purrchased')}</div>`)
             }
-            else
-            {
-                return tooptipText
-            }
+            
+            return tooptipText
         }
 
         // hookを削除
@@ -261,7 +244,7 @@ var betterJapanese = {
     },
 
     load: function() {
-        var conf = localStorage.getItem('BJPConfig')
+        let conf = localStorage.getItem('BJPConfig')
         if (conf) this.config = JSON.parse(conf)
     },
 
@@ -285,17 +268,17 @@ var betterJapanese = {
         // 本家のWritePrefButtonとほぼ同じ
 
         // ボタンを追加する先の要素を指定 (デフォルトはmonospaceButton)
-        var targetElement = l(targetElementName)
+        let targetElement = l(targetElementName)
 
         // 仕様の都合上、最初に改行タグを追加
         targetElement.parentNode.insertBefore(document.createElement('br'), targetElement.previousElementSibling)
 
         // ボタンを生成
-        var elementButton = document.createElement('a')
+        let elementButton = document.createElement('a')
         elementButton.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
         elementButton.id = buttonId
 
-        var onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
+        let onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
 
         // Callbackが存在し、なおかつ与えられた引数がfunctionであればCallbackを追加
         if (callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
@@ -307,14 +290,14 @@ var betterJapanese = {
 
         // ラベルがあれば生成
         if (label) {
-            var elementLabel = document.createElement('label')
+            let elementLabel = document.createElement('label')
             elementLabel.innerText = `(${label})`
             targetElement.parentNode.insertBefore(elementLabel, targetElement.previousElementSibling)
         }
     },
 
     toggleButton: function(buttonId, targetProp, desc) {
-        var button = l(buttonId)
+        let button = l(buttonId)
         betterJapanese.config[targetProp] = !betterJapanese.config[targetProp]
         button.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
         button.innerText = `${desc} ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
@@ -322,7 +305,7 @@ var betterJapanese = {
     },
 
     addDevButton: function() {
-        var element = document.createElement('div')
+        let element = document.createElement('div')
         element.innerHTML = '<button style="position: absolute; left: 10px; top: 10px; z-index: 9999;" type="button" onclick="betterJapanese.reloadLanguagePack()">Reload LanguageFile</button>'
         document.body.append(element)
     },
@@ -331,7 +314,7 @@ var betterJapanese = {
         this.log('Checking updates')
 
         if (this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
-        var res = await fetch(this.apiUrl.release).then(res => res.json()).catch((err) => {
+        let res = await fetch(this.apiUrl.release).then(res => res.json()).catch((err) => {
             this.log(`An error occurred while checking for updates: ${err}`)
             return this.config
         })
@@ -363,7 +346,7 @@ var betterJapanese = {
     },
 
     updateLanguagePack: async function(url) {
-        var base = {
+        let base = {
             '': {
                 'language': 'JA',
                 'plural-forms': 'nplurals=2;plural=(n!=1);'
@@ -371,7 +354,7 @@ var betterJapanese = {
         }
 
         try {
-            var lang = await fetch(url).then(res => res.json())
+            let lang = await fetch(url).then(res => res.json())
             localStorage.setItem('BJPLangPack', JSON.stringify(Object.assign(base, lang)))
         } catch {
             this.log('Update failed')
@@ -385,9 +368,9 @@ var betterJapanese = {
     formatEveryFourthPower: function() {
         // 接尾辞挿入の4桁区切り版、secondで第二単位の使用を指定
         return function(value) {
-            var prefixes = betterJapanese.config.shortFormatJP ? betterJapanese.formats.short : betterJapanese.formats.prefix
-            var suffixes = betterJapanese.config.shortFormatJP ? [''] : betterJapanese.formats.suffixes
-            var second = betterJapanese.config.secondFormatJP
+            let prefixes = betterJapanese.config.shortFormatJP ? betterJapanese.formats.short : betterJapanese.formats.prefix
+            let suffixes = betterJapanese.config.shortFormatJP ? [''] : betterJapanese.formats.suffixes
+            let second = betterJapanese.config.secondFormatJP
 
             // infinityの場合は無限大を返す
             if (!isFinite(value)) return '無限大'// loc("Infinity")
@@ -406,8 +389,8 @@ var betterJapanese = {
             let sufIndex = Math.floor(numeral / prefixes.length)
             let dispNum = Math.round(value * 10000 / (10 ** (numeral * 4)))
 
+            // 第二単位を付ける
             if (second) {
-                // 第二単位を付ける
                 if (!preIndex && !sufIndex) return value
 
                 let str = Math.floor(dispNum / 10000) + (preIndex ? prefixes[preIndex] : suffixes[sufIndex])
@@ -416,10 +399,10 @@ var betterJapanese = {
 
                 return str !== 'NaN' ? str : value.toPrecision(3).toString()
 
-            } else {
-                // 第二単位を付けない
-                return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
-            }
+            } 
+
+            // 第二単位を付けない
+            return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
         }
     },
 
