@@ -38,6 +38,14 @@ const betterJapanese = {
         betterJapanese.origins.updateMenu = Game.UpdateMenu
         betterJapanese.origins.sayTime = Game.sayTime
         betterJapanese.origins.beautify = Beautify
+        betterJapanese.origins.parseLoc = parseLoc
+
+        // 翻訳対象の文章の末尾に%が付いている場合に消えてしまう問題を修正
+        parseLoc = function(str, params) {
+            let baseStr = betterJapanese.origins.parseLoc(str, params)
+            if (typeof str === 'string' && str.endsWith('%')) baseStr += '%'
+            return baseStr
+        }
 
         // メニューに独自ボタンを実装
         Game.UpdateMenu = function() {
