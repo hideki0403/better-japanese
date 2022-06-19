@@ -69,7 +69,16 @@
             {
                 "afterColon": true
             }
+        ],
+        "no-else-return": "error",
+        "camelcase": "error",
+        "brace-style": "error",
+        "no-var": "error",
+        "no-multiple-empty-lines": [
+            "error",
+            {"max": 1}
         ]
+
     },
     "extends": [
         "plugin:jsonc/recommended-with-json5"
