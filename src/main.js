@@ -11,7 +11,7 @@ var betterJapanese = {
         shortFormatJP: false,
         secondFormatJP: true
     },
-    isDev: false,
+    isDev: true,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
@@ -164,6 +164,87 @@ var betterJapanese = {
             Game.updateLog = Game.updateLog.substring(0, Game.updateLog.search(/<div class="subsection update(?: small)?">/))
             Game.updateLog = Game.updateLog.substring(0, Game.updateLog.lastIndexOf('<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">'))
             Game.updateLog += `</div>${logUpdates}</div>`
+        }
+
+        // 巡り続ける読本のフレーバーテキスト翻訳、thisを使うので非ラムダ式(以降同様)
+        let upgrade = Game.Upgrades['Endless book of prose']
+        upgrade.desc = loc('%1 are <b>twice</b> as efficient.', cap(upgrade.buildingTie1.plural))
+        upgrade.originDescFunc = upgrade.descFunc
+        upgrade.descFunc = function()
+        {
+
+            var str = loc(FindLocStringByPart(`Upgrade quote ${this.id}`), Game.bakeryName)
+            var n = 26
+            var i = Math.floor(Game.T * 0.1)
+            let originDesc = this.originDescFunc()
+            if(originDesc.indexOf('<q>') >= 0)
+            {
+                originDesc = originDesc.substring(0, originDesc.indexOf('<q>'))
+            }
+            return `${originDesc}<q style="font-family:Courier;">${str.substr(i % str.length, n) + (i % str.length > (str.length - n) ? str.substr(0, i % str.length - (str.length - n)) : '')}</q>`
+        }
+
+        // マウス達をクリックするマウス達のフレーバーテキスト翻訳
+        upgrade = Game.Upgrades['Mice clicking mice']
+        upgrade.desc = betterJapanese.createSynergyUpgradeDesc(upgrade)
+        upgrade.descFunc = function()
+        {
+            Math.seedrandom(Game.seed + '-blasphemouse')
+            if (Math.random() < 0.3)
+            {
+                Math.seedrandom()
+                return `${this.desc}<q>${loc(FindLocStringByPart(`Upgrade quote ${this.id}`))}</q>`
+            }
+            else
+            {
+                Math.seedrandom()
+                return `${this.desc}<q>${loc('Mice clicking mice (Absolutely blasphemouse!)')}</q>`
+            }
+        }
+
+        // 富くじ演算のフレーバーテキスト翻訳
+        upgrade = Game.Upgrades['Tombola computing']
+        upgrade.desc = betterJapanese.createSynergyUpgradeDesc(upgrade)
+        upgrade.descFunc = function()
+        {
+            Math.seedrandom(Game.seed + '-tombolacomputing')
+            let str = loc(FindLocStringByPart(`Upgrade quote ${this.id}`), [
+                    Math.floor(Math.random() * 100),
+                    Math.floor(Math.random() * 100),
+                    Math.floor(Math.random() * 100),
+                    Math.floor(Math.random() * 100),
+                    parseLoc(choose(loc('Tombola computing (Base)')), [
+                            Math.floor(Math.random() * 5 + 2),
+                            choose(loc('Tombola computing (Color)')),
+                            choose(loc('Tombola computing (Living)'))
+                        ])
+                ])
+            Math.seedrandom()
+            return `${this.desc}<q>${str}</q>`
+        }
+
+        // 一級品の壁紙アソートメントの説明翻訳
+        upgrade = Game.Upgrades['Distinguished wallpaper assortment']
+        upgrade.desc = loc('Contains more wallpapers for your background selector.')
+
+        // 猫の場合「購入済み」タグが変化することを翻訳にも反映
+        betterJapanese.origins.crateTooltip = Game.crateTooltip
+        Game.crateTooltip = function(me, context)
+        {
+            let tooptipText = betterJapanese.origins.crateTooltip(me, context)
+            if(Game.sesame)
+            {
+                tooptipText = Game.substring(0, '<div style="font-size:9px;">')
+                tooptipText += `<div style="font-size:9px;">ID : ${me.id} | 順序 : ${Math.floor(me.order)}${me.tier ? ` | ティア : ${me.tier}` : ''}</div>`
+            }
+            if(me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten)
+            {
+                return tooptipText.replace(`<div class="tag" style="background-color:#fff;">${loc('Purchased')}</div>`, `<div class="tag" style="background-color:#fff;">${loc('[Tag]Purrchased')}</div>`)
+            }
+            else
+            {
+                return tooptipText
+            }
         }
 
         // hookを削除
@@ -340,6 +421,10 @@ var betterJapanese = {
                 return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
             }
         }
+    },
+
+    createSynergyUpgradeDesc: function(upgrade) {
+        return `${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie1.plural), 5, upgrade.buildingTie2.single])}<br>${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie2.plural), 0.1, upgrade.buildingTie1.single])}`
     }
 }
 
