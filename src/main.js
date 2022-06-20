@@ -35,7 +35,6 @@ const betterJapanese = {
     },
 
     initAfterLoad: async function() {
-        betterJapanese.origins.updateMenu = Game.UpdateMenu
         betterJapanese.origins.sayTime = Game.sayTime
         betterJapanese.origins.beautify = Beautify
         betterJapanese.origins.parseLoc = parseLoc
@@ -48,12 +47,14 @@ const betterJapanese = {
         }
 
         // メニューに独自ボタンを実装
-        Game.UpdateMenu = function() {
-            betterJapanese.origins.updateMenu()
+        // この方法で実装しないとCCSEなどのメニュー独自実装Modと競合してしまう
+        let origin = eval('Game.UpdateMenu.toString()').split('\n')
+        origin.splice(origin.length - 1, 0, `
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
             }
-        }
+        `)
+        eval(`Game.UpdateMenu = ${origin.join('\n')}`)
 
         // 時間表記からカンマを取り除く
         Game.sayTime = function(time, detail) {
