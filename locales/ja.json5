@@ -467,7 +467,7 @@
 	"This sugar lump grew to be <b>golden</b>; harvesting it will yield 2 to 7 lumps, your current cookies will be doubled (capped to a gain of 24 hours of your CpS), and you will find 10% more golden cookies for the next 24 hours.": "この角砂糖は<b>金色</b>に成長しています。これを収穫すれば角砂糖が2～7個手に入り、現在所持しているクッキーが2倍になり(上限はCpS 24時間分の増加)、24時間の間、10% ゴールデンクッキーが見つけやすくなります。",
 	"This sugar lump was affected by the elders and grew to be <b>meaty</b>; harvesting it will yield between 0 and 2 lumps.": "この角砂糖はおばあちゃんらの影響を受けて<b>肉々しく</b>成長しています。これを収穫すれば、0～2個入手できます。",
 	"This sugar lump is <b>caramelized</b>, its stickiness binding it to unexpected things; harvesting it will yield between 1 and 3 lumps and will refill your sugar lump cooldowns.": "この角砂糖は<b>キャラメル化</b>しており、その粘っこさは思わぬものを引っ付けてきます。収穫すると1から3個の角砂糖を生み出し、砂糖使用のクールダウンから回復します。",
-	"You harvested <b>%1</b> while you were away.": "あなたのいない間に <b>%1</b>個 の角砂糖を収穫しました。",
+	"You harvested <b>%1</b> while you were away.": "あなたのいない間に <b>%1</b> を収穫しました。",
 	"Sugar blessing activated!": "砂糖の祝福を受けました!",
 	"Your cookies have been doubled.<br>+10% golden cookies for the next 24 hours.": "手持ちのクッキーが2倍になりました。<br>次の 24時間 、ゴールデンクッキーが +10% 出やすくなります。",
 	"Sugar lump cooldowns cleared!": "角砂糖の使用タイマーがリセットされました!",
