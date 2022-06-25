@@ -48,7 +48,7 @@ jobs:
 
       - name: copy web artifact
         if: steps.check-tag.outputs.exists == 'false'
-        run: cp ./src/web/JA.js ./
+        run: cp ./src/web-embed/* ./
 
       - name: create release
         if: steps.check-tag.outputs.exists == 'false'
