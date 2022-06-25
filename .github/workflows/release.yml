@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      exists: ${{ steps.export.outputs.exists }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -58,6 +60,11 @@ jobs:
             - better-japanese.zip
             - JA.js
 
-      - name: publish new script
-        if: steps.check-tag.outputs.exists == 'false'
-        uses: hideki0403/better-japanese/.github/workflows/publish.yml@release
+      - name: export variable
+        id: export
+        run: echo "::set-output name=exists::${{ steps.check-tag.outputs.exists }}"
+
+  publish:
+    needs: build
+    if: needs.build.outputs.exists == 'false'
+    uses: hideki0403/better-japanese/.github/workflows/publish.yml@release

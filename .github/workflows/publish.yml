@@ -1,15 +1,15 @@
 name: Publish new locales
 
 on:
-  - workflow_call:
-      secrets:
-          token:
-            required: true
-  - push:
-      branches:
-        - 'release'
-      paths:
-        - 'locales/*.json5'
+  workflow_call:
+    secrets:
+        token:
+          required: true
+  push:
+    branches:
+      - 'release'
+    paths:
+      - 'locales/*.json5'
       
 jobs:
   build:
