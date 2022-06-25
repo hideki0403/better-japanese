@@ -1,7 +1,7 @@
 console.time('BetterJapanese')
 console.log('[BetterJapanese/Language] Loading')
 
-let conf = JSON.parse(localStorage.getItem('BJPConfig') || '{replaceJP: false}')
+let conf = JSON.parse(localStorage.getItem('BJPConfig') || '{"replaceJP": false}')
 let language = localStorage.getItem('BJPLangPack')
 
 if (language && conf.replaceJP) ModLanguage('JA', JSON.parse(language))
