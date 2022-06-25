@@ -1,4 +1,4 @@
-name: Create Release
+name: Create release
 
 on:
   push:
@@ -44,10 +44,20 @@ jobs:
         if: steps.check-tag.outputs.exists == 'false'
         run: zip -rj better-japanese.zip ./build
 
+      - name: copy web artifact
+        if: steps.check-tag.outputs.exists == 'false'
+        run: cp ./src/web/* ./
+
       - name: create release
         if: steps.check-tag.outputs.exists == 'false'
         uses: softprops/action-gh-release@v1
         with: 
           name: v${{ steps.package-version.outputs.current-version }}
           tag_name: v${{ steps.package-version.outputs.current-version }}
-          files: better-japanese.zip
+          files: 
+            - better-japanese.zip
+            - JA.js
+
+      - name: publish new script
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: hideki0403/better-japanese/.github/workflows/publish.yml@release
