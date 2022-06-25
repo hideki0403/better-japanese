@@ -1,9 +1,12 @@
 # BetterJapanese
-Steam版CookieClickerの日本語訳を非公式のものに置き換えたり、単位を日本語化できるMod
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/hideki0403/better-japanese)
+[![CodeFactor](https://www.codefactor.io/repository/github/hideki0403/better-japanese/badge)](https://www.codefactor.io/repository/github/hideki0403/better-japanese)  
 
 [![Create Release](https://github.com/hideki0403/better-japanese/actions/workflows/release.yml/badge.svg)](https://github.com/hideki0403/better-japanese/actions/workflows/release.yml)
 [![Publish new locales](https://github.com/hideki0403/better-japanese/actions/workflows/publish.yml/badge.svg)](https://github.com/hideki0403/better-japanese/actions/workflows/publish.yml)
-[![pages-build-deployment](https://github.com/hideki0403/better-japanese/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/hideki0403/better-japanese/actions/workflows/pages/pages-build-deployment)
+[![pages-build-deployment](https://github.com/hideki0403/better-japanese/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/hideki0403/better-japanese/actions/workflows/pages/pages-build-deployment)  
+
+Steam版CookieClickerの日本語訳を非公式のものに置き換えたり、単位を日本語化できるMod
 
 ## 開発/翻訳
 開発や翻訳については[こちら](https://github.com/hideki0403/better-japanese/wiki/%E9%96%8B%E7%99%BA%E3%83%BB%E7%BF%BB%E8%A8%B3%E3%82%92%E8%A1%8C%E3%81%86)をご覧ください。
