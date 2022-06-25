@@ -1,6 +1,6 @@
 const config = {
     language: process.env.TARGET_LOCALE || 'ja',
-    url: process.env.BASE_URL ? `${process.env.BASE_URL}/translate.json` : 'https://pages.yukineko.me/better-japanese/translate.json',
+    url: process.env.BASE_URL ? `${process.env.BASE_URL}/assets/translate.json` : 'https://pages.yukineko.me/better-japanese/assets/translate.json',
     date: Date.now(),
     hash: 0,
 }
@@ -11,12 +11,14 @@ const hash = require('md5-file')
 const rootDir = path.join(__dirname, '../')
 const distDir = path.join(rootDir, './publish/')
 const apiDir = path.join(distDir, './api/')
+const assetsDir = path.join(distDir, './assets/')
 const localeFile = path.join(rootDir, `./locales/${config.language}.json5`)
-const releaseLocaleFile = path.join(distDir, 'translate.json')
+const releaseLocaleFile = path.join(assetsDir, './translate.json')
 const json5 = require('json5')
 
 if (!fs.existsSync(distDir)) fs.mkdirSync(distDir)
 if (!fs.existsSync(apiDir)) fs.mkdirSync(apiDir)
+if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir)
 
 fs.writeJSONSync(releaseLocaleFile, json5.parse(fs.readFileSync(localeFile, 'utf-8')))
 
