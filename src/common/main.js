@@ -1,3 +1,5 @@
+// TODO: Steam版/Web版で条件分岐を作る
+
 const betterJapanese = {
     name: 'betterJapanese',
     apiUrl: {
