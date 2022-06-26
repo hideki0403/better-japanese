@@ -66,9 +66,9 @@ jobs:
           name: v${{ steps.package-version.outputs.current-version }}
           tag_name: v${{ steps.package-version.outputs.current-version }}
           prerelease: ${{ steps.pre-release.outputs.pre }}
-          files: 
-            - better-japanese.zip
-            - JA.js
+          files: |
+            better-japanese.zip
+            JA.js
 
       - name: export variable
         id: export
