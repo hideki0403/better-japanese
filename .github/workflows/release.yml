@@ -37,7 +37,7 @@ jobs:
       - name: check pre-release
         id: pre-release
         run: |
-          if [[ "${{ steps.package-version.outputs.current-version }}" =~ "(alpha|beta|rc)" ]]; then
+          if [[ "${{ steps.package-version.outputs.current-version }}" =~ (alpha|beta|rc) ]]; then
             echo "::set-output name=pre::true"
           else
             echo "::set-output name=pre::false"

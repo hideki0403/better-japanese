@@ -7,8 +7,8 @@ const log = require('debug')('Watcher')
 const chokidar = require('chokidar')
 const rootDir = path.join(__dirname, '../')
 const distDir = path.join(rootDir, './dist/')
-const srcDir = path.join(rootDir, './src/')
-const assetsDir = path.join(rootDir, './static/')
+const srcDir = path.join(rootDir, './src/common')
+const assetsDir = path.join(rootDir, './src/steam')
 const localeFile = path.join(rootDir, `./locales/${targetLanguage}.json5`)
 const json5 = require('json5')
 const ESLINT = require('eslint').ESLint
@@ -25,7 +25,7 @@ if (!fs.existsSync(distDir)) fs.mkdirSync(distDir)
 
 async function copyFiles(file) {
     if (file && file.match(/.(json5|js)/)) {
-        var result = formatter.format(await eslint.lintFiles(file))
+        let result = formatter.format(await eslint.lintFiles(file))
         console.log(result)
         if (!!result) return false
     }

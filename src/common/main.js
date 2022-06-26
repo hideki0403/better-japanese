@@ -20,6 +20,7 @@ const betterJapanese = {
         suffixes: [], // 上数用の単位
         short: [] // 塵劫記用の単位
     },
+    isRegistredHook: false,
 
     init: function() {
         this.load()
@@ -30,6 +31,8 @@ const betterJapanese = {
         }, 5000)
 
         if (App) send({ id: 'init bridge' })
+
+        if (!this.isRegistredHook) this.initAfterLoad()
 
         this.log('Initialized')
     },
@@ -227,16 +230,15 @@ const betterJapanese = {
         // 猫の場合「購入済み」タグが変化することを翻訳にも反映
         betterJapanese.origins.crateTooltip = Game.crateTooltip
         Game.crateTooltip = function(me, context) {
-            let tooptipText = betterJapanese.origins.crateTooltip(me, context)
+            let tooltipText = betterJapanese.origins.crateTooltip(me, context)
             if(Game.sesame) {
-                tooptipText = Game.substring(0, '<div style="font-size:9px;">')
-                tooptipText += `<div style="font-size:9px;">ID : ${me.id} | 順序 : ${Math.floor(me.order)}${me.tier ? ` | ティア : ${me.tier}` : ''}</div>`
+                tooltipText = tooltipText.replace(/<div style="font-size:9px;">.*<\/div>/, `<div style="font-size:9px;">ID : ${me.id} | 順序 : ${Math.floor(me.order)}${me.tier ? ` | ティア : ${me.tier}` : ''}</div>`)
             }
             if(me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten) {
-                return tooptipText.replace(`<div class="tag" style="background-color:#fff;">${loc('Purchased')}</div>`, `<div class="tag" style="background-color:#fff;">${loc('[Tag]Purrchased')}</div>`)
+                return tooltipText.replace(`<div class="tag" style="background-color:#fff;">${loc('Purchased')}</div>`, `<div class="tag" style="background-color:#fff;">${loc('[Tag]Purrchased')}</div>`)
             }
             
-            return tooptipText
+            return tooltipText
         }
 
         // hookを削除
@@ -245,7 +247,10 @@ const betterJapanese = {
 
     register: function() {
         Game.registerMod(this.name, this)
-        Game.registerHook('create', betterJapanese.initAfterLoad)
+        if (!Game.ready) {
+            Game.registerHook('create', betterJapanese.initAfterLoad)
+            this.isRegistredHook = true
+        }
     },
 
     save: function() {
