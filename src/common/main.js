@@ -20,6 +20,7 @@ const betterJapanese = {
         suffixes: [], // 上数用の単位
         short: [] // 塵劫記用の単位
     },
+    isRegistredHook: false,
 
     init: function() {
         this.load()
@@ -30,6 +31,8 @@ const betterJapanese = {
         }, 5000)
 
         if (App) send({ id: 'init bridge' })
+
+        if (!this.isRegistredHook) this.initAfterLoad()
 
         this.log('Initialized')
     },
@@ -245,7 +248,10 @@ const betterJapanese = {
 
     register: function() {
         Game.registerMod(this.name, this)
-        Game.registerHook('create', betterJapanese.initAfterLoad)
+        if (!Game.ready) {
+            Game.registerHook('create', betterJapanese.initAfterLoad)
+            this.isRegistredHook = true
+        }
     },
 
     save: function() {
