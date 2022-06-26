@@ -1,6 +1,10 @@
 name: Publish new locales
 
 on:
+  workflow_call:
+    secrets:
+        token:
+          required: true
   push:
     branches:
       - 'release'
@@ -28,6 +32,9 @@ jobs:
         env:
           TARGET_LOCALE: ja
           BASE_URL: 'https://pages.yukineko.me/better-japanese' # DO NOT put trailing slash
+
+      - name: copy common files
+        run: npm run build-web
 
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3

@@ -29,7 +29,7 @@ const betterJapanese = {
             this.initialized = true
         }, 5000)
 
-        send({ id: 'init bridge' })
+        if (App) send({ id: 'init bridge' })
 
         this.log('Initialized')
     },
@@ -417,19 +417,28 @@ const betterJapanese = {
 
     createSynergyUpgradeDesc: function(upgrade) {
         return `${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie1.plural), 5, upgrade.buildingTie2.single])}<br>${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie2.plural), 0.1, upgrade.buildingTie1.single])}`
-    }
-}
+    },
+    
+    devCheck: function(isDev = false) {
+        if (betterJapanese.initialized) return
 
-window.api.receive('fromMain', (msg) => {
-    if (msg.id === 'greenworks loaded' && !betterJapanese.initialized) {
-        betterJapanese.isDev = betterJapanese.isDev || !!msg.data.DEV
-        betterJapanese.log(`DevMode: ${betterJapanese.isDev}`)
+        betterJapanese.isDev = betterJapanese.isDev || isDev
         betterJapanese.checkUpdate()
+        betterJapanese.log(`DevMode: ${betterJapanese.isDev}`)
         if (betterJapanese.isDev) betterJapanese.addDevButton()
-
         clearTimeout(betterJapanese.fallbackTimer)
         betterJapanese.initialized = true
     }
-})
+}
+
+if (App) {
+    window.api.receive('fromMain', (msg) => {
+        if (msg.id === 'greenworks loaded') {
+            betterJapanese.devCheck(!!msg.data.DEV)
+        }
+    })
+} else {
+    betterJapanese.devCheck(false)
+}
 
 betterJapanese.register()

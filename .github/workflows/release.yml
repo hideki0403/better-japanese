@@ -1,4 +1,4 @@
-name: Create Release
+name: Create release
 
 on:
   push:
@@ -6,14 +6,16 @@ on:
       - 'release'
     paths:
       - 'package.json'
-      
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      exists: ${{ steps.export.outputs.exists }}
     steps:
       - uses: actions/checkout@v2
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - uses: actions/setup-node@v2
         with:
@@ -32,6 +34,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: check pre-release
+        id: pre-release
+        run: |
+          if [[ "${{ steps.package-version.outputs.current-version }}" =~ "(alpha|beta|rc)" ]]; then
+            echo "::set-output name=pre::true"
+          else
+            echo "::set-output name=pre::false"
+          fi
+
       - name: npm ci
         if: steps.check-tag.outputs.exists == 'false'
         run: npm ci
@@ -39,10 +50,14 @@ jobs:
       - name: create artifact
         if: steps.check-tag.outputs.exists == 'false'
         run: npm run build
-      
+
       - name: archive artifact
         if: steps.check-tag.outputs.exists == 'false'
         run: zip -rj better-japanese.zip ./build
+
+      - name: copy web artifact
+        if: steps.check-tag.outputs.exists == 'false'
+        run: cp ./src/web-embed/* ./
 
       - name: create release
         if: steps.check-tag.outputs.exists == 'false'
@@ -50,4 +65,16 @@ jobs:
         with: 
           name: v${{ steps.package-version.outputs.current-version }}
           tag_name: v${{ steps.package-version.outputs.current-version }}
-          files: better-japanese.zip
+          prerelease: ${{ steps.pre-release.outputs.pre }}
+          files: 
+            - better-japanese.zip
+            - JA.js
+
+      - name: export variable
+        id: export
+        run: echo "::set-output name=exists::${{ steps.check-tag.outputs.exists }}"
+
+  publish:
+    needs: build
+    if: needs.build.outputs.exists == 'false'
+    uses: hideki0403/better-japanese/.github/workflows/publish.yml@release
