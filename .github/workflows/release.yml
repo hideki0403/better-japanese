@@ -78,3 +78,5 @@ jobs:
     needs: build
     if: needs.build.outputs.exists == 'false'
     uses: hideki0403/better-japanese/.github/workflows/publish.yml@release
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
