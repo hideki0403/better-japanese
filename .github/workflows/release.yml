@@ -6,7 +6,7 @@ on:
       - 'release'
     paths:
       - 'package.json'
-      
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - uses: actions/setup-node@v2
         with:
@@ -34,6 +34,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: check pre-release
+        id: pre-release
+        run: |
+          if [[ "${{ steps.package-version.outputs.current-version }}" =~ "(alpha|beta|rc)" ]]; then
+            echo "::set-output name=pre::true"
+          else
+            echo "::set-output name=pre::false"
+          fi
+
       - name: npm ci
         if: steps.check-tag.outputs.exists == 'false'
         run: npm ci
@@ -41,7 +50,7 @@ jobs:
       - name: create artifact
         if: steps.check-tag.outputs.exists == 'false'
         run: npm run build
-      
+
       - name: archive artifact
         if: steps.check-tag.outputs.exists == 'false'
         run: zip -rj better-japanese.zip ./build
@@ -56,6 +65,7 @@ jobs:
         with: 
           name: v${{ steps.package-version.outputs.current-version }}
           tag_name: v${{ steps.package-version.outputs.current-version }}
+          prerelease: ${{ steps.pre-release.outputs.pre }}
           files: 
             - better-japanese.zip
             - JA.js
