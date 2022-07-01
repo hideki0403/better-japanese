@@ -278,7 +278,7 @@ const betterJapanese = {
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
     },
 
-    writeButton: function(buttonId, targetProp, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
+    writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
         // 本家のWritePrefButtonとほぼ同じ
 
         // ボタンを追加する先の要素を指定 (デフォルトはmonospaceButton)
@@ -289,17 +289,21 @@ const betterJapanese = {
 
         // ボタンを生成
         let elementButton = document.createElement('a')
-        elementButton.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
+        elementButton.className = 'smallFancyButton option'
+        if (targetProp) elementButton.className += ` prefButton ${this.config[targetProp] ? 'on' : 'off'}` 
         elementButton.id = buttonId
 
-        let onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
+        let onclickStr = targetProp ? `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');` : ''
 
         // Callbackが存在し、なおかつ与えられた引数がfunctionであればCallbackを追加
         if (callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
 
         elementButton.setAttribute(Game.clickStr, onclickStr)
 
-        elementButton.innerText = `${desc} ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
+        elementButton.innerText = desc
+
+        if (targetProp) elementButton.innerText += ` ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
+
         targetElement.parentNode.insertBefore(elementButton, targetElement.previousElementSibling)
 
         // ラベルがあれば生成
