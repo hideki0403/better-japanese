@@ -32,12 +32,8 @@ const betterJapanese = {
 
         if (App) send({ id: 'init bridge' })
 
-        if (!this.isRegisteredHook && !Game.ready) this.initAfterLoad()
-
-        if (!App && Game.ready) {
-            this.initAfterLoad()
-            this.initAfterDOMCreated()
-        }
+        if (!this.isRegisteredHook) this.initAfterLoad()
+        if (!App && Game.ready) this.initAfterDOMCreated()
 
         this.log('Initialized')
     },
@@ -250,7 +246,7 @@ const betterJapanese = {
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
 
-    initAfterDOMCreated() {
+    initAfterDOMCreated: function() {
         let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
         Game.bakeryNameL.textContent = loc('%1\'s bakery', Game.bakeryName)
         Game.attachTooltip(
