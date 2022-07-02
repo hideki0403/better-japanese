@@ -20,7 +20,7 @@ const betterJapanese = {
         suffixes: [], // 上数用の単位
         short: [] // 塵劫記用の単位
     },
-    isRegistredHook: false,
+    isRegisteredHook: false,
 
     init: function() {
         this.load()
@@ -32,7 +32,8 @@ const betterJapanese = {
 
         if (App) send({ id: 'init bridge' })
 
-        if (!this.isRegistredHook) this.initAfterLoad()
+        if (!this.isRegisteredHook) this.initAfterLoad()
+        if (!App && Game.ready) this.initAfterDOMCreated()
 
         this.log('Initialized')
     },
@@ -245,11 +246,121 @@ const betterJapanese = {
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
 
+    initAfterDOMCreated: function() {
+        let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
+        Game.bakeryNameL.textContent = loc('%1\'s bakery', Game.bakeryName)
+        Game.attachTooltip(
+                l('httpsSwitch'),
+                `<div style="padding:8px;width:350px;text-align:center;font-size:11px;">${loc('You are currently playing Cookie Clicker on the <b>%1</b> protocol.<br>The <b>%2</b> version uses a different save slot than this one.<br>Click this lock to reload the page and switch to the <b>%2</b> version!', [(Game.https ? 'HTTPS' : 'HTTP'), (Game.https ? 'HTTP' : 'HTTPS')])}</div>`,
+                'this'
+            )
+        Game.RebuildUpgrades()
+        let ascensionModeDescsEN = []
+        for (let obj of funcInitString.match(/Game\.ascensionModes=\{.+?\};/)[0].matchAll(/desc:loc\("(.+?)"\)/g)) {
+            ascensionModeDescsEN.push(obj[1].replaceAll('\\"', '"'))
+        }
+        for (let am in Game.ascensionModes) {
+            Game.ascensionModes[am].dname = loc(Game.ascensionModes[am].name + ' [ascension type]')
+            Game.ascensionModes[am].desc = loc(ascensionModeDescsEN[am])
+        }
+        l('ascendButton').outerHTML = `<a id="ascendButton" class="option framed large red" ${Game.getTooltip(`<div style="min-width:300px;text-align:center;font-size:11px;padding:8px;" id="tooltipReincarnate">${loc('Click this once you\'ve bought<br>everything you need!')}</div>`, 'bottom-right')} style="font-size:16px;margin-top:0px;"><span class="fancyText" style="font-size:20px;">${loc('Reincarnate')}</span></a>`
+        l('ascendInfo').getElementsByClassName('ascendData')[0].innerHTML = loc('You are ascending.<br>Drag the screen around<br>or use arrow keys!<br>When you\'re ready,<br>click Reincarnate.')
+        Game.UpdateAscensionModePrompt()
+        ON = ' ' + loc('ON')
+        OFF = ' ' + loc('OFF')
+        for (let pm of document.getElementsByClassName('productMute')) {
+            let id = pm.id.split('productMute')[1]
+            pm.outerHTML = `<div class="productButton productMute" ${Game.getTooltip(`<div style="width:150px;text-align:center;font-size:11px;" id="tooltipMuteBuilding"><b>${loc('Mute')}</b><br>(${loc('Minimize this building')})</div>`, 'this')} onclick="Game.ObjectsById[${id}].mute(1);PlaySound(Game.ObjectsById[${id}].muted?\'snd/clickOff2.mp3\':\'snd/clickOn2.mp3\');" id="productMute${id}">${loc('Mute')}</div>`
+        }
+        Game.Objects['Farm'].minigameName = loc('Garden')
+        Game.Objects['Factory'].minigameName = loc('Dungeon')
+        Game.Objects['Bank'].minigameName = loc('Stock Market')
+        Game.Objects['Temple'].minigameName = loc('Pantheon')
+        Game.Objects['Wizard tower'].minigameName = loc('Grimoire')
+        for (let i in Game.Objects) {
+            Game.Objects[i].dname = loc(Game.Objects[i].name)
+            Game.Objects[i].single = Game.Objects[i].dname
+            Game.Objects[i].plural = Game.Objects[i].dname
+            Game.Objects[i].desc = loc(FindLocStringByPart(Game.Objects[i].name + ' quote'))
+            Game.foolObjects[i].name = loc(FindLocStringByPart(Game.Objects[i].name + ' business name')) || Game.foolObjects[i].name
+            Game.foolObjects[i].desc = loc(FindLocStringByPart(Game.Objects[i].name + ' business quote')) || Game.foolObjects[i].desc
+        }
+        Game.foolObjects['Unknown'].name = loc('Investment')
+        Game.foolObjects['Unknown'].desc = loc('You\'re not sure what this does, you just know it means profit.')
+        Game.BuildStore()
+        l('buildingsMute').children[0].innerHTML = loc('Muted:')
+        LocalizeUpgradesAndAchievs()
+        for (let bf in Game.buffs) {
+            Game.buffs[bf].dname = loc(Game.buffs[bf].name)
+        }
+        let santaLevelsEN = Game.Init.toString().match(/Game\.santaLevels=\['(.+?)'\];/)[1].split('\',\'')
+        for (let sl in santaLevelsEN) {
+            Game.santaLevels[sl] = loc(santaLevelsEN[sl])
+        }
+        let dragonAuraDescsEN = []
+        for (let obj of funcInitString.match(/Game\.dragonAuras=\{.+?\};/)[0].matchAll(/desc:loc\((.+?)\)/g)) {
+            let res = null
+            if (obj[1][0] == '"' && obj[1][obj[1].length - 1] == '"') {
+                dragonAuraDescsEN.push(loc(obj[1].substring(1, obj[1].length - 1)))
+            } else if ((res = obj[1].match(/"(.+?)",(\d+?)/)) != null) {
+                dragonAuraDescsEN.push(loc(res[1], parseInt(res[2])))
+            } else if ((res = obj[1].match(/"(.+?)",\[(\d+?),(\d+?)]/)) != null) {
+                dragonAuraDescsEN.push(loc(res[1], [parseInt(res[2]), parseInt(res[3])]))
+            }
+        }
+        for (let dl in Game.dragonAuras) {
+            Game.dragonAuras[dl].dname = loc(Game.dragonAuras[dl].name)
+            Game.dragonAuras[dl].desc = loc(dragonAuraDescsEN[dl])
+        }
+        let dragonLevelNamesEN = []
+        for (let obj of funcInitString.match(/Game\.dragonLevels=\[.+?\];/)[0].matchAll(/name:'(.+?)'/g)) {
+            dragonLevelNamesEN.push(obj[1])
+        }
+        for (let i = 0; i < Game.dragonLevels.length; i++) {
+            let it = Game.dragonLevels[i]
+            it.name = loc(dragonLevelNamesEN[i])
+            if (i < 3) {
+                it.action = loc('Chip it')
+            } else if (i == 3) {
+                it.action = loc('Hatch it')
+            } else if (i < Game.dragonLevels.length - 3) {
+                it.action = `${loc('Train %1', Game.dragonAuras[i - 3].dname)}<br><small>${loc('Aura: %1', Game.dragonAuras[i - 3].desc)}</small>`
+            } else if (i == Game.dragonLevels.length - 3) {
+                it.action = `${loc('Bake dragon cookie')}<br><small>${loc('elicious!')}</small>`
+            } else if (i == Game.dragonLevels.length - 2) {
+                it.action = `${loc('Train secondary aura')}<br><small>${loc('Lets you use two dragon auras simultaneously')}</small>`
+            } else if (i == Game.dragonLevels.length - 1) {
+                it.action = loc('Your dragon is fully trained.')
+            }
+        }
+        for (let ml in Game.AllMilks) {
+            Game.AllMilks[ml].name = loc(Game.AllMilks[ml].bname)
+        }
+        l('prefsButton').firstChild.innerHTML = loc('Options')
+        l('statsButton').firstChild.innerHTML = loc('Stats')
+        l('logButton').firstChild.innerHTML = loc('Info')
+        l('legacyButton').firstChild.innerHTML = loc('Legacy')
+        Game.adaptWidth = function(node) {
+            let el = node.firstChild
+            el.style.padding = ''
+            let width = el.clientWidth / 95
+            if (width > 1) {
+                el.style.fontSize = (parseInt(window.getComputedStyle(el).fontSize) * 1 / width) + 'px'
+                el.style.transform = `scale(1,${width})`
+            }
+        }
+        Game.adaptWidth(l('prefsButton'))
+        Game.adaptWidth(l('legacyButton'))
+        l('checkForUpdate').childNodes[0].textContent = loc('New update!')
+        l('buildingsTitle').childNodes[0].textContent = loc('Buildings')
+        l('storeTitle').childNodes[0].textContent = loc('Store')
+    },
+
     register: function() {
         Game.registerMod(this.name, this)
         if (!Game.ready) {
             Game.registerHook('create', betterJapanese.initAfterLoad)
-            this.isRegistredHook = true
+            this.isRegisteredHook = true
         }
     },
 
@@ -273,12 +384,13 @@ const betterJapanese = {
             Game.upgradesToRebuild = 1
         }
         this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます。変更は再起動後に適用されます。', updateAll)
+        // this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', betterJapanese.openIgnorePrompt)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
     },
 
-    writeButton: function(buttonId, targetProp, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
+    writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
         // 本家のWritePrefButtonとほぼ同じ
 
         // ボタンを追加する先の要素を指定 (デフォルトはmonospaceButton)
@@ -289,17 +401,21 @@ const betterJapanese = {
 
         // ボタンを生成
         let elementButton = document.createElement('a')
-        elementButton.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
+        elementButton.className = 'smallFancyButton option'
+        if (targetProp) elementButton.className += ` prefButton ${this.config[targetProp] ? 'on' : 'off'}` 
         elementButton.id = buttonId
 
-        let onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
+        let onclickStr = targetProp ? `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');` : ''
 
         // Callbackが存在し、なおかつ与えられた引数がfunctionであればCallbackを追加
         if (callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
 
         elementButton.setAttribute(Game.clickStr, onclickStr)
 
-        elementButton.innerText = `${desc} ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
+        elementButton.innerText = desc
+
+        if (targetProp) elementButton.innerText += ` ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
+
         targetElement.parentNode.insertBefore(elementButton, targetElement.previousElementSibling)
 
         // ラベルがあれば生成
@@ -422,6 +538,10 @@ const betterJapanese = {
 
     createSynergyUpgradeDesc: function(upgrade) {
         return `${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie1.plural), 5, upgrade.buildingTie2.single])}<br>${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie2.plural), 0.1, upgrade.buildingTie1.single])}`
+    },
+
+    openIgnorePrompt: function() {
+        Game.Prompt('非公式翻訳の置き換え除外リスト', ['保存', 'キャンセル'])
     },
     
     devCheck: function(isDev = false) {
