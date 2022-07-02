@@ -141,15 +141,15 @@ const betterJapanese = {
 
         // 在庫市場のquoteを実装
         while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
-        let M = Game.Objects['Bank'].minigame
-        M.goodTooltip = function(id) {
+        if (typeof(betterJapanese.origins.goodTooltip) === 'undefined') {
+            betterJapanese.origins.goodTooltip = Game.Objects['Bank'].minigame.goodTooltip
+        }
+        Game.Objects['Bank'].minigame.goodTooltip = function(id) {
             return function() {
-                let me = M.goodsById[id]
-                let delta = M.goodDelta(id)
-                let val = M.getGoodPrice(me)
-                icon = me.icon || [0, 0]
-                let str = '<div style="padding:8px 4px;min-width:350px;" id="tooltipMarketGood">' + '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div>' + '<div class="name">' + me.name + ' <span style="font-size:12px;opacity:0.8;">(' + loc('from %1', '<span style="font-variant:small-caps;">' + me.company + '</span>') + ')</span> <span class="bankSymbol">' + me.symbol + ' <span class="bankSymbolNum' + (delta >= 0 ? ' bankSymbolUp' : delta < 0 ? ' bankSymbolDown' : '') + '">' + (delta + '' + (delta == Math.floor(delta) ? '.00' : (delta * 10) == Math.floor(delta * 10) ? '0' : '') + '%') + '</span></span></div>' + '<div class="line"></div><div class="description">' + '<q>' + loc(me.desc) + '</q>' + '<div class="line"></div><div style="font-size:11px;">&bull; <div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> ' + loc('%1: currently worth <b>$%2</b> per unit.', [me.name, Beautify(val, 2)]) + '<br>&bull; ' + loc('You currently own %1 (worth <b>$%2</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(me.stock) + '</b>x ' + me.name, Beautify(val * me.stock, 2)]) + '<br>&bull; ' + loc('Your warehouses can store up to %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-icon[0] * 48) + 'px ' + (-icon[1] * 48) + 'px;"></div> <b>' + Beautify(M.getGoodMaxStock(me)) + '</b>x ' + me.name) + '<br>&bull; ' + loc('You may increase your storage space by upgrading your offices and by buying more %1. You also get %2 extra storage space per %3 level (currently: <b>+%4</b>).', ['<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-me.building.iconColumn * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + me.building.plural, 10, me.building.single, (me.building.level * 10)]) + '<br>&bull; ' + loc('The average worth of this stock and how high it can peak depends on the building it is tied to, along with the level of your %1.', '<div class="icon" style="pointer-events:none;display:inline-block;transform:scale(0.5);margin:-16px -18px -16px -14px;vertical-align:middle;background-position:' + (-15 * 48) + 'px ' + (0 * 48) + 'px;"></div> ' + Game.Objects['Bank'].plural) + '</div>' + '<div style="font-size:11px;opacity:0.5;margin-top:3px;">' + loc('%1 the hide button to toggle all other stocks.', loc('Shift-click')) + '</div>' + '</div></div>'
-                return str
+                let desc = betterJapanese.origins.goodTooltip(id)()
+                const qbefore = '<div class="line"></div>'
+                let qpos = desc.indexOf(qbefore) + qbefore.length
+                return `${desc.substring(0, qpos)}<div class="description"><q>${loc(Game.Objects['Bank'].minigame.goodsById[id].desc)}</q><div class="line">${desc.substring(qpos)}`
             }
         }
 
