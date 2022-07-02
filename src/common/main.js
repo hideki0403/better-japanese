@@ -468,7 +468,7 @@ const betterJapanese = {
         // ティアあり実績概要
         for (let result of funcInitString.matchAll(/Game.TieredAchievement\('(.+?)(?<!\\)',/g)) {
             let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
-            obj.ddesc = loc('Have <b>%1</b>.', loc('%1 ' + obj.buildingTie.bsingle, LBeautify(Game.Tiers[obj.tier].achievUnlock)))
+            obj.baseDesc = loc('Have <b>%1</b>.', loc('%1 ' + obj.buildingTie.bsingle, LBeautify(Game.Tiers[obj.tier].achievUnlock)))
         }
         // 施設別生産量実績概要
         for (let result of funcInitString.matchAll(/Game.ProductionAchievement\('(.+?)(?<!\\)','(.+?)',(\d+?)(?:,(\d+?),(\d+?))?\);/g)) {
