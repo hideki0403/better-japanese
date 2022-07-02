@@ -32,7 +32,12 @@ const betterJapanese = {
 
         if (App) send({ id: 'init bridge' })
 
-        if (!this.isRegistredHook) this.initAfterLoad()
+        if (!this.isRegistredHook && !Game.ready) this.initAfterLoad()
+
+        if (!App && Game.ready) {
+            this.initAfterLoad()
+            this.initAfterDOMCreated()
+        }
 
         this.log('Initialized')
     },
@@ -243,6 +248,116 @@ const betterJapanese = {
 
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
+    },
+
+    initAfterDOMCreated() {
+        let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
+        Game.bakeryNameL.textContent = loc('%1\'s bakery', Game.bakeryName)
+        Game.attachTooltip(
+                l('httpsSwitch'),
+                `<div style="padding:8px;width:350px;text-align:center;font-size:11px;">${loc('You are currently playing Cookie Clicker on the <b>%1</b> protocol.<br>The <b>%2</b> version uses a different save slot than this one.<br>Click this lock to reload the page and switch to the <b>%2</b> version!', [(Game.https ? 'HTTPS' : 'HTTP'), (Game.https ? 'HTTP' : 'HTTPS')])}</div>`,
+                'this'
+            )
+        Game.RebuildUpgrades()
+        let ascensionModeDescsEN = []
+        for (let obj of funcInitString.match(/Game\.ascensionModes=\{.+?\};/)[0].matchAll(/desc:loc\("(.+?)"\)/g)) {
+            ascensionModeDescsEN.push(obj[1].replaceAll('\\"', '"'))
+        }
+        for (let am in Game.ascensionModes) {
+            Game.ascensionModes[am].dname = loc(Game.ascensionModes[am].name + ' [ascension type]')
+            Game.ascensionModes[am].desc = loc(ascensionModeDescsEN[am])
+        }
+        l('ascendButton').outerHTML = `<a id="ascendButton" class="option framed large red" ${Game.getTooltip(`<div style="min-width:300px;text-align:center;font-size:11px;padding:8px;" id="tooltipReincarnate">${loc('Click this once you\'ve bought<br>everything you need!')}</div>`, 'bottom-right')} style="font-size:16px;margin-top:0px;"><span class="fancyText" style="font-size:20px;">${loc('Reincarnate')}</span></a>`
+        l('ascendInfo').getElementsByClassName('ascendData')[0].innerHTML = loc('You are ascending.<br>Drag the screen around<br>or use arrow keys!<br>When you\'re ready,<br>click Reincarnate.')
+        Game.UpdateAscensionModePrompt()
+        ON = ' ' + loc('ON')
+        OFF = ' ' + loc('OFF')
+        for (let pm of document.getElementsByClassName('productMute')) {
+            let id = pm.id.split('productMute')[1]
+            pm.outerHTML = `<div class="productButton productMute" ${Game.getTooltip(`<div style="width:150px;text-align:center;font-size:11px;" id="tooltipMuteBuilding"><b>${loc('Mute')}</b><br>(${loc('Minimize this building')})</div>`, 'this')} onclick="Game.ObjectsById[${id}].mute(1);PlaySound(Game.ObjectsById[${id}].muted?\'snd/clickOff2.mp3\':\'snd/clickOn2.mp3\');" id="productMute${id}">${loc('Mute')}</div>`
+        }
+        Game.Objects['Farm'].minigameName = loc('Garden')
+        Game.Objects['Factory'].minigameName = loc('Dungeon')
+        Game.Objects['Bank'].minigameName = loc('Stock Market')
+        Game.Objects['Temple'].minigameName = loc('Pantheon')
+        Game.Objects['Wizard tower'].minigameName = loc('Grimoire')
+        for (let i in Game.Objects) {
+            Game.Objects[i].dname = loc(Game.Objects[i].name)
+            Game.Objects[i].single = Game.Objects[i].dname
+            Game.Objects[i].plural = Game.Objects[i].dname
+            Game.Objects[i].desc = loc(FindLocStringByPart(Game.Objects[i].name + ' quote'))
+            Game.foolObjects[i].name = loc(FindLocStringByPart(Game.Objects[i].name + ' business name')) || Game.foolObjects[i].name
+            Game.foolObjects[i].desc = loc(FindLocStringByPart(Game.Objects[i].name + ' business quote')) || Game.foolObjects[i].desc
+        }
+        Game.foolObjects['Unknown'].name = loc('Investment')
+        Game.foolObjects['Unknown'].desc = loc('You\'re not sure what this does, you just know it means profit.')
+        Game.BuildStore()
+        l('buildingsMute').children[0].innerHTML = loc('Muted:')
+        LocalizeUpgradesAndAchievs()
+        for (let bf in Game.buffs) {
+            Game.buffs[bf].dname = loc(Game.buffs[bf].name)
+        }
+        let santaLevelsEN = Game.Init.toString().match(/Game\.santaLevels=\['(.+?)'\];/)[1].split('\',\'')
+        for (let sl in santaLevelsEN) {
+            Game.santaLevels[sl] = loc(santaLevelsEN[sl])
+        }
+        let dragonAuraDescsEN = []
+        for (let obj of funcInitString.match(/Game\.dragonAuras=\{.+?\};/)[0].matchAll(/desc:loc\((.+?)\)/g)) {
+            let res = null
+            if (obj[1][0] == '"' && obj[1][obj[1].length - 1] == '"') {
+                dragonAuraDescsEN.push(loc(obj[1].substring(1, obj[1].length - 1)))
+            } else if ((res = obj[1].match(/"(.+?)",(\d+?)/)) != null) {
+                dragonAuraDescsEN.push(loc(res[1], parseInt(res[2])))
+            } else if ((res = obj[1].match(/"(.+?)",\[(\d+?),(\d+?)]/)) != null) {
+                dragonAuraDescsEN.push(loc(res[1], [parseInt(res[2]), parseInt(res[3])]))
+            }
+        }
+        for (let dl in Game.dragonAuras) {
+            Game.dragonAuras[dl].dname = loc(Game.dragonAuras[dl].name)
+            Game.dragonAuras[dl].desc = loc(dragonAuraDescsEN[dl])
+        }
+        let dragonLevelNamesEN = []
+        for (let obj of funcInitString.match(/Game\.dragonLevels=\[.+?\];/)[0].matchAll(/name:'(.+?)'/g)) {
+            dragonLevelNamesEN.push(obj[1])
+        }
+        for (let i = 0; i < Game.dragonLevels.length; i++) {
+            let it = Game.dragonLevels[i]
+            it.name = loc(dragonLevelNamesEN[i])
+            if (i < 3) {
+                it.action = loc('Chip it')
+            } else if (i == 3) {
+                it.action = loc('Hatch it')
+            } else if (i < Game.dragonLevels.length - 3) {
+                it.action = `${loc('Train %1', Game.dragonAuras[i - 3].dname)}<br><small>${loc('Aura: %1', Game.dragonAuras[i - 3].desc)}</small>`
+            } else if (i == Game.dragonLevels.length - 3) {
+                it.action = `${loc('Bake dragon cookie')}<br><small>${loc('elicious!')}</small>`
+            } else if (i == Game.dragonLevels.length - 2) {
+                it.action = `${loc('Train secondary aura')}<br><small>${loc('Lets you use two dragon auras simultaneously')}</small>`
+            } else if (i == Game.dragonLevels.length - 1) {
+                it.action = loc('Your dragon is fully trained.')
+            }
+        }
+        for (let ml in Game.AllMilks) {
+            Game.AllMilks[ml].name = loc(Game.AllMilks[ml].bname)
+        }
+        l('prefsButton').firstChild.innerHTML = loc('Options')
+        l('statsButton').firstChild.innerHTML = loc('Stats')
+        l('logButton').firstChild.innerHTML = loc('Info')
+        l('legacyButton').firstChild.innerHTML = loc('Legacy')
+        Game.adaptWidth = function(node) {
+            let el = node.firstChild
+            el.style.padding = ''
+            let width = el.clientWidth / 95
+            if (width > 1) {
+                el.style.fontSize = (parseInt(window.getComputedStyle(el).fontSize) * 1 / width) + 'px'
+                el.style.transform = `scale(1,${width})`
+            }
+        }
+        Game.adaptWidth(l('prefsButton'))
+        Game.adaptWidth(l('legacyButton'))
+        l('checkForUpdate').childNodes[0].textContent = loc('New update!')
+        l('buildingsTitle').childNodes[0].textContent = loc('Buildings')
+        l('storeTitle').childNodes[0].textContent = loc('Store')
     },
 
     register: function() {
