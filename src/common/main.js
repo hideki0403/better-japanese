@@ -20,7 +20,7 @@ const betterJapanese = {
         suffixes: [], // 上数用の単位
         short: [] // 塵劫記用の単位
     },
-    isRegistredHook: false,
+    isRegisteredHook: false,
 
     init: function() {
         this.load()
@@ -32,12 +32,8 @@ const betterJapanese = {
 
         if (App) send({ id: 'init bridge' })
 
-        if (!this.isRegistredHook && !Game.ready) this.initAfterLoad()
-
-        if (!App && Game.ready) {
-            this.initAfterLoad()
-            this.initAfterDOMCreated()
-        }
+        if (!this.isRegisteredHook) this.initAfterLoad()
+        if (!App && Game.ready) this.initAfterDOMCreated()
 
         this.log('Initialized')
     },
@@ -506,7 +502,7 @@ const betterJapanese = {
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
 
-    initAfterDOMCreated() {
+    initAfterDOMCreated: function() {
         let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
         // ベーカリー名欄
         Game.bakeryNameL.textContent = loc('%1\'s bakery', Game.bakeryName)
@@ -844,7 +840,7 @@ const betterJapanese = {
         Game.registerMod(this.name, this)
         if (!Game.ready) {
             Game.registerHook('create', betterJapanese.initAfterLoad)
-            this.isRegistredHook = true
+            this.isRegisteredHook = true
         }
     },
 
@@ -868,6 +864,7 @@ const betterJapanese = {
             Game.upgradesToRebuild = 1
         }
         this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます。変更は再起動後に適用されます。', updateAll)
+        // this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', betterJapanese.openIgnorePrompt)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
@@ -878,7 +875,7 @@ const betterJapanese = {
         l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
     },
 
-    writeButton: function(buttonId, targetProp, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
+    writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
         // 本家のWritePrefButtonとほぼ同じ
 
         // ボタンを追加する先の要素を指定 (デフォルトはmonospaceButton)
@@ -889,17 +886,21 @@ const betterJapanese = {
 
         // ボタンを生成
         let elementButton = document.createElement('a')
-        elementButton.className = `smallFancyButton prefButton option ${this.config[targetProp] ? 'on' : 'off'}`
+        elementButton.className = 'smallFancyButton option'
+        if (targetProp) elementButton.className += ` prefButton ${this.config[targetProp] ? 'on' : 'off'}` 
         elementButton.id = buttonId
 
-        let onclickStr = `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');`
+        let onclickStr = targetProp ? `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');` : ''
 
         // Callbackが存在し、なおかつ与えられた引数がfunctionであればCallbackを追加
         if (callback && typeof callback === 'function') onclickStr += `(${callback.toString()})()`
 
         elementButton.setAttribute(Game.clickStr, onclickStr)
 
-        elementButton.innerText = `${desc} ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
+        elementButton.innerText = desc
+
+        if (targetProp) elementButton.innerText += ` ${this.config[targetProp] ? loc('ON') : loc('OFF')}`
+
         targetElement.parentNode.insertBefore(elementButton, targetElement.previousElementSibling)
 
         // ラベルがあれば生成
@@ -1022,6 +1023,10 @@ const betterJapanese = {
 
     createSynergyUpgradeDesc: function(upgrade) {
         return `${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie1.plural), 5, upgrade.buildingTie2.single])}<br>${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie2.plural), 0.1, upgrade.buildingTie1.single])}`
+    },
+
+    openIgnorePrompt: function() {
+        Game.Prompt('非公式翻訳の置き換え除外リスト', ['保存', 'キャンセル'])
     },
     
     devCheck: function(isDev = false) {
