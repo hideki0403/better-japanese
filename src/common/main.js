@@ -11,7 +11,7 @@ const betterJapanese = {
         shortFormatJP: false,
         secondFormatJP: true
     },
-    isDev: true,
+    isDev: false,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
@@ -60,6 +60,8 @@ const betterJapanese = {
         origin.splice(origin.length - 1, 0, `
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
+            } else if (Game.onMenu == 'stats') {
+                betterJapanese.fixStats()
             }
         `)
         eval(`Game.UpdateMenu = ${origin.join('\n')}`)
@@ -869,6 +871,11 @@ const betterJapanese = {
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
+    },
+
+    fixStats: function() {
+        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
+        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
     },
 
     writeButton: function(buttonId, targetProp, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
