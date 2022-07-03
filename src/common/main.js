@@ -56,6 +56,8 @@ const betterJapanese = {
         origin.splice(origin.length - 1, 0, `
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
+            } else if (Game.onMenu == 'stats') {
+                betterJapanese.fixStats()
             }
         `)
         eval(`Game.UpdateMenu = ${origin.join('\n')}`)
@@ -241,6 +243,260 @@ const betterJapanese = {
             
             return tooltipText
         }
+
+        if (typeof(betterJapanese.origins.getNewTicker) === 'undefined') betterJapanese.origins.getNewTicker = Game.getNewTicker
+        Game.getNewTicker = function(manual) {
+            let animals = loc('TickerList (Animal)')
+			let list = []
+			let NEWS = loc('News :').replace(' ', '&nbsp;') + ' '
+			let loreProgress = Math.round(Math.log(Game.cookiesEarned / 10) * Math.LOG10E + 1 | 0)
+			if (Game.TickerN % 2 == 0 || loreProgress > 14) {				
+				if (Math.random() < 0.75 || Game.cookiesEarned < 10000) {
+					if (Game.Objects['Grandma'].amount > 0) {
+                        list.push(`<q>${choose(loc('Ticker (grandma)'))}</q><sig>${Game.Objects['Grandma'].single}</sig>`)
+                    }
+					if (!Game.prefs.notScary && Game.Objects['Grandma'].amount >= 50) {
+                        list.push(`<q>${choose(loc('Ticker (threatening grandma)'))}</q><sig>${Game.Objects['Grandma'].single}</sig>`)
+                    }
+					if (Game.HasAchiev('Just wrong') && Math.random() < 0.05) {
+                        list.push(NEWS + loc('cookie manufacturer downsizes, sells own grandmother!'))
+                    }
+					if (!Game.prefs.notScary && Game.HasAchiev('Just wrong') && Math.random() < 0.4) {
+                        list.push(`<q>${choose(loc('Ticker (angry grandma)'))}</q><sig>${Game.Objects['Grandma'].single}</sig>`)
+                    }
+					if (!Game.prefs.notScary && Game.Objects['Grandma'].amount >= 1 && Game.pledges > 0 && Game.elderWrath == 0) {
+                        list.push(`<q>${choose(loc('Ticker (grandmas return)'))}</q><sig>${Game.Objects['Grandma'].single}</sig>`)
+                    }
+					for (let i in Game.Objects) {
+						if (i != 'Cursor' && i != 'Grandma' && i != 'Mine' && i != 'Temple' && i != 'Wizard tower' && Game.Objects[i].amount > 0) {
+                            list.push(NEWS + choose(loc('Ticker (' + i + ')')))
+                        }
+					}
+					if (Game.Objects['Mine'].amount > 0) {
+                        list.push(choose([
+                            ...loc('Ticker (Mine)'),
+                            loc('%1 miners trapped in collapsed chocolate mine!', Math.floor(Math.random() * 1000 + 2))
+					    ]))
+                    }
+					if (Game.Objects['Temple'].amount > 0) {
+                        list.push(NEWS + choose([
+                            ...loc('Ticker (Temple)'),
+					        loc('explorers bring back ancient artifact from abandoned temple; archeologists marvel at the centuries-old %1 %2!', [
+                                choose(loc('TickerList (Temple1)')),
+                                choose(loc('TickerList (Temple2)'))
+                            ]),
+					        loc('just how extensive is the cookie pantheon? Theologians speculate about possible %1 of %2.', [
+                                choose(loc('TickerList (Temple3)')),
+                                choose([choose(animals), choose(loc('TickerList (Temple4)'))])
+                            ])
+					    ]))
+                    }
+					if (Game.Objects['Wizard tower'].amount > 0) {
+                        list.push(NEWS + choose([
+                            ...loc('Ticker (Wizard tower)'),
+                            loc('all %1 turned into %2 in freak magic catastrophe!', [
+                                choose([choose(animals), choose(loc('TickerList (Wizard tower)'))]),
+                                choose([choose(animals), choose(loc('TickerList (Wizard tower)'))])
+                            ]),
+                            loc('heavy dissent rages between the schools of %1 magic and %2 magic!', [choose(loc('TickerList (Wizard tower2)')), choose(loc('TickerList (Wizard tower2)'))])
+                        ]))
+                    }
+					if (Game.season == 'halloween' && Game.cookiesEarned >= 1000) list.push(NEWS + choose(loc('Ticker (Halloween)')))
+					if (Game.season == 'christmas' && Game.cookiesEarned >= 1000) list.push(NEWS + choose(loc('Ticker (Christmas)')))
+					if (Game.season == 'valentines' && Game.cookiesEarned >= 1000) list.push(NEWS + choose(loc('Ticker (Valentines)')))
+					if (Game.season == 'easter' && Game.cookiesEarned >= 1000) list.push(NEWS + choose(loc('Ticker (Easter)')))
+				}
+				if (Math.random() < 0.05) {
+						if (Game.HasAchiev('Base 10')) list.push(NEWS + loc('cookie manufacturer completely forgoes common sense, lets strange obsession with round numbers drive building decisions!'))
+						if (Game.HasAchiev('From scratch')) list.push(NEWS + loc('follow the tear-jerking, riches-to-rags story about a local cookie manufacturer who decided to give it all up!'))
+						if (Game.HasAchiev('A world filled with cookies')) list.push(NEWS + loc('known universe now jammed with cookies! No vacancies!'))
+						if (Game.HasAchiev('Last Chance to See')) list.push(NEWS + loc('incredibly rare albino wrinkler on the brink of extinction poached by cookie-crazed pastry magnate!'))
+						if (Game.Has('Serendipity')) list.push(NEWS + loc('local cookie manufacturer becomes luckiest being alive!'))
+						if (Game.Has('Season switcher')) list.push(NEWS + loc('seasons are all out of whack! "We need to get some whack back into them seasons", says local resident.'))
+						if (Game.Has('Kitten helpers')) list.push(NEWS + loc('faint meowing heard around local cookie facilities; suggests new ingredient being tested.'))
+						if (Game.Has('Kitten workers')) list.push(NEWS + loc('crowds of meowing kittens with little hard hats reported near local cookie facilities.'))
+						if (Game.Has('Kitten engineers')) list.push(NEWS + loc('surroundings of local cookie facilities now overrun with kittens in adorable little suits. Authorities advise to stay away from the premises.'))
+						if (Game.Has('Kitten overseers')) list.push(NEWS + loc('locals report troupe of bossy kittens meowing adorable orders at passersby.'))
+						if (Game.Has('Kitten managers')) list.push(NEWS + loc('local office cubicles invaded with armies of stern-looking kittens asking employees "what\'s happening, meow".'))
+						if (Game.Has('Kitten accountants')) list.push(NEWS + loc('tiny felines show sudden and amazing proficiency with fuzzy mathematics and pawlinomials, baffling scientists and pet store owners.'))
+						if (Game.Has('Kitten specialists')) list.push(NEWS + loc('new kitten college opening next week, offers courses on cookie-making and catnip studies.'))
+						if (Game.Has('Kitten experts')) list.push(NEWS + loc('unemployment rates soaring as woefully adorable little cats nab jobs on all levels of expertise, says study.'))
+						if (Game.Has('Kitten consultants')) list.push(NEWS + loc('"In the future, your job will most likely be done by a cat", predicts suspiciously furry futurologist.'))
+						if (Game.Has('Kitten assistants to the regional manager')) list.push(NEWS + loc('strange kittens with peculiar opinions on martial arts spotted loitering on local beet farms!'))
+						if (Game.Has('Kitten marketeers')) list.push(NEWS + loc('nonsensical kitten billboards crop up all over countryside, trying to sell people the cookies they already get for free!'))
+						if (Game.Has('Kitten analysts')) list.push(NEWS + loc('are your spending habits sensible? For a hefty fee, these kitten analysts will tell you!'))
+						if (Game.Has('Kitten executives')) list.push(NEWS + loc('kittens strutting around in hot little business suits shouting cut-throat orders at their assistants, possibly the cutest thing this reporter has ever seen!'))
+						if (Game.Has('Kitten admins')) list.push(NEWS + loc('all systems nominal, claim kitten admins obviously in way over their heads.'))
+						if (Game.Has('Kitten angels')) list.push(NEWS + loc('"Try to ignore any ghostly felines that may be purring inside your ears," warn scientists. "They\'ll just lure you into making poor life choices."'))
+						if (Game.Has('Kitten wages')) list.push(NEWS + loc('kittens break glass ceiling! Do they have any idea how expensive those are!'))
+						if (Game.HasAchiev('Jellicles')) list.push(NEWS + loc('local kittens involved in misguided musical production, leave audience perturbed and unnerved.'))
+				}
+				if (Game.HasAchiev('Dude, sweet') && Math.random() < 0.2) {
+                    list.push(NEWS + choose([
+                        ...loc('Ticker (Dude, sweet)'),
+                        loc('major sugar-smuggling ring dismantled by authorities; %1 tons of sugar lumps seized, %2 suspects apprehended.', [Math.floor(Math.random() * 30 + 3), Math.floor(Math.random() * 48 + 2)]),
+                        loc('pro-diabetes movement protests against sugar-shaming. "I\'ve eaten nothing but sugar lumps for the past %1 years and I\'m feeling great!", says woman with friable skin.', Math.floor(Math.random() * 10 + 4))
+				    ]))
+                }
+				if (Math.random() < 0.001) {
+					list.push(choose(loc('Ticker (Rare)')))
+				}
+				if (Game.cookiesEarned >= 10000) {
+                    list.push(
+                        NEWS + choose([
+                            loc('cookies found to %1 in %2!', [choose(loc('TickerList (misc1)')), choose(animals)]),
+                            loc('cookies found to make %1 %2!', [choose(animals), choose(loc('TickerList (misc2)'))]),
+                            loc('cookies tested on %1, found to have no ill effects.', choose(animals)),
+                            loc('cookies unexpectedly popular among %1!', choose(animals)),
+                            loc('unsightly lumps found on %1 near cookie facility; "they\'ve pretty much always looked like that", say biologists.', choose(animals)),
+                            loc('new species of %1 discovered in distant country; "yup, tastes like cookies", says biologist.', choose(animals)),
+                            loc('cookies go well with %1, says controversial chef.', choose([
+                                choose(loc('TickerList (misc3)')) + choose(animals),
+                                loc('%1 made from %2', [choose(loc('TickerList (misc4)')), choose(animals)])
+                            ])),
+                            loc('"do your cookies contain %1?", asks PSA warning against counterfeit cookies.', choose(animals)),
+                            ...loc('Ticker (misc)').slice(0, 3)
+						]),
+					    NEWS + choose(loc('Ticker (misc)').slice(4)),
+                        NEWS + choose([
+                            ...loc('Ticker (misc2)'),
+                            loc('cookies now more popular than %1, says study.', loc('TickerList (misc5)')),
+                            loc('obesity epidemic strikes nation; experts blame %1.', loc('TickerList (misc6)'))
+                        ]),
+                        NEWS + choose([
+                            ...loc('Ticker (misc3)'),
+                            choose(loc('Ticker (misc4)')),
+                            loc('cookies could be the key to %1, say scientists.', choose(loc('TickerList (misc7)'))),
+                            loc('flavor text %1, study finds.', choose(loc('TickerList (misc8)')))
+                        ]),
+                        NEWS + choose([
+                            ...loc('Ticker (misc5)'),
+                            loc('%1-brand cookies \"%2 than competitors\", says consumer survey.', [Game.bakeryName, choose(loc('TickerList (misc9)'))]),
+                            loc('"%1" set to be this year\'s most popular baby name.', Game.bakeryName),
+                            loc('new popularity survey says %1\'s the word when it comes to cookies.', Game.bakeryName),
+                            loc('major city being renamed %1ville after world-famous cookie manufacturer.', Game.bakeryName),
+                            loc('%1 to be named after %2, the world-famous cookie manufacturer.', [choose([...loc('TickerList (misc9)'), loc('new species of %1', choose(animals))]), Game.bakeryName]),
+                            loc('don\'t miss tonight\'s biopic on %1\'s irresistible rise to success!', Game.bakeryName),
+                            loc('don\'t miss tonight\'s interview of %1 by %2!', [Game.bakeryName, choose(...loc('TickerList (misc11)'), loc('%1\'s own evil clone', Game.bakeryName))]),
+                        ]),
+                        NEWS + choose([
+                            loc('nation cheers as legislators finally outlaw %1!', choose(loc('TickerList (misc12)'))),
+                            loc('%1 %2 goes on journey of introspection, finds cookies : "I honestly don\'t know what I was expecting."', [choose(loc('TickerList (misc13)')), choose(loc('TickerList (misc14)'))]),
+                            loc('%1 wakes up from coma, %2', [choose(loc('TickerList (misc14)')), choose(loc('TickerList (misc15)'))]),
+                            loc('pet %1, dangerous fad or juicy new market?', choose(animals)),
+                            loc('"average person bakes %1 cookie%2 a year" factoid actually just statistical error; %3, who has produced %4 cookies in their lifetime, is an outlier and should not have been counted.', [
+                                Beautify(Math.ceil(Game.cookiesEarned / 7300000000)),
+                                Math.ceil(Game.cookiesEarned / 7300000000) == 1 ? '' : 's',
+                                Game.bakeryName,
+                                Beautify(Game.cookiesEarned)
+                            ])
+						])
+					)
+				}
+			}
+			if (list.length == 0) {
+				if (loreProgress <= 0) list.push(loc('You feel like making cookies. But nobody wants to eat your cookies.'))
+				else if (loreProgress <= 1) list.push(loc('Your first batch goes to the trash. The neighborhood raccoon barely touches it.'))
+				else if (loreProgress <= 2) list.push(loc('Your family accepts to try some of your cookies.'))
+				else if (loreProgress <= 3) list.push(loc('Your cookies are popular in the neighborhood.'), loc('People are starting to talk about your cookies.'))
+				else if (loreProgress <= 4) list.push(loc('Your cookies are talked about for miles around.'), loc('Your cookies are renowned in the whole town!'))
+				else if (loreProgress <= 5) list.push(loc('Your cookies bring all the boys to the yard.'), loc('Your cookies now have their own website!'))
+				else if (loreProgress <= 6) list.push(loc('Your cookies are worth a lot of money.'), loc('Your cookies sell very well in distant countries.'))
+				else if (loreProgress <= 7) list.push(loc('People come from very far away to get a taste of your cookies.'), loc('Kings and queens from all over the world are enjoying your cookies.'))
+				else if (loreProgress <= 8) list.push(loc('There are now museums dedicated to your cookies.'), loc('A national day has been created in honor of your cookies.'))
+				else if (loreProgress <= 9) list.push(loc('Your cookies have been named a part of the world wonders.'), loc('History books now include a whole chapter about your cookies.'))
+				else if (loreProgress <= 10) list.push(loc('Your cookies have been placed under government surveillance.'), loc('The whole planet is enjoying your cookies!'))
+				else if (loreProgress <= 11) list.push(loc('Strange creatures from neighboring planets wish to try your cookies.'), loc('Elder gods from the whole cosmos have awoken to taste your cookies.'))
+				else if (loreProgress <= 12) list.push(loc('Beings from other dimensions lapse into existence just to get a taste of your cookies.'), loc('Your cookies have achieved sentience.'))
+				else if (loreProgress <= 13) list.push(loc('The universe has now turned into cookie dough, to the molecular level.'), loc('Your cookies are rewriting the fundamental laws of the universe.'))
+				else if (loreProgress <= 14) list.push(loc('A local news station runs a 10-minute segment about your cookies. Success!<br><small>(you win a cookie)</small>'), loc('it\'s time to stop playing'))
+			}
+			if (Game.elderWrath > 0 && (((Game.pledges == 0 && Game.resets == 0) && Math.random() < 0.3) || Math.random() < 0.03)) {
+				list = []
+				if (Game.elderWrath == 1) list.push(NEWS + choose(loc('Ticker (grandma invasion start)')))
+				if (Game.elderWrath == 2) list.push(NEWS + choose(loc('Ticker (grandma invasion rise)')))
+				if (Game.elderWrath == 3) list.push(NEWS + choose(loc('Ticker (grandma invasion full)')))
+			}
+			if (Game.season == 'fools') {
+				list = []
+				if (Game.cookiesEarned >= 1000) {
+                    list.push(choose([
+					    choose(loc('Ticker (Business)')),
+					    parseLoc(choose(loc('Ticker (Business2)')), choose(loc('TickerList (Business1)'))),
+					    loc('The word of the day is: %1.', choose(loc('TickerList (Business2)')))
+				    ]))
+                }
+				if (Game.cookiesEarned >= 1000 && Math.random() < 0.05) {
+                    list.push(choose([
+                        ...loc('Ticker (Business Rare)'),
+                        loc('There is an idea of a %1. Some kind of abstraction. But there is no real you, only an entity. Something illusory.', Game.bakeryName)
+				    ]))
+                }
+				if (Game.TickerN % 2 == 0) {
+                    for (let obj in Game.Objects) {
+                        if (obj != 'Cursor' && obj != 'Cortex baker' && Game.Objects[obj].amount > 0) {
+                            list.push(choose(loc(`Ticker (Business ${obj})`)))
+                        }
+                    }
+					if (Game.Objects['Grandma'].amount > 0) list.push(choose(loc('Ticker (Business Grandma2)')))
+					if (Game.Objects['Cortex baker'].amount > 0) {
+                        list.push(choose([
+                            ...loc('Ticker (Bussiness Cortex baker)'),
+                            loc('Bold new law proposal would grant default ownership of every new idea by anyone anywhere to %1\'s bakery!', Game.bakeryName)
+					    ]))
+                    }
+				}
+				if (loreProgress <= 0) list.push(loc('Such a grand day to begin a new business.'))
+				else if (loreProgress <= 1) list.push(loc('You\'re baking up a storm!'))
+				else if (loreProgress <= 2) list.push(loc('You are confident that one day, your cookie company will be the greatest on the market!'))
+				else if (loreProgress <= 3) list.push(loc('Business is picking up!'))
+				else if (loreProgress <= 4) list.push(loc('You\'re making sales left and right!'))
+				else if (loreProgress <= 5) list.push(loc('Everyone wants to buy your cookies!'))
+				else if (loreProgress <= 6) list.push(loc('You are now spending most of your day signing contracts!'))
+				else if (loreProgress <= 7) list.push(loc('You\'ve been elected "business tycoon of the year"!'))
+				else if (loreProgress <= 8) list.push(loc('Your cookies are a worldwide sensation! Well done, old chap!'))
+				else if (loreProgress <= 9) list.push(loc('Your brand has made its way into popular culture. Children recite your slogans and adults reminisce them fondly!'))
+				else if (loreProgress <= 10) list.push(loc('A business day like any other. It\'s good to be at the top!'))
+				else if (loreProgress <= 11) list.push(loc('You look back on your career. It\'s been a fascinating journey, building your baking empire from the ground up.'))
+			}
+			
+			for (let i = 0; i < Game.modHooks['ticker'].length; i++) {
+				let arr = Game.modHooks['ticker'][i]()
+				if (arr) list = list.concat(arr)
+			}
+			Game.TickerEffect = 0
+			if (!manual && Game.T > Game.fps * 10 && Game.Has('Fortune cookies') && Math.random() < (Game.HasAchiev('O Fortuna') ? 0.04 : 0.02)) {
+				let fortunes = []
+				for (let i in Game.Tiers['fortune'].upgrades) {
+					let it = Game.Tiers['fortune'].upgrades[i]
+					if (!Game.HasUnlocked(it.name)) fortunes.push(it)
+				}
+				if (!Game.fortuneGC) fortunes.push('fortuneGC')
+				if (!Game.fortuneCPS) fortunes.push('fortuneCPS')
+				if (fortunes.length > 0) {
+					list = []
+					let me = choose(fortunes)
+					Game.TickerEffect = {type: 'fortune', sub: me}
+					if (me == 'fortuneGC') me = loc('Today is your lucky day!')
+					else if (me == 'fortuneCPS') {
+                        Math.seedrandom(Game.seed + '-fortune')
+                        me = `${loc('Your lucky numbers are:')} ${Math.floor(Math.random() * 100)} ${Math.floor(Math.random() * 100)} ${Math.floor(Math.random() * 100)} ${Math.floor(Math.random() * 100)}`
+                        Math.seedrandom()
+                    } else {
+						me = me.dname.substring(me.name.indexOf('#')) + ' : ' + me.baseDesc.substring(me.baseDesc.indexOf('<q>') + 3)
+						me = me.substring(0, me.length - 4)
+					}
+					me = `<span class="fortune"><div class="icon" style="vertical-align:middle;display:inline-block;background-position:${-29 * 48}px ${-8 * 48}px;transform:scale(0.5);margin:-16px;position:relative;left:-4px;top:-2px;"></div>${me}</span>`
+					list = [me]
+				}
+			}
+			if (Game.windowW < Game.tickerTooNarrow) list = ['<div style="transform:scale(0.8,1.2);">' + NEWS + loc('help me!') + '</div>']
+			Game.TickerAge = Game.fps * 10
+			Game.Ticker = choose(list)
+			Game.AddToLog(Game.Ticker)
+			Game.TickerN++
+			Game.TickerDraw()
+		}
 
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
@@ -612,6 +868,11 @@ const betterJapanese = {
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
+    },
+
+    fixStats: function() {
+        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
+        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
     },
 
     writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
