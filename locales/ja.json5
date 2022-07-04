@@ -5540,5 +5540,7 @@
 		"Tadeusz_Kutrzeba",
 		"Kazimierz_Fabrycy",
 		"Florian_Siwicki"
-	]
+	],
+	"golden cookie upgrade": ["ゴールデンクッキー関連のアップグレード", "ゴールデンクッキー関連のアップグレード"], // 本来の翻訳では使用されない置換、ゴールデンスイッチの概要欄で使用
+	"The effective boost is <b>+%1%</b><br>thanks to %2<br>and your <b>%3</b> %4.": "%2 と<br><b>%3個</b> の%4により<br>実際のブーストは <b>+%1%</b> です。" // 本来の翻訳では使用されない置換、ゴールデンスイッチの概要欄で使用
 }
