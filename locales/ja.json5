@@ -202,7 +202,7 @@
 	"Cookie Clicker is a javascript game by %1 and %2.": "CookieClickerは%1と%2によって作られたjavascriptのゲームです。",
 	"Music by %1.": "音楽は%1が手掛けています。",
 	"Useful links: %1, %2, %3, %4.": "便利なリンク集 : %1、%2、%3、%4。",
-	"This version of Cookie Clicker is 100% free, forever. Want to support us so we can keep developing games? Here's some ways you can help:%1": "CookieClickerの現バージョンは永遠に、100%無料です。ゲーム開発を継続するために支援したい?援助する方法がいくつかあります :",
+	"This version of Cookie Clicker is 100% free, forever. Want to support us so we can keep developing games? Here's some ways you can help:%1": "CookieClickerの現バージョンは永遠に、100%無料です。ゲーム開発を継続するために支援したい?援助する方法がいくつかあります :%1",
 	"Note: if you find a new bug after an update and you're using a 3rd-party add-on, make sure it's not just your add-on causing it!": "メモ : もしアップデートの後に新しいバグを見つけて、サードパーティ製アドオンを使っているなら、原因がそのアドオンのせいではないか確かめてください!",
 	"Warning: clearing your browser cache or cookies <small>(what else?)</small> will result in your save being wiped. Export your save and back it up first!": "警告 : ブラウザのキャッシュやクッキーを消すと<small>(他にも?)</small>セーブデータの消去を招きます。まず最初にセーブデータの書き出しとバックアップをしよう!",
 	"Version history": "更新履歴",
@@ -5034,10 +5034,10 @@
 		"&bull; ゴールデンクッキーの音選択に追加オプション",
 		"&bull; 銀行ミニゲームが以前買った株の価値を知らせてくれるようになった",
 		"&bull; 銀行ミニゲームの株価変動が少しだけ更に面白くなった",
-		"&bull; ゲームアクティビティがDiscordに表示されるのを無効にするオプションを追加",
-		"&bull; 起動時のエラーで、MOD無しで再起動するオプションを追加"
+		"app|&bull; ゲームアクティビティがDiscordに表示されるのを無効にするオプションを追加",
+		"app|&bull; 起動時のエラーで、MOD無しで再起動するオプションを追加"
 	],	
-	"[Update notes 54]small": [
+	"[Update notes 54]small|app": [
 		"2021/12/18 - 動作確認",
 		"&bull; Steamワークショップのサポートを追加(MODのインストールとアップロードが可能)",
 		"&bull; 韓国語サポートを追加",
@@ -5541,6 +5541,15 @@
 		"Kazimierz_Fabrycy",
 		"Florian_Siwicki"
 	],
-	"golden cookie upgrade": ["ゴールデンクッキー関連のアップグレード", "ゴールデンクッキー関連のアップグレード"], // 本来の翻訳では使用されない置換、ゴールデンスイッチの概要欄で使用
-	"The effective boost is <b>+%1%</b><br>thanks to %2<br>and your <b>%3</b> %4.": "%2 と<br><b>%3個</b> の%4により<br>実際のブーストは <b>+%1%</b> です。" // 本来の翻訳では使用されない置換、ゴールデンスイッチの概要欄で使用
+	// 本来の翻訳では使用されない置換
+	"golden cookie upgrade": ["ゴールデンクッキー関連のアップグレード", "ゴールデンクッキー関連のアップグレード"],
+	"The effective boost is <b>+%1%</b><br>thanks to %2<br>and your <b>%3</b> %4.": "%2 と<br><b>%3個</b> の%4により<br>実際のブーストは <b>+%1%</b> です。",
+	"We have an %1; if you're looking for help, you may also want to visit the %2 or the %3.<br>News and teasers are usually posted on Orteil's %4 and %5.": "私たちは%1を用意しています。もし助けが欲しいなら、%2や%3に行ってみてください。<br>ニュースや予告情報は、普通は%4と%5に投稿しています。",
+	"official Discord": "公式Discordサーバー",
+	"get %1 (it's about 5 bucks)": "%1を入手(大体 $5 くらい)",
+	"Cookie Clicker on Steam": "Steam版CookieClicker",
+	"support us on %1 (there's perks!)": "%1で支援(特典もあるよ!)",
+	"check out our %1 with rad cookie shirts, hoodies and stickers": "イカすクッキーシャツやパーカー、ステッカーがある%1をチェック",
+	"Shop": "ショップ",
+	"disable your adblocker (if you want!)": "アドブロッカーの無効化(お任せするよ!)"
 }
