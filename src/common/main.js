@@ -11,7 +11,7 @@ const betterJapanese = {
         shortFormatJP: false,
         secondFormatJP: true
     },
-    isDev: false,
+    isDev: true,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
@@ -151,31 +151,76 @@ const betterJapanese = {
             }
         }
 
-        // 更新履歴の翻訳
+        // 情報欄の翻訳
+        betterJapanese.origins.updateLog = Game.updateLog
+        Game.updateLog = `
+            <div class="selectable">
+	            <div class="section">${loc('Info')}</div>
+	            <div class="subsection">
+	                <div class="title">${loc('About')}</div>
+    	            ${(App ? `<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">${loc('Note: links will open in your web browser.')}</div>` : '')}
+	                <div class="listing">
+                        ${loc('Cookie Clicker is a javascript game by %1 and %2.', [
+                            '<a href="//orteil.dashnet.org" target="_blank">Orteil</a>',
+                            '<a href="//dashnet.org" target="_blank">Opti</a>'
+                        ])}
+                    </div>
+	                ${(App ? `<div class="listing">${loc('Music by %1.', '<a href="https://twitter.com/C418" target="_blank">C418</a>')}</div>` : '')}
+	                <div class="listing">
+                        ${loc('We have an %1; if you\'re looking for help, you may also want to visit the %2 or the %3.<br>News and teasers are usually posted on Orteil\'s %4 and %5.', [
+                            `<a href="https://discordapp.com/invite/cookie" target="_blank">${loc('official Discord')}</a>`,
+                            '<a href="https://www.reddit.com/r/CookieClicker" target="_blank">subreddit</a>',
+		                    '<a href="https://cookieclicker.wikia.com/wiki/Cookie_Clicker_Wiki" target="_blank">wiki</a>',
+		                    '<a href="https://orteil42.tumblr.com/" target="_blank">tumblr</a>',
+		                    '<a href="https://twitter.com/orteil42" target="_blank">twitter</a>',
+		                ])}
+	                </div>
+                    ${(!App ? `<div class="listing block" style="margin:8px 32px;font-size:11px;line-height:110%;color:rgba(200,200,255,1);background:rgba(128,128,255,0.15);" id="supportSection">
+                        ${loc('This version of Cookie Clicker is 100% free, forever. Want to support us so we can keep developing games? Here\'s some ways you can help:%1', [`<br><br>
+                            &bull; ${loc('get %1 (it\'s about 5 bucks)', `<a href="https://store.steampowered.com/app/1454400/Cookie_Clicker/" target="_blank" class="highlightHover smallWhiteButton">${loc('Cookie Clicker on Steam')}</a>`)}<br><br>
+                            &bull; ${loc('support us on %1 (there\'s perks!)', '<a href="https://www.patreon.com/dashnet" target="_blank" class="highlightHover smallOrangeButton">Patreon</a>')}<br><br>
+                            &bull; ${loc('check out our %1 with rad cookie shirts, hoodies and stickers', `<a href="http://www.redbubble.com/people/dashnet" target="_blank" class="highlightHover smallWhiteButton">${loc('Shop')}</a>`)}<br><br>
+                            &bull; ${loc('disable your adblocker (if you want!)')}
+                        `])}
+                    </div>
+                </div>` : '')}
+                <div class="listing warning">${loc('Note: if you find a new bug after an update and you\'re using a 3rd-party add-on, make sure it\'s not just your add-on causing it!')}</div>
+                ${(!App ? (`<div class="listing warning">
+                    ${loc('Warning: clearing your browser cache or cookies <small>(what else?)</small> will result in your save being wiped. Export your save and back it up first!')}
+                </div>`) : '')}
+            </div>
+            <div class="subsection">
+                <div class="title">${loc('Version history')}</div>`
         let logUpdates = ''
         let logPerUpdate = ''
         let logIndex = ''
         let logResult = []
         let logId = 0
-        while (typeof (logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof (logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
-            logPerUpdate = `<div class="subsection update${logIndex === `[Update notes ${logId}]small` ? ' small' : ''}">`
-            logPerUpdate += `<div class="title">${logResult[0]}</div>`
-            logResult.shift()
-            for (let str of logResult) {
-                if(str.indexOf('[Update Log General Names]') >= 0) {
-                    str = str.replaceAll('[Update Log General Names]', choose(loc('[Update Log General Names]')))
+        while (typeof(logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof(logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
+            let logOptions = logIndex.substring(logIndex.indexOf(']') + 1).split('|')
+            let isSmallList = false, isAppList = false
+            if (logOptions.includes('small')) isSmallList = true
+            if (logOptions.includes('app')) isAppList = true
+            if ((App && isAppList) || !isAppList) {
+                logPerUpdate = `<div class="subsection update${isSmallList ? ' small' : ''}">`
+                logPerUpdate += `<div class="title">${logResult[0]}</div>`
+                for (let i = 1; i < logResult.length; i++) {
+                    let options = logResult[i].split('|')
+                    let str = options.pop()
+                    let isAppItem = false
+                    if (options.length > 0) {
+                        if (options.includes('app')) isAppItem = true
+                    }
+                    if ((App && isAppItem) || !isAppItem) {
+                        str = str.replaceAll('[Update Log General Names]', choose(loc('[Update Log General Names]')))
+                        logPerUpdate += `<div class="listing">${str}</div>`
+                    }
                 }
-                logPerUpdate += `<div class="listing">${str}</div>`
+                logUpdates = `${logPerUpdate}</div>${logUpdates}`
             }
-            logUpdates = `${logPerUpdate}</div>${logUpdates}`
             logId++
         }
-        if(logUpdates.length > 0) {
-            betterJapanese.origins.updateLog = Game.updateLog
-            Game.updateLog = Game.updateLog.substring(0, Game.updateLog.search(/<div class="subsection update(?: small)?">/))
-            Game.updateLog = Game.updateLog.substring(0, Game.updateLog.lastIndexOf('<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">'))
-            Game.updateLog += `</div>${logUpdates}</div>`
-        }
+        Game.updateLog += `</div>${logUpdates}</div></div>`
 
         // 巡り続ける読本のフレーバーテキスト翻訳、thisを使うので非ラムダ式(以降同様)
         let upgrade = Game.Upgrades['Endless book of prose']
