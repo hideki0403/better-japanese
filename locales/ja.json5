@@ -659,7 +659,7 @@
 	"Reindeer appear <b>twice as frequently</b>.": "トナカイが <b>2倍頻繁に</b> 出現する。",
 	"Reindeer are <b>twice as slow</b>.": "トナカイの移動が <b>2倍遅く</b> なる。",
 	"Reindeer give <b>twice as much</b>.": "トナカイがくれるクッキーの量が <b>2倍多く</b> なる。",
-	"Buildings sell back for <b>%1%</b> instead of %2%.": "施設の売却で戻ってくるクッキーが %1% から <b>%2%</b> になる。",
+	"Buildings sell back for <b>%1%</b> instead of %2%.": "施設の売却で戻ってくるクッキーが %2% から <b>%1%</b> になる。",
 	"All buildings are <b>%1% cheaper</b>.": "すべての施設が <b>%1%安く</b> なる。",
 	"All upgrades are <b>%1% cheaper</b>.": "すべてのアップグレードが <b>%1%安く</b> なる。",
 	"All buildings and upgrades are <b>%1% cheaper</b>.": "すべての施設とアップグレードが <b>%1%安く</b> なる。",
