@@ -227,8 +227,29 @@ const betterJapanese = {
         }
 
         // 一級品の壁紙アソートメントの説明翻訳
-        upgrade = Game.Upgrades['Distinguished wallpaper assortment']
-        upgrade.desc = loc('Contains more wallpapers for your background selector.')
+        Game.Upgrades['Distinguished wallpaper assortment'].desc = loc('Contains more wallpapers for your background selector.')
+
+        // ゴールデンスイッチの説明翻訳
+        let func = function() {
+			if (Game.Has('Residual luck')) {
+				let bonus = 0
+				let upgrades = Game.goldenCookieUpgrades
+				for (let i in upgrades) {
+                    if (Game.Has(upgrades[i])) bonus++
+                }
+				return `<div style="text-align:center;">${Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)}<br><br>${
+                    loc('The effective boost is <b>+%1%</b><br>thanks to %2<br>and your <b>%3</b> %4.', [
+                        Beautify(Math.round(50 + bonus * 10)),
+                        getUpgradeName('Residual luck'),
+                        bonus,
+                        loc('golden cookie upgrade', bonus)
+                    ])
+                    }</div><div class="line"></div>${this.ddesc}`
+			}
+			return this.ddesc
+		}
+        Game.Upgrades['Golden switch [off]'].descFunc = func
+        Game.Upgrades['Golden switch [on]'].descFunc = func
 
         // 猫の場合「購入済み」タグが変化することを翻訳にも反映
         betterJapanese.origins.crateTooltip = Game.crateTooltip
@@ -497,6 +518,39 @@ const betterJapanese = {
 			Game.TickerN++
 			Game.TickerDraw()
 		}
+
+        // 英語以外でも施設固有の生産方法をツールチップに表示
+        for (let i in Game.Objects) {
+            let obj = Game.Objects[i]
+            if (typeof(betterJapanese.origins.tooltip) === 'undefined') {
+                betterJapanese.origins.tooltip = obj.tooltip
+            }
+            obj.actionNameJP = loc(obj.actionName)
+            obj.tooltip = function() {
+                const strDivDescriptionBlock = '<div class="descriptionBlock">'
+                let defaultTooltip = betterJapanese.origins.tooltip.bind(this)().split(strDivDescriptionBlock)
+                // Game.Object[X].tooltipのdescriptionBlockは存在しないか4つのどちらか
+                if (defaultTooltip.length > 1) {
+                    defaultTooltip[4] = loc('<b>%1</b> %2 so far', [loc('%1 cookie', LBeautify(this.totalCookies)), this.actionNameJP]) + '</div>'
+                    return defaultTooltip.join(strDivDescriptionBlock) + '</div>'
+                }
+                return defaultTooltip
+            }
+        }
+
+        // 英語以外でも施設固有の角砂糖によるレベルアップの恩恵を表示
+        for (let i in Game.Objects) {
+            let obj = Game.Objects[i]
+            if (typeof(betterJapanese.origins.levelTooltip) === 'undefined') {
+                betterJapanese.origins.levelTooltip = obj.levelTooltip
+            }
+            obj.levelTooltip = function() {
+                const strDivLine = '<div class="line"></div>'
+                let defaultTooltip = betterJapanese.origins.levelTooltip.bind(this)().split(strDivLine)
+                defaultTooltip[1] = `${loc(this.extraName.replace('[X]', '%1'), Beautify(this.level))} ${loc('Granting <b>+%1% %2 CpS</b>.', [Beautify(this.level), this.single])}`
+                return defaultTooltip.join(strDivLine)
+            }
+        }
 
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
