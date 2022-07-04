@@ -11,7 +11,7 @@ const betterJapanese = {
         shortFormatJP: false,
         secondFormatJP: true
     },
-    isDev: true,
+    isDev: false,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
