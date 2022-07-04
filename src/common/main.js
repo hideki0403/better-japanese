@@ -11,7 +11,7 @@ const betterJapanese = {
         shortFormatJP: false,
         secondFormatJP: true
     },
-    isDev: false,
+    isDev: true,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
@@ -497,6 +497,39 @@ const betterJapanese = {
 			Game.TickerN++
 			Game.TickerDraw()
 		}
+
+        // 英語以外でも施設固有の生産方法をツールチップに表示
+        for (let i in Game.Objects) {
+            let obj = Game.Objects[i]
+            if (typeof(betterJapanese.origins.tooltip) === 'undefined') {
+                betterJapanese.origins.tooltip = obj.tooltip
+            }
+            obj.actionNameJP = loc(obj.actionName)
+            obj.tooltip = function() {
+                const strDivDescriptionBlock = '<div class="descriptionBlock">'
+                let defaultTooltip = betterJapanese.origins.tooltip.bind(this)().split(strDivDescriptionBlock)
+                // Game.Object[X].tooltipのdescriptionBlockは存在しないか4つのどちらか
+                if (defaultTooltip.length > 1) {
+                    defaultTooltip[4] = loc('<b>%1</b> %2 so far', [loc('%1 cookie', LBeautify(this.totalCookies)), this.actionNameJP]) + '</div>'
+                    return defaultTooltip.join(strDivDescriptionBlock) + '</div>'
+                }
+                return defaultTooltip
+            }
+        }
+
+        // 英語以外でも施設固有の角砂糖によるレベルアップの恩恵を表示
+        for (let i in Game.Objects) {
+            let obj = Game.Objects[i]
+            if (typeof(betterJapanese.origins.levelTooltip) === 'undefined') {
+                betterJapanese.origins.levelTooltip = obj.levelTooltip
+            }
+            obj.levelTooltip = function() {
+                const strDivLine = '<div class="line"></div>'
+                let defaultTooltip = betterJapanese.origins.levelTooltip.bind(this)().split(strDivLine)
+                defaultTooltip[1] = `${loc(this.extraName.replace('[X]', '%1'), Beautify(this.level))} ${loc('Granting <b>+%1% %2 CpS</b>.', [Beautify(this.level), this.single])}`
+                return defaultTooltip.join(strDivLine)
+            }
+        }
 
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
