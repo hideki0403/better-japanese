@@ -263,8 +263,23 @@ const betterJapanese = {
         }
 
         // 一級品の壁紙アソートメントの説明翻訳
-        upgrade = Game.Upgrades['Distinguished wallpaper assortment']
-        upgrade.desc = loc('Contains more wallpapers for your background selector.')
+        upgrade = Game.Upgrades['Distinguished wallpaper assortment'].desc = loc('Contains more wallpapers for your background selector.')
+
+        // ゴールデンスイッチの説明翻訳
+        let func = function() {
+            if (!Game.Has('Residual luck')) return this.ddesc
+
+            let bonus = 0
+            let upgrades = Game.goldenCookieUpgrades
+            for (let i in upgrades) {
+                if (Game.Has(upgrades[i])) bonus++
+            }
+
+            return `<div style="text-align:center;">${Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)}<br><br>${loc('The effective boost is <b>+%1%</b><br>thanks to %2<br>and your <b>%3</b> %4.', [Beautify(Math.round(50 + bonus * 10)), getUpgradeName('Residual luck'), bonus, loc('golden cookie upgrade', bonus)])}</div><div class="line"></div>${this.ddesc}`
+        }
+        
+        Game.Upgrades['Golden switch [off]'].descFunc = func
+        Game.Upgrades['Golden switch [on]'].descFunc = func
 
         // 猫の場合「購入済み」タグが変化することを翻訳にも反映
         betterJapanese.origins.crateTooltip = Game.crateTooltip
