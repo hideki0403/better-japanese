@@ -4117,37 +4117,65 @@
 	"This run will behave as if you'd just started the game from scratch. Prestige levels and heavenly upgrades will have no effect, as will sugar lumps and building levels. Perma-upgrades and minigames will be unavailable.<div class=\"line\"></div>Some achievements are only available in this mode.": "この周回では最初から始まったような状態になります。名声レベルと天国系アップグレード、角砂糖、建物レベルは機能しません。天国系アップグレードとミニゲームが使用不可になります。<div class=\"line\"></div>いくつかの実績はこのモードでないと解除できません。",
 	"In this run, scrolling your mouse wheel on the cookie counts as clicking it. Some upgrades introduce new clicking behaviors.<br>No clicking achievements may be obtained in this mode.<div class=\"line\"></div>Reaching 1 quadrillion cookies in this mode unlocks a special heavenly upgrade.": "この周回ではマウスホイールをスクロールすることでクリックしたことになります。いくつかのアップグレードにより新しいクリックの挙動が発生します。<br>無クリック実績はこのモードで取得できるかもしれません。<div class=\"line\"></div>このモードで1000兆枚に達することで特殊な天国系アップグレードが解放されます。",
 
-	// ニュース
+	/* ニュース
+	ニュースの翻訳にあたり、BetterJapaneseは独自の翻訳機能を実装してある関係で本家とは異なったフォーマットになっています。
+	お手数をおかけしますが、以下の方式での翻訳をお願いします。
+
+	"ニュース(英文)": "ニュース(日本語訳)"
+
+	なるべくどのジャンルのニュースなのかが分かるように、ジャンルの先頭に"Ticker (ジャンル名)"の形でコメントアウトしておくことを推奨しています。
+    また、動的なニュース(ニュース本文にランダム要素が含まれるニュース)はニュースジャンルの下部にある"Ticker (Dynamic)"オブジェクト内に翻訳をお願いします。
+
+	(例: 農場のニュース)
+	// Ticker (Farm)
+	"cookie farms suspected of employing undeclared elderly workforce!": "クッキー農場で未申告の高齢者を労働させている疑惑が浮上!",
+	"cookie farms release harmful chocolate in our rivers, says scientist!": "クッキー農場が川に有害なチョコレートを放流していると科学者が証言!",
+	"genetically-modified chocolate controversy strikes cookie farmers!": "遺伝子組み換えチョコレートに関する論争、クッキー農場を直撃!",
+	"free-range farm cookies popular with today's hip youth, says specialist.": "放し飼い農場のクッキーはナウなヤングにバカウケ、専門家が語る。",
+	"farm cookies deemed unfit for vegans, says nutritionist.": "農場のクッキーは純菜食主義者にとって不健康だと思われている、と栄養士が発言。",
+
+	(参考: 本家のフォーマット)
+	"Ticker (Farm)": [
+		"クッキー農場で未申告の高齢者を労働させている疑惑が浮上!",
+		"クッキー農場が川に有害なチョコレートを放流していると科学者が証言!",
+		"遺伝子組み換えチョコレートに関する論争、クッキー農場を直撃!",
+		"放し飼い農場のクッキーはナウなヤングにバカウケ、専門家が語る。",
+		"農場のクッキーは純菜食主義者にとって不健康だと思われている、と栄養士が発言。"
+	]
+	*/
+
 	"News :": "ニュース :",
-	"TickerList (Animal)": [
-		"イモリ",
-		"ペンギン",
-		"サソリ",
-		"アホロートル",
-		"海鳥",
-		"ネズミイルカ",
-		"フグ",
-		"馬",
-		"ザリガニ",
-		"ナメクジ",
-		"ザトウクジラ",
-		"コモリザメ",
-		"ダイオウイカ",
-		"ホッキョクグマ",
-		"フルーツコウモリ",
-		"カエル",
-		"ホヤ",
-		"カギムシ",
-		"デバネズミ",
-		"ゾウリムシ",
-		"線虫",
-		"タマムシ",
-		"キリン",
-		"アンコウ",
-		"狼男",
-		"ゴブリン",
-		"ヒッピー"
-	],
+
+	// Ticker (Animal)
+	"newts": "イモリ",
+	"penguins": "ペンギン",
+	"scorpions": "サソリ",
+	"axolotls": "アホロートル",
+	"puffins": "海鳥",
+	"porpoises": "ネズミイルカ",
+	"blowfish": "フグ",
+	"horses": "馬",
+	"crayfish": "ザリガニ",
+	"slugs": "ナメクジ",
+	"humpback whales": "ザトウクジラ",
+	"nurse sharks": "コモリザメ",
+	"giant squids": "ダイオウイカ",
+	"polar bears": "ホッキョクグマ",
+	"fruit bats": "フルーツコウモリ",
+	"frogs": "カエル",
+	"sea squirts": "ホヤ",
+	"velvet worms": "カギムシ",
+	"mole rats": "デバネズミ",
+	"paramecia": "ゾウリムシ",
+	"nematodes": "線虫",
+	"tardigrades": "タマムシ",
+	"giraffes": "キリン",
+	"monkfish": "アンコウ",
+	"wolfmen": "狼男",
+	"goblins": "ゴブリン",
+	"hippies": "ヒッピー",
+
+	// CookieClickerの仕様上、グランマのみ本家のフォーマットで翻訳してあります。
 	"Ticker (grandma)": [
 		"しっとりしたクッキーねぇ。",
 		"私たちはみんな素敵なおばあちゃんよ。",
@@ -4182,282 +4210,277 @@
 		"まだ足りぬわ。",
 		"遅すぎたのだ。"
 	],
-	"Ticker (Farm)": [
-		"クッキー農場で未申告の高齢者を労働させている疑惑が浮上!",
-		"クッキー農場が川に有害なチョコレートを放流していると科学者が証言!",
-		"遺伝子組み換えチョコレートに関する論争、クッキー農場を直撃!",
-		"放し飼い農場のクッキーはナウなヤングにバカウケ、専門家が語る。",
-		"農場のクッキーは純菜食主義者にとって不健康だと思われている、と栄養士が発言。"
-	],
-	"Ticker (Mine)": [
-		"我らが星の質量が減少しつつある?専門家は集中的なチョコレート採掘による影響を調査。",
-		"チョコレート鉱山が地震と陥没を引き起こすことが発見される!",
-		"チョコレート鉱山で人災発生、村がチョコレートで浸水!",
-		"チョコレート鉱山の奥深くに「一風変わった、チョコレートらしきものでできた」家屋を発見!"
-	],
-	"%1 miners trapped in collapsed chocolate mine!": "%1名の炭鉱労働者、チョコレート鉱山崩落に巻き込まれる!",
-	"Ticker (Factory)": [
-		"クッキー工場は地球温暖化と関係有り!",
-		"チョコレート雨に関するクッキー工場論争!",
-		"ストライキ中のクッキー工場、代替労働力として作業用ロボットを採用!",
-		"ストライキ中のクッキー工場 - 労働者たちはクッキーによる支払いを止めるよう要求!",
-		"工場製のクッキーは肥満に関係するとの研究結果が。"
-	],
-	"Ticker (Bank)": [
-		"クッキーローンの金利は、もはや定期返済が不可能な程に高騰している。",
-		"クッキーは従来の通貨に取って代わる存在として、徐々に頭角を現している!",
-		"今や殆どのベーカリーがATMを設置し、クッキーの引き出しと預金がより簡単に。",
-		"プール2杯分の巨大金庫を満たす程、クッキーの確保は十分であります!",
-		"「近い将来、富裕層の資産算定は彼等が保有するクッキーの価値で為されるだろう」と専門家が予測。"
-	],
-	"Ticker (Temple)": [
-		"最近発見されたチョコレート寺院が新たなクッキー崇拝のメッカに。天上の「焼き主」に祈りを捧げる数千の信者!",
-		"有神論者が新たなクッキーの教義を発見。「なんてこった、今までの教えは全て誤りだというのか…!」",
-		"言い伝えによると、クッキーの天国は「階段の代わりにアトラクション的なエレベーターを備え」、クッキーの地獄は「粗悪な建材にお誂え向きの敷石で舗装されている」。"
-	],
-	"TickerList (Temple)": [
-		"魔法の",
-		"飾り彫りのある",
-		"刻印された",
-		"彫刻の",
-		"王室の",
-		"皇帝の",
-		"ミイラ化した",
-		"儀式の",
-		"金の",
-		"銀の",
-		"石の",
-		"呪われた",
-		"プラスチックの",
-		"骨の",
-		"血を流す",
-		"聖なる",
-		"祭られた",
-		"生贄の",
-		"電子式",
-		"歌う",
-		"タップダンスする"
-	],
-	"TickerList (Temple2)": [
-		"スプーン",
-		"フォーク",
-		"ピザ",
-		"洗濯機",
-		"計算機",
-		"帽子",
-		"ピアノ",
-		"ナプキン",
-		"スケルトン",
-		"ガウン",
-		"短剣",
-		"剣",
-		"盾",
-		"頭蓋骨",
-		"エメラルド",
-		"浴槽",
-		"仮面",
-		"ローラースケート靴",
-		"猫用トイレ",
-		"餌箱",
-		"立方体",
-		"球体",
-		"菌類"
-	],
-	"explorers bring back ancient artifact from abandoned temple; archeologists marvel at the centuries-old %1 %2!": "探検家が廃寺院から持ち帰った古代の人工遺物。考古学者は何世紀も昔の%1%2に驚嘆!",
-	"TickerList (Temple3)": [
-		"神",
-		"女神"
-	],
-	"TickerList (Temple4)": [
-		"カズー",
-		"ウェブデザイン",
-		"ウェブブラウザ",
-		"仔猫",
-		"無神論",
-		"ハンドブレーキ",
-		"帽子",
-		"靴紐の先っちょ",
-		"小綺麗でつまらない音楽",
-		"放置ゲーム",
-		"文字「P」",
-		"ミーム",
-		"ハンバーガー",
-		"つまらんダジャレ",
-		"文字間隔調整",
-		"スタンダップコメディ",
-		"強盗未遂",
-		"ネットの釣りタイトル",
-		"ネットの詐欺広告"
-	],
-	"just how extensive is the cookie pantheon? Theologians speculate about possible %1 of %2.": "件のクッキー神殿はどこまで広大なのか?神学者は%2の%1を祀っている可能性を推測。",
-	"Ticker (Wizard tower)": [
-		"毎年開催、全国スペル創造フェアで最新の護符と呪具をゲットしよう!ルーン文字と魔導書は、ここだけの独占価格でご提供。",
-		"クッキーウィザードは酷く醜怪な新生児への関与を否定 - 医師は語る。「忌憚なく言えば、幼児の外見は吐き気を催すが、手を加えられてはいない」",
-		"「未完成でいい加減な魔法はね、テクノロジーと見分けがつかないのですよ」、高名なテクノウィザードの主張。"
-	],
-	"TickerList (Wizard tower)": [
-		"公衆トイレ",
-		"雲",
-		"政治家",
-		"口髭",
-		"帽子",
-		"靴",
-		"ズボン",
-		"道化師",
-		"百科事典",
-		"ウェブサイト",
-		"鉢植え",
-		"レモン",
-		"家庭用品",
-		"体液",
-		"カトラリー",
-		"国定史跡",
-		"ヨーグルト",
-		"ラップミュージック",
-		"下着"
-	],
-	"all %1 turned into %2 in freak magic catastrophe!": "全ての%1を%2に変えるトンチキ魔法で大惨事!",
-	"TickerList (Wizard tower2)": [
-		"水",
-		"火",
-		"地",
-		"風",
-		"雷",
-		"酸",
-		"歌",
-		"戦闘",
-		"秩序",
-		"鉛筆",
-		"インターネット",
-		"空間",
-		"時間",
-		"脳",
-		"自然",
-		"テクノ",
-		"植物",
-		"虫",
-		"氷",
-		"毒",
-		"蟹",
-		"仔猫",
-		"イルカ",
-		"鳥",
-		"パンチ",
-		"屁"
-	],
-	"heavy dissent rages between the schools of %1 magic and %2 magic!": "%1魔法学校と%2魔法学校との間に深い軋轢が発生!熾烈を極める争い!",
-	"Ticker (Shipment)": [
-		"新しいチョコレート惑星を発見、クッキー燃料の宇宙船の到達目標に!",
-		"99.8%がチョコレートの大質量惑星、コアが純粋な黒いチョコレートであると証明される!",
-		"遠方の惑星への宇宙旅行が、暇を持て余した億万長者たちの注目を集め急騰!",
-		"遠方の惑星でチョコレートでできた微生物を発見!",
-		"遠方の惑星で太古のベーカリーを発見、「どことなく恐ろしい」、と専門家。"
-	],
-	"Ticker (Alchemy lab)": [
-		"貴金属のチョコレートへの交換数がさらに増加、国民の金の貯蓄量が低下!",
-		"チョコレートの宝石が流行の最先端に、専門家が発言、金とダイヤモンドは「流行ってただけ」!",
-		"銀をホワイトチョコに変質させられることを発見!",
-		"欠陥研究所閉鎖、クッキーを役に立たない金に変換していたことが発覚。",
-		"純正主義者、錬成されたチョコレートを忌避!"
-	],
-	"Ticker (Portal)": [
-		"異次元へのポータルから出現した怪物はますます国民を動揺させ、不安がらせている!",
-		"異次元へのポータルはやがて街を飲み込む災害へとなるだろう!",
-		"クッキーバースへの旅行が退屈なティーンエイジャーたちに人気!死傷率は73%超え!",
-		"クッキーバースへのポータルは急速な老化とクッキー作りに取りつかれる疑いがあるとの研究結果が。",
-		"「ポータル付近で生活しないように」専門家が警告、「子供の気が狂い、精神が崩壊するおそれがある。」"
-	],
-	"Ticker (Time machine)": [
-		"タイムマシンは歴史改変の不祥事を意味する!あるいはその事実は…?",
-		"タイムマシンが非合法的に時間旅行に使われていた!",
-		"過去から持ち帰られたクッキーは「人間が消費するには適さない」、と歴史家が指摘。",
-		"歴史的な芸術作品が話している間にクッキー生地の塊にすり替えられる奇妙な事件!",
-		"「未来を見てきたよ」タイムマシンのオペレーターが暴露。「もう、二度と見たくないね。」"
-	],
-	"Ticker (Antimatter condenser)": [
-		"全都市が反物質凝縮器によるブラックホールに飲み込まれているのは一目瞭然、街は「もはや物質が存在しない」確固たる証拠である!",
-		"「何故クッキーを焼くために粒子加速器が必要なのかもう一度説明してください」頓珍漢な質問をする地元の女性。",
-		"最初の反物質凝縮器の電源投入に成功、物質の分解には至らず!",
-		"研究者達はクッキー産業が必要としている物は後にも先にも「大量の永久磁石」であると結論づけた。",
-		"「よりおいしいクッキーを焼くためだけに物質の構造を解明してきたのです」、と科学者たちが主張。"
-	],
-	"Ticker (Prism)": [
-		"プリズムが新しいクッキーの製造法になってから、虹関係の商品が急に売れ出した。",
-		"科学者たちは、組織的に光を物質に変換することに警告を発している。「いつか我々は、光をあらゆる物質に変換し尽くすところまで行ってしまうだろう」",
-		"新しいプリズム装置のおかげで、今やクッキーは、文字通り光の速さで生み出されている。",
-		"「プリズムに監視されてる…お前ら気付かないのか?」、と呟くあきれた男。「何を言っているかわからない」クッキー関係者や政府職員、肩をすくめる。",
-		"世界市民が頻発する空気発光現象に関して忠告。「心配ない」"
-	],
-	"Ticker (Chancemaker)": [
-		"天気予報が前代未聞の3日連続的中といった、統計的に狂った異常現象が頻発!",
-		"全ギャンブラーが1週間に渡る謎の勝ち続きで、地元カジノが破産!「多分なんとかなるでしょう」発言後のオーナーに47回目の落雷直撃。",
-		"隣国の大統領選挙で予期せぬ異変が!選出されたのはどういうことか、賢明な政策を掲げる人物。",
-		"百万に一の可能性!グリッティ映画のリブート版、オリジナルを越えた出来栄えと判明!「何故こんな事が起こり得るのか皆目わからん」、映画業界上層部の弁。",
-		"全スクラッチくじに当たりを印刷し急速に破綻した国民経済、予想を覆したったの一晩ですっかり回復。"
-	],
-	"Ticker (Fractal engine)": [
-		"「クッキークリッカーはもう止めた」地元のある男、絶え間なき自己参照「どこまでも正確精密な格子」に辿り着く。",
-		"地元のある男、自分自身を見つけようと世界中を帆走 - 分離した自分を正しい位置に戻すため。",
-		"「全ての者に我々の小さな欠片が存在するのです」説法する地元のある教祖、食人疑惑で逮捕。",
-		"女性ライターは今の仕事は夢であって現実でないと感じた。正確には、彼女自身が目を覚ますまでは。 ",
-		"世論調査で判明、クッキーからクッキーを作る着想は「あり」 - 「どうせ中身は同じっしょ？」取材に応じた市民の声。"
-	],
-	"Ticker (Javascript console)": [
-		"Emma.jsやLiam.jsのような奇妙な名前を子供に付けるのが親の間に流行っている。少なくともBaby.jsが報告した中では。",
-		"コーディングが大流行!プログラミングのような技術の世界に転向する若者が増え、将来のロボカリプスと人類にとっての悪夢が保障された。",
-		"3単語の組み合わせは全て使われつくしてしまったので、開発者たちは新しいjavascriptライブラリを何と呼ぶかで困っている。",
-		"国家は、ネストされたifたちが孵化するのを固唾をのんで見守っている。",
-		"間抜けなコピーライターがシングルクォートをエスケープするのを忘れたので、ニュースの文章が早く終わってしまった。最後の文は「えー、なんで無"
-	],
-	"Ticker (Idleverse)": [
-		"別の宇宙にいる別のあなたは夢を実現しているのか?たぶんね、怠け者の無能め!",
-		"無限の放置ゲームでできた宇宙という考えに民衆は反発。「もっとなんかあればと思っていたのに」、取り乱した市民の声。",
-		"並行宇宙が無限にあるので、人々は安心できる別次元へ移るが、その数は「50代後半」しかない。",
-		"「少なくとも何人かの別の私は別の場所でうまくやっているだろうという情報に慰められている」、多元宇宙にいる市民の最後の生き残りのお手本の声。",
-		"プロットの怪しい点を擁護するため、漫画作家が実際の多元宇宙へ指摘。「な?それは『陳腐で不自然』と言っただろ!」"
-	],
-	"Ticker (Cortex baker)": [
-		"ベイカー脳の世話人の皆様へ、お願い申し上げます。ベイカー脳は工房が所有する器具であり、愛称をつけて可愛がられるべきものではないことを、従業員の方々へ再度ご通達ください。",
-		"宇宙勤務の従業員は、巨大なベイカー脳から2パーセク以内で異常な思考や衝動が生じた場合は無視するよう、ガイドラインで勧告。",
-		"天文学者たちは、ベイカー脳の軌道が流れていると警告しています。正面衝突によって脳震とうを起こした場合の、高額の修復費が懸念されるためです。",
-		"欠陥品のベイカー脳は、その知能指数が五桁にしか満たないことが確認されました。 専門家によると、「少しだけ頭のネジがゆるい」とのことです。",
-		"君はベイカー脳の知能を越えられるか?「不公平だ」新たなゲームショーに対する出場者の意見。"
-	],
-	"Ticker (Halloween)": [
-		"クネクネした異様な生物がクッキー工場周辺に大量発生!製造ラインにかじりつく!",
-		"不気味にしわがれたモンスター、工場のクッキーを出来たそばから貪る!「衛生面は終わってる」工場職員に不安広がる。",
-		"異教の儀式が蔓延中!世界中の子供が奇妙な格好で住民から菓子を恐喝!",
-		"郊外で新種のテロリストが出没!家宅は工作用の卵とトイレットペーパーまみれに!",
-		"ハロウィンのお菓子が全部クッキーに変わって、お子様棒立ちで「呆然」。"
-	],
-	"Ticker (Christmas)": [
-		"ソリで爆走する狂ったひげ男の目撃相次ぐ!詳細は未だ不明。",
-		"サンタクロース、クッキー味のシリアルに匹敵する新しい朝のお菓子を発表。「ホッホッホ　恐ろしいぞ」サンタが声明。",
-		"「ただでなんでもくれてやるって?」母親たち疑問。「正直あのあごひげが胡散臭いわ」",
-		"陽気なデブ奇人、未だ捕まらず!政府関係者が警告「子どもたちを安全な場所に。煙突に蓋を。これは冗談ではありません」",
-		"サンタがコスプレしたお父さんじゃなかったことを知って児童驚愕!「これまでの人生がなんだったのか…考えを改めているところ」 - そう打ち明けるローラさん(6)",
-		"謎のお祭りムードが、トナカイ軍による甚大な破壊を助長している - 政府関係者が声明。",
-		"おもちゃ工場のエルフがストライキ!「トナカイの餌で現物支給はもう止めろ!あと俺たちをエルフって呼ぶな!」",
-		"全国各地でエルフの抗議活動。チンケでふざけた衣装のチンケな小人が騒乱と破壊活動を繰り広げ、凶暴なトナカイが我が物顔で通りを爆走。",
-		"エルフ戦争の真っ只中、トナカイの複数形に「s」は必要か否かを議論する学者達。",
-		"エルフは「小さな身長と陽気な性格の特徴を以ってしても、ノームとは全く無関係」科学者が発見。",
-		"エルフ、放射性アイシング工場を襲撃し破壊、付近住民の数百人が盲目に。「正気の沙汰じゃない」被害を受けた市長が哀哭。",
-		"ルドルフの赤鼻に関し俄に浮上した噂の件で、北極で新たな展開が。「俺、あれにちょっとばっかし依存し過ぎかも…」渦中のトナカイが告白。"
-	],
-	"Ticker (Valentines)": [
-		"臓器型のお菓子の交換が全国の学校で行われている。調査で明かされた身の毛もよだつ慣習。",
-		"スイーツ業界で猛威を振るうハート型キャンディー、クッキー帝国の牙城を崩す尖兵となるか。「経済こそが重要なのだよ、キューピッド!」",
-		"気象専門家によると、大気中の愛の濃度が上昇。現在、大気汚染緊急対策実施中の全都市でフェイスマスクを配布中。",
-		"クッキーとの結婚 - 常軌を逸する行為か、はたまた、未来の片鱗か。",
-		"【悲報】ヴァレンタインデーに恋人にクッキーを贈ったら振られた男性。「だってノーブランド品だったのよ」肩を竦める元カノ。"
-	],
-	"Ticker (Easter)": [
-		"長耳の毛羽立った尻尾を持つ生物が郊外に侵入、恐怖とチョコレートを撒き散らす!",
-		"何故こんな所に?次々と具現化を始める卵。「安全な場所など無い」専門家が警告。",
-		"凶暴なウサギの群れにより、数十億円の物的被害。対策として新たなミクソマトーシスウィルス株が開発された。",
-		"産卵するウサギ「この次元からとは限らない」生物学者が警告。「決して触れない、餌を与えない、料理に使わないように」との忠告。",
-		"謎のウサギは産卵性だが哺乳類であることが判明、カモノハシと同系統の可能性を示している。"
-	],
+
+	// Ticker (Farm)
+	"cookie farms suspected of employing undeclared elderly workforce!": "クッキー農場で未申告の高齢者を労働させている疑惑が浮上!",
+	"cookie farms release harmful chocolate in our rivers, says scientist!": "クッキー農場が川に有害なチョコレートを放流していると科学者が証言!",
+	"genetically-modified chocolate controversy strikes cookie farmers!": "遺伝子組み換えチョコレートに関する論争、クッキー農場を直撃!",
+	"free-range farm cookies popular with today's hip youth, says specialist.": "放し飼い農場のクッキーはナウなヤングにバカウケ、専門家が語る。",
+	"farm cookies deemed unfit for vegans, says nutritionist.": "農場のクッキーは純菜食主義者にとって不健康だと思われている、と栄養士が発言。",
+
+	// Ticker (Mine)
+	"is our planet getting lighter? Experts examine the effects of intensive chocolate mining.": "我らが星の質量が減少しつつある?専門家は集中的なチョコレート採掘による影響を調査。",
+	"chocolate mines found to cause earthquakes and sinkholes!": "チョコレート鉱山が地震と陥没を引き起こすことが発見される!",
+	"chocolate mine goes awry, floods village in chocolate!": "チョコレート鉱山で人災発生、村がチョコレートで浸水!",
+	"depths of chocolate mines found to house \"peculiar, chocolaty beings\"!": "チョコレート鉱山の奥深くに「一風変わった、チョコレートらしきものでできた」家屋を発見!",
+
+	// Ticker (Factory)
+	"cookie factories linked to global warming!": "クッキー工場は地球温暖化と関係有り!",
+	"cookie factories involved in chocolate weather controversy!": "チョコレート雨に関するクッキー工場論争!",
+	"cookie factories on strike, robotic minions employed to replace workforce!": "ストライキ中のクッキー工場、代替労働力として作業用ロボットを採用!",
+	"cookie factories on strike - workers demand to stop being paid in cookies!": "ストライキ中のクッキー工場 - 労働者たちはクッキーによる支払いを止めるよう要求!",
+	"factory-made cookies linked to obesity, says study.": "工場製のクッキーは肥満に関係するとの研究結果が。",
+
+	// Ticker (Bank)
+	"cookie loans on the rise as people can no longer afford them with regular money.": "クッキーローンの金利は、もはや定期返済が不可能な程に高騰している。",
+	"cookies slowly creeping up their way as a competitor to traditional currency!": "クッキーは従来の通貨に取って代わる存在として、徐々に頭角を現している!",
+	"most bakeries now fitted with ATMs to allow for easy cookie withdrawals and deposits.": "今や殆どのベーカリーがATMを設置し、クッキーの引き出しと預金がより簡単に。",
+	"cookie economy now strong enough to allow for massive vaults doubling as swimming pools!": "プール2杯分の巨大金庫を満たす程、クッキーの確保は十分であります!",
+	"\"Tomorrow's wealthiest people will be calculated by their worth in cookies\", predict economists.": "「近い将来、富裕層の資産算定は彼等が保有するクッキーの価値で為されるだろう」と専門家が予測。",
+
+	// Ticker (Temple)
+	"recently-discovered chocolate temples now sparking new cookie-related cult; thousands pray to Baker in the sky!": "最近発見されたチョコレート寺院が新たなクッキー崇拝のメッカに。天上の「焼き主」に祈りを捧げる数千の信者!",
+	"theists of the world discover new cookie religion - \"Oh boy, guess we were wrong all along!\"": "有神論者が新たなクッキーの教義を発見。「なんてこった、今までの教えは全て誤りだというのか…!」",
+	"cookie heaven allegedly \"sports elevator instead of stairway\"; cookie hell \"paved with flagstone, as good intentions make for poor building material\".": "言い伝えによると、クッキーの天国は「階段の代わりにアトラクション的なエレベーターを備え」、クッキーの地獄は「粗悪な建材にお誂え向きの敷石で舗装されている」。",
+
+	// TickerList (Temple)
+	"magic": "魔法の",
+	"carved": "飾り彫りのある",
+	"engraved": "刻印された",
+	"sculpted": "彫刻の",
+	"royal": "王室の",
+	"imperial": "皇帝の",
+	"mummified": "ミイラ化した",
+	"ritual": "儀式の",
+	"golden": "金の",
+	"silver": "銀の",
+	"stone": "石の",
+	"cursed": "呪われた",
+	"plastic": "プラスチックの",
+	"bone": "骨の",
+	"blood": "血を流す",
+	"holy": "聖なる",
+	"sacred": "祭られた",
+	"sacrificial": "生贄の",
+	"electronic": "電子式",
+	"singing": "歌う",
+	"tapdancing": "タップダンスする",
+
+	// TickerList (Temple2)
+	"spoon": "スプーン",
+	"fork": "フォーク",
+	"pizza": "ピザ",
+	"washing machine": "洗濯機",
+	"calculator": "計算機",
+	"hat": "帽子",
+	"piano": "ピアノ",
+	"napkin": "ナプキン",
+	"skeleton": "スケルトン",
+	"gown": "ガウン",
+	"dagger": "短剣",
+	"sword": "剣",
+	"shield": "盾",
+	"skull": "頭蓋骨",
+	"emerald": "エメラルド",
+	"bathtub": "浴槽",
+	"mask": "仮面",
+	"rollerskates": "ローラースケート靴",
+	"litterbox": "猫用トイレ",
+	"bait box": "餌箱",
+	"cube": "立方体",
+	"sphere": "球体",
+	"fungus": "菌類",
+	
+    // TickerList (Temple3)
+    "god": "神",
+    "goddess": "女神",
+
+    // TickerList (Temple4)
+    "kazoos": "カズー",
+    "web design": "ウェブデザイン",
+    "web browsers": "ウェブブラウザ",
+    "kittens": "仔猫",
+    "atheism": "無神論",
+    "handbrakes": "ハンドブレーキ",
+    "hats": "帽子",
+    "aglets": "靴紐の先っちょ",
+    "elevator music": "小綺麗でつまらない音楽",
+    "idle games": "放置ゲーム",
+    "the letter \"P\"": "文字「P」",
+    "memes": "ミーム",
+    "hamburgers": "ハンバーガー",
+    "bad puns": "つまらんダジャレ",
+    "kerning": "文字間隔調整",
+    "stand-up comedy": "スタンダップコメディ",
+    "failed burglary attempts": "強盗未遂",
+    "clickbait": "ネットの釣りタイトル",
+    "one weird tricks": "ネットの詐欺広告",
+
+    // Ticker (Wizard tower)
+    "get your new charms and curses at the yearly National Spellcrafting Fair! Exclusive prices on runes and spellbooks.": "毎年開催、全国スペル創造フェアで最新の護符と呪具をゲットしよう!ルーン文字と魔導書は、ここだけの独占価格でご提供。",
+    "cookie wizards deny involvement in shockingly ugly newborn - infant is \"honestly grody-looking, but natural\", say doctors.": "クッキーウィザードは酷く醜怪な新生児への関与を否定 - 医師は語る。「忌憚なく言えば、幼児の外見は吐き気を催すが、手を加えられては いない」",
+    "\"Any sufficiently crude magic is indistinguishable from technology\", claims renowned technowizard.": "「未完成でいい加減な魔法はね、テクノロジーと見分けがつかないのですよ」、高名なテクノウィザードの主張。",
+
+    // TickerList (Wizard tower)
+    "public restrooms": "公衆トイレ",
+    "clouds": "雲",
+    "politicians": "政治家",
+    "moustaches": "口髭",
+    "shoes": "靴",
+    "pants": "ズボン",
+    "clowns": "道化師",
+    "encyclopedias": "百科事典",
+    "websites": "ウェブサイト",
+    "potted plants": "鉢植え",
+    "lemons": "レモン",
+    "household items": "家庭用品",
+    "bodily fluids": "体液",
+    "cutlery": "カトラリー",
+    "national landmarks": "国定史跡",
+    "yogurt": "ヨーグルト",
+    "rap music": "ラップミュージック",
+    "underwear": "下着",
+
+    // TickerList (Wizard tower2)
+    "water": "水",
+    "fire": "火",
+    "earth": "地",
+    "air": "風",
+    "lightning": "雷",
+    "acid": "酸",
+    "song": "歌",
+    "battle": "戦闘",
+    "peace": "秩序",
+    "pencil": "鉛筆",
+    "internet": "インターネット",
+    "space": "空間",
+    "time": "時間",
+    "brain": "脳",
+    "nature": "自然",
+    "techno": "テクノ",
+    "plant": "植物",
+    "bug": "虫",
+    "ice": "氷",
+    "poison": "毒",
+    "crab": "蟹",
+    "kitten": "仔猫",
+    "dolphin": "イルカ",
+    "bird": "鳥",
+    "punch": "パンチ",
+    "fart": "屁",
+
+    // Ticker (Shipment)
+    "new chocolate planet found, becomes target of cookie-trading spaceships!": "新しいチョコレート惑星を発見、クッキー燃料の宇宙船の到達目標に!",
+    "massive chocolate planet found with 99.8% certified pure dark chocolate core!": "99.8%がチョコレートの大質量惑星、コアが純粋な黒いチョコレートであると証明される!",
+    "space tourism booming as distant planets attract more bored millionaires!": "遠方の惑星への宇宙旅行が、暇を持て余した億万長者たちの注目を集め急騰!",
+    "chocolate-based organisms found on distant planet!": "遠方の惑星でチョコレートでできた微生物を発見!",
+    "ancient baking artifacts found on distant planet; \"terrifying implications\", experts say.": "遠方の惑星で太古のベーカリーを発見、「どことなく恐ろしい」、と専門家。",
+
+    // Ticker (Alchemy lab)
+    "national gold reserves dwindle as more and more of the precious mineral is turned to cookies!": "貴金属のチョコレートへの交換数がさらに増加、国民の金の貯蓄量が低下!",
+    "chocolate jewelry found fashionable, gold and diamonds \"just a fad\", says specialist.": "チョコレートの宝石が流行の最先端に、専門家が発言、金とダイヤモンドは「流行ってただけ」!",
+    "silver found to also be transmutable into white chocolate!": "銀をホワイトチョコに変質させられることを発見!",
+    "defective alchemy lab shut down, found to convert cookies to useless gold.": "欠陥研究所閉鎖、クッキーを役に立たない金に変換していたことが発覚。",
+    "alchemy-made cookies shunned by purists!": "純正主義者、錬成されたチョコレートを忌避!",
+
+    // Ticker (Portal)
+    "nation worried as more and more unsettling creatures emerge from dimensional portals!": "異次元へのポータルから出現した怪物はますます国民を動揺させ、不安がらせている!",
+    "dimensional portals involved in city-engulfing disaster!": "異次元へのポータルはやがて街を飲み込む災害へとなるだろう!",
+    "tourism to cookieverse popular with bored teenagers! Casualty rate as high as 73%!": "クッキーバースへの旅行が退屈なティーンエイジャーたちに人気!死傷率は73%超え!",
+    "cookieverse portals suspected to cause fast aging and obsession with baking, says study.": "クッキーバースへのポータルは急速な老化とクッキー作りに取りつかれる疑いがあるとの研究結果が。",
+    "\"do not settle near portals,\" says specialist; \"your children will become strange and corrupted inside.\"": "「ポータル付近で生活しないように」専門家が警告、「子供の気が狂い、精神が崩壊するおそれがある。」",
+
+    // Ticker (Time machine)
+    "time machines involved in history-rewriting scandal! Or are they?": "タイムマシンは歴史改変の不祥事を意味する!あるいはその事実は…?",
+    "time machines used in unlawful time tourism!": "タイムマシンが非合法的に時間旅行に使われていた!",
+    "cookies brought back from the past \"unfit for human consumption\", says historian.": "過去から持ち帰られたクッキーは「人間が消費するには適さない」、と歴史家が指摘。",
+    "various historical figures inexplicably replaced with talking lumps of dough!": "歴史的な芸術作品が話している間にクッキー生地の塊にすり替えられる奇妙な事件!",
+    "\"I have seen the future,\" says time machine operator, \"and I do not wish to go there again.\"": "「未来を見てきたよ」タイムマシンのオペレーターが暴露。「もう、二度と見たくないね。」",
+
+    // Ticker (Antimatter condenser)
+    "whole town seemingly swallowed by antimatter-induced black hole; more reliable sources affirm town \"never really existed\"!": "全都市が反物質凝縮器によるブラックホールに飲み込まれているのは一目瞭然、街は「もはや物質が存在しない」確固たる証拠である!",     
+    "\"explain to me again why we need particle accelerators to bake cookies?\" asks misguided local woman.": "「何故クッキーを焼くために粒子加速器が必要なのかもう一度説明してください」頓珍漢な質問をする地元の女性。",
+    "first antimatter condenser successfully turned on, doesn't rip apart reality!": "最初の反物質凝縮器の電源投入に成功、物質の分解には至らず!",
+    "researchers conclude that what the cookie industry needs, first and foremost, is \"more magnets\".": "研究者達はクッキー産業が必要としている物は後にも先にも「大量の永久磁石」であると結論づけた。",
+    "\"unravelling the fabric of reality just makes these cookies so much tastier\", claims scientist.": "「よりおいしいクッキーを焼くためだけに物質の構造を解明してきたのです」、と科学者たちが主張。",
+
+    // Ticker (Prism)
+    "new cookie-producing prisms linked to outbreak of rainbow-related viral videos.": "プリズムが新しいクッキーの製造法になってから、虹関係の商品が急に売れ出した。",
+    "scientists warn against systematically turning light into matter - \"One day, we'll end up with all matter and no light!\"": "科学者たちは、組織的に光を物質に変換することに警告を発している。「いつか我々は、光をあらゆる物質に変換し尽くすところまで行ってしまうだろう」",
+    "cookies now being baked at the literal speed of light thanks to new prismatic contraptions.": "新しいプリズム装置のおかげで、今やクッキーは、文字通り光の速さで生み出されている。",
+    "\"Can't you sense the prism watching us?\", rambles insane local man. \"No idea what he's talking about\", shrugs cookie magnate/government official.": "「プリズムに監視されてる…お前ら気付かないのか?」、と呟くあきれた男。「何を言っているかわからない」クッ キー関係者や政府職員、肩をすくめる。",
+    "world citizens advised \"not to worry\" about frequent atmospheric flashes.": "世界市民が頻発する空気発光現象に関して忠告。「心配ない」",
+
+    // Ticker (Chancemaker)
+    "strange statistical anomalies continue as weather forecast proves accurate an unprecedented 3 days in a row!": "天気予報が前代未聞の3日連続的中といった、統計的に狂った異常現象が頻発!",
+    "local casino ruined as all gamblers somehow hit a week-long winning streak! \"We might still be okay\", says owner before being hit by lightning 47 times.": "全ギャンブラーが1週間に渡る謎の勝ち続きで、地元カジノが破産!「多分なんとかなるでしょう」発言後のオーナーに47回目の落雷直撃。",
+    "neighboring nation somehow elects president with sensible policies in freak accident of random chance!": "隣国の大統領選挙で予期せぬ異変が!選出されたのはどういうことか、賢明な政策を掲げる人物。",
+    "million-to-one event sees gritty movie reboot turning out better than the original! \"We have no idea how this happened\", say movie execs.": "百万に一の可能性!グリッティ映画のリブート版、オリジナルを越えた出来栄えと判明!「何故こんな事が起こり得るのか皆目 わからん」、映画業界上層部の弁。",
+    "all scratching tickets printed as winners, prompting national economy to crash and, against all odds, recover overnight.": "全スクラッチくじに当たりを印刷し急速に破綻した国民経済、予想を覆したったの一晩ですっかり回復。",
+
+    // Ticker (Fractal engine)
+    "local man \"done with Cookie Clicker\", finds the constant self-references \"grating and on-the-nose\".": "「クッキークリッカーはもう止めた」地元のある男、絶え間なき自己参照「どこまでも正確精密な格子」に辿り着く。",
+    "local man sails around the world to find himself - right where he left it.": "地元のある男、自分自身を見つけようと世界中を帆走 - 分離した自分を正しい位置に戻すため。",
+    "local guru claims \"there's a little bit of ourselves in everyone\", under investigation for alleged cannibalism.": "「全ての者に我々の小さな欠片が存在するのです」説法する地元のある教祖、食人疑惑で逮捕。",
+    "news writer finds herself daydreaming about new career. Or at least a raise.": "女性ライターは今の仕事は夢であって現実でないと感じた。正確には、彼女自身が目を覚ますまでは。 ",
+    "polls find idea of cookies made of cookies \"acceptable\" - \"at least we finally know what's in them\", says interviewed citizen.": "世論調査で判明、クッキーからクッキーを作る着想は「あり」 - 「どうせ中身は同じっしょ？」取材に応じた市民の声。",
+
+    // Ticker (Javascript console)
+    "strange fad has parents giving their newborns names such as Emma.js or Liam.js. At least one Baby.js reported.": "Emma.jsやLiam.jsのような奇妙な名前を子供に付けるのが親の間に流行っている。少なくともBaby.jsが報告した中では。",
+    "coding is hip! More and more teenagers turn to technical fields like programming, ensuring a future robot apocalypse and the doom of all mankind.": "コーディングが大流行!プログラミングのような技術の世界に転向する若者が増え、将来のロボカリプスと人類にとっての悪夢が保障された。",
+    "developers unsure what to call their new javascript libraries as all combinations of any 3 dictionary words have already been taken.": "3単語の組み合わせは全て使われつくしてしまったので、開発者たちは新しいjavascriptライブラリを何と呼ぶかで困っている。",   
+    "nation holds breath as nested ifs about to hatch.": "国家は、ネストされたifたちが孵化するのを固唾をのんで見守っている。",
+    "clueless copywriter forgets to escape a quote, ends news line prematurely; last words reported to be \"Huh, why isn": "間抜けなコピーライターがシングルクォートをエスケープするのを忘れたので、ニュースの文章が早く終わってしまった。最後の文は「えー、なんで無",
+
+    // Ticker (Idleverse)
+    "is another you living out their dreams in an alternate universe? Probably, you lazy bum!": "別の宇宙にいる別のあなたは夢を実現しているのか?たぶんね、怠け者の無能め!",
+    "public recoils at the notion of a cosmos made of infinite idle games. \"I kinda hoped there'd be more to it\", says distraught citizen.": "無限の放置ゲームでできた宇宙という考えに民衆は反発。「もっとなんかあればと思っていたのに」、取り乱した市民の声。",   
+    "with an infinity of parallel universes, people turn to reassuring alternate dimensions, which only number \"in the high 50s\".": "並行宇宙が無限にあるので、人々は安心できる別次元へ移るが、その数は「50代後半」しかない。",
+    "\"I find solace in the knowledge that at least some of my alternate selves are probably doing fine out there\", says citizen's last remaining exemplar in the multiverse.": "「少なくとも何人かの別の私は別の場所でうまくやっているだろうという情報に慰められて いる」、多元宇宙にいる市民の最後の生き残りのお手本の声。",
+    "comic book writers point to actual multiverse in defense of dubious plot points. \"See? I told you it wasn't 'hackneyed and contrived'!\"": "プロットの怪しい点を擁護するため、漫画作家が実際の多元宇宙へ指摘。「な?それは『陳腐で不自然』と言っただろ!」",
+
+    // Ticker (Cortex baker)
+    "cortex baker wranglers kindly remind employees that cortex bakers are the bakery's material property and should not be endeared with nicknames.": "ベイカー脳の世話人の皆様へ、お願い申し上げます。ベイカー脳は工房が所有する器具であり、愛称をつけて可愛がられ るべきものではないことを、従業員の方々へ再度ご通達ください。",
+    "space-faring employees advised to ignore unusual thoughts and urges experienced within 2 parsecs of gigantic cortex bakers, say guidelines.": "宇宙勤務の従業員は、巨大なベイカー脳から2パーセク以内で異常な思考や衝動が生じた場合は無視するよう、ガイドラインで勧告。",
+    "astronomers warn of cortex baker trajectory drift, fear future head-on collisions resulting in costly concussions.": "天文学者たちは、ベイカー脳の軌道が流れていると警告しています。正面衝突によって脳震とうを起こした場合の、高額の修復費が懸念されるためです。",
+    "runt cortex baker identified with an IQ of only quintuple digits: \"just a bit of a dummy\", say specialists.": "欠陥品のベイカー脳は、その知能指数が五桁にしか満たないことが確認されました。 専門家によると、「少しだけ頭のネジがゆるい」とのことです。",      
+    "are you smarter than a cortex baker? New game show deemed \"unfair\" by contestants.": "君はベイカー脳の知能を越えられるか?「不公平だ」新たなゲームショーに対する出場者の意見。",
+
+    // Ticker (Halloween)
+    "strange twisting creatures amass around cookie factories, nibble at assembly lines.": "クネクネした異様な生物がクッキー工場周辺に大量発生!製造ラインにかじりつく!",
+    "ominous wrinkly monsters take massive bites out of cookie production; \"this can't be hygienic\", worries worker.": "不気味にしわがれたモンスター、工場のクッキーを出来たそばから貪る!「衛生面は終わってる」工場職員に不安広がる。",
+    "pagan rituals on the rise as children around the world dress up in strange costumes and blackmail homeowners for candy.": "異教の儀式が蔓延中!世界中の子供が奇妙な格好で住民から菓子を恐喝!",
+    "new-age terrorism strikes suburbs as houses find themselves covered in eggs and toilet paper.": "郊外で新種のテロリストが出没!家宅は工作用の卵とトイレットペーパーまみれに!",
+    "children around the world \"lost and confused\" as any and all Halloween treats have been replaced by cookies.": "ハロウィンのお菓子が全部クッキーに変わって、お子様棒立ちで「呆然」。",
+
+    // Ticker (Christmas)
+    "bearded maniac spotted speeding on flying sleigh! Investigation pending.": "ソリで爆走する狂ったひげ男の目撃相次ぐ!詳細は未だ不明。",
+    "Santa Claus announces new brand of breakfast treats to compete with cookie-flavored cereals! \"They're ho-ho-horrible!\" says Santa.": "サンタクロース、クッキー味のシリアルに匹敵する新しい朝のお菓子を発表。「ホッホッホ　恐ろしいぞ」サンタが声明。",        
+    "\"You mean he just gives stuff away for free?!\", concerned moms ask. \"Personally, I don't trust his beard.\"": "「ただでなんでもくれてやるって?」母親たち疑問。「正直あのあごひげが胡散臭いわ」",
+    "obese jolly lunatic still on the loose, warn officials. \"Keep your kids safe and board up your chimneys. We mean it.\"": "陽気なデブ奇人、未だ捕まらず!政府関係者が警告「子どもたちを安全な場所に。煙突に蓋を。これは冗談ではありません」",
+    "children shocked as they discover Santa Claus isn't just their dad in a costume after all!<br>\"I'm reassessing my life right now\", confides Laura, aged 6.": "サンタがコスプレしたお父さんじゃなかったことを知って児童驚愕!「これまでの人生がなんだったのか…考えを改めているところ」 - そう打ち明けるローラさん(6)",
+    "mysterious festive entity with quantum powers still wrecking havoc with army of reindeer, officials say.": "謎のお祭りムードが、トナカイ軍による甚大な破壊を助長している - 政府関係者が声明。",
+    "elves on strike at toy factory! \"We will not be accepting reindeer chow as payment anymore. And stop calling us elves!\"": "おもちゃ工場のエルフがストライキ!「トナカイの餌で現物支給はもう止めろ!あと俺たちをエルフって呼ぶな!」",
+    "elves protest around the nation; wee little folks in silly little outfits spread mayhem, destruction; rabid reindeer running rampant through streets.": "全国各地でエルフの抗議活動。チンケでふざけた衣装のチンケな小人が騒乱と破壊活動を繰り広げ、凶暴なトナカ イが我が物顔で通りを爆走。",
+    "scholars debate regarding the plural of reindeer(s) in the midst of elven world war.": "エルフ戦争の真っ只中、トナカイの複数形に「s」は必要か否かを議論する学者達。",
+    "elves \"unrelated to gnomes despite small stature and merry disposition\", find scientists.": "エルフは「小さな身長と陽気な性格の特徴を以ってしても、ノームとは全く無関係」科学者が発見。",
+    "elves sabotage radioactive frosting factory, turn hundreds blind in vicinity - \"Who in their right mind would do such a thing?\" laments outraged mayor.": "エルフ、放射性アイシング工場を襲撃し破壊、付近住民の数百人が盲目に。「正気の沙汰じゃない」被害を受 けた市長が哀哭。",
+    "drama unfolds at North Pole as rumors crop up around Rudolph's red nose; \"I may have an addiction or two\", admits reindeer.": "ルドルフの赤鼻に関し俄に浮上した噂の件で、北極で新たな展開が。「俺、あれにちょっとばっかし依存し過ぎかも…」渦中のトナカイが告白。",
+
+    // Ticker (Valentines)
+    "organ-shaped confectioneries being traded in schools all over the world; gruesome practice undergoing investigation.": "臓器型のお菓子の交換が全国の学校で行われている。調査で明かされた身の毛もよだつ慣習。",
+    "heart-shaped candies overtaking sweets business, offering competition to cookie empire. \"It's the economy, cupid!\"": "スイーツ業界で猛威を振るうハート型キャンディー、クッキー帝国の牙城を崩す尖兵となるか。「経済こそが重要なのだよ、キューピッド!」",       
+    "love's in the air, according to weather specialists. Face masks now offered in every city to stunt airborne infection.": "気象専門家によると、大気中の愛の濃度が上昇。現在、大気汚染緊急対策実施中の全都市でフェイスマスクを配布中。",
+    "marrying a cookie - deranged practice, or glimpse of the future?": "クッキーとの結婚 - 常軌を逸する行為か、はたまた、未来の片鱗か。",
+    "boyfriend dumped after offering his lover cookies for Valentine's Day, reports say. \"They were off-brand\", shrugs ex-girlfriend.": "【悲報】ヴァレンタインデーに恋人にクッキーを贈ったら振られた男性。「だってノーブランド品だったのよ」肩を竦める元カノ。",
+
+    // Ticker (Easter)
+    "long-eared critters with fuzzy tails invade suburbs, spread terror and chocolate!": "長耳の毛羽立った尻尾を持つ生物が郊外に侵入、恐怖とチョコレートを撒き散らす!",
+    "eggs have begun to materialize in the most unexpected places; \"no place is safe\", warn experts.": "何故こんな所に?次々と具現化を始める卵。「安全な場所など無い」専門家が警告。",
+    "packs of rampaging rabbits cause billions in property damage; new strain of myxomatosis being developed.": "凶暴なウサギの群れにより、数十億円の物的被害。対策として新たなミクソマトーシスウィルス株が開発された。",
+    "egg-laying rabbits \"not quite from this dimension\", warns biologist; advises against petting, feeding, or cooking the creatures.": "産卵するウサギ「この次元からとは限らない」生物学者が警告。「決して触れない、餌を与えない、料理に使わないように」との忠告。",
+    "mysterious rabbits found to be egg-layers, but mammalian, hinting at possible platypus ancestry.": "謎のウサギは産卵性だが哺乳類であることが判明、カモノハシと同系統の可能性を示している。",
+
 	"cookie manufacturer completely forgoes common sense, lets strange obsession with round numbers drive building decisions!": "もはや常識を忘れたクッキー製造業者、キリのいい数字への異常な執着心を引き起こす建築物の建設を決定!",
 	"follow the tear-jerking, riches-to-rags story about a local cookie manufacturer who decided to give it all up!": "お涙頂戴!すべてを諦めることにした地元のクッキー製造業者についての貧富の差を巡る物語!",
 	"known universe now jammed with cookies! No vacancies!": "我々の世界は今やクッキーですし詰め状態!隙間なんてありゃしない!",
@@ -4481,284 +4504,253 @@
 	"\"Try to ignore any ghostly felines that may be purring inside your ears,\" warn scientists. \"They'll just lure you into making poor life choices.\"": "「目に見えぬ猫が耳の中でゴロゴロ鳴いていても無視すること」科学者が警告。「人生の選択を誤らせようとする罠だ」",
 	"kittens break glass ceiling! Do they have any idea how expensive those are!": "子猫がガラスの天井を破る!どれだけ高いものなのかわかっているのか!",
 	"local kittens involved in misguided musical production, leave audience perturbed and unnerved.": "地元の子猫が誤ったミュージカル作品に巻き込まれ、観客はうろたえ混乱。",
-	"Ticker (Dude, sweet)": [
-		"当局から観光客へ警告、路上販売人の密造砂糖を買ってはいけない -「あなたにとっては甘い取引なのでしょうが、実際売られているのは、ありふれた只のコカインなんですよ」捜査官は語る。",
-		"砂糖の消費が子供たちに与える影響について、無気力にするのか活動過多にするのか、専門家の間で激しい意見の不一致。",
-		"砂糖の塊運搬船が沈没する都度、魚の虫歯が増加するのを懸念する漁師。",
-		"前代未聞のオークションで数百万人を魅了した希少な黒砂糖の塊は、一般的な有毒菌であることが判明。",
-		"「ずっと昔はね、砂糖の塊っていうのは紅茶に入れる小さな角砂糖だったの。いま人々がランチで食べているような拳大の化物とは違うのよ」偏屈なボケ老人の愚痴。",
-		"砂糖の塊を使ったスナック、全国で爆発的な大流行。全国の歯科医もニッコリ。"
-	],
-	"major sugar-smuggling ring dismantled by authorities; %1 tons of sugar lumps seized, %2 suspects apprehended.": "当局により解体された大規模な砂糖密輸団。%1トンもの砂糖の塊を押収し、%2人の容疑者を逮捕。",
-	"pro-diabetes movement protests against sugar-shaming. \"I've eaten nothing but sugar lumps for the past %1 years and I'm feeling great!\", says woman with friable skin.": "白砂糖バッシングに抗議活動する糖尿病賛成派。「過去%1年間、砂糖の塊だけを食べ続けてきたけど、全く調子が良いわよ!」と、肌の脆い女性が。",
-	"Ticker (Rare)": [
-		"あなたは選ばれました。もうすぐ彼等が来るでしょう。",
-		"彼等はすぐ近くに来ています。扉を開けるのは考え直した方がよいのでは。",
-		"終末が近いです。支度しなさい。",
-		"ニュース : ブロッコリーの頭をママに、残りを子供にプレゼント。家族に無関心な父親。",
-		"ニュース : 中年なんてものは存在しない、でっち上げだ、研究による宣言。結局、体の姿勢が悪くなるんだから同じじゃないか。",
-		"ニュース : 世の子猫たちはKittyKibble社製ペットフードの不足が解消するのを望んでいる。"
-	],
-	"TickerList (misc1)": [
-		"寿命の向上",
-		"知能の飛躍的向上",
-		"若返り",
-		"抜け毛の減少",
-		"関節炎の予防",
-		"視力の改善"
-	],
-	"cookies found to %1 in %2!": "クッキーに%2の%1効果を発見!",
-	"TickerList (misc2)": [
-		"より従順に",
-		"より立派に",
-		"より格好良く",
-		"空腹になりにくく",
-		"より実用的に",
-		"より美味しく"
-	],
-	"cookies found to make %1 %2!": "クッキーに%1を%2させる効果を発見!",
-	"cookies tested on %1, found to have no ill effects.": "クッキーを%1に与えたところ、副作用は発見されず。",
-	"cookies unexpectedly popular among %1!": "意外にもクッキーは%1に好評!",
-	"unsightly lumps found on %1 near cookie facility; \"they've pretty much always looked like that\", say biologists.": "クッキー施設周辺の%1に奇妙な腫瘍、生物学者は「腫瘍は非常に多く見られる」とコメント。",
-	"new species of %1 discovered in distant country; \"yup, tastes like cookies\", says biologist.": "海外で新種の%1を発見。生物学者は「うん、クッキー味だ」とコメント。",
-	"TickerList (misc3)": [
-		"ロースト",
-		"トースト",
-		"ボイルド",
-		"ソテーした",
-		"ミンチにした"
-	],
-	"TickerList (misc4)": [
-		"寿司",
-		"スープ",
-		"カルパッチョ",
-		"ステーキ",
-		"ナゲット"
-	],
-	"%1 made from %2": "%2で作られた%1",
-	"cookies go well with %1, says controversial chef.": "クッキーは%1を和えるとおいしく頂ける、物議を醸したシェフのコメント。",
-	"\"do your cookies contain %1?\", asks PSA warning against counterfeit cookies.": "「あなたのクッキーに%1は含まれていますか?」、製品安全性協会が偽クッキーに警告。",
-	"Ticker (misc)": [
-		"医師会、一日二回新鮮なクッキーを摂取することを推奨。",
-		"医師会、チョコチップクッキー吸引に没頭する若者に警告。",
-		"医師会、クッキーを選り好みする新しい食事療法をしないよう忠告。",
-		"医師会、世の母親たちに「自家製クッキー」の危険性について警告。",
-		"「クッキーは私の生き甲斐」、話題のあの人が暴露。",
-		"「どうしてもクッキーを食べるのを止められない。本気で助けが必要かも」、話題のあの人が暴露。",
-		"「私はクッキーで困っている」、話題のあの人が暴露。",
-		"「私はクッキー中毒じゃない。そんなものは暇を持て余し過ぎたファンの憶測にすぎない。」、話題のあの人が暴露。",
-		"「今度のアルバムにはクッキーの歌を三曲収録している」、話題のあの人が暴露。",
-		"「私は三日連続でクッキーの夢を見ている。正直な所、少し心配だ」、話題のあの人が暴露。",
-		"「クッキーをよからぬことに使っているという告発はただの誹謗中傷だ」、話題のあの人が暴露。",
-		"「クッキーは私が落ち込んでいる時に本当に助けてくれる」、話題のあの人が暴露。",
-		"「私の完璧な美肌の秘訣はクッキーなの」、話題のあの人が暴露。",
-		"「今度の映画の撮影中、クッキーはずっと私の正気を保ってくれた」、話題のあの人が暴露。",
-		"「クッキーは私をスリムで健康にしてくれる。」、話題のあの人が暴露。",
-		"「ただ一言言いたい、一言、クッキー」、話題のあの人が暴露。",
-		"「分かった、認めよう。私は生涯でクッキーを一枚たりとも食べたことはない。」、話題のあの人が暴露。"
-	],
-	"Ticker (misc2)": [
-		"クッキーによる「世界の終末」は刻一刻と迫っていると予言した科学者、同僚たちの間で笑い者にされる。",
-		"クッキーを買うために銀行強盗をした男。",
-		"機内食の問題に関し、事実、深刻なクッキー不足であることを科学者達が立証。",
-		"飢餓国に数百トンものクッキーを空から投下。死者は数千人規模、国家は援助に感謝を表明。",
-		"新たな研究で判明、クッキーは老化を早めるのでも緩やかにするのでもなく、代わりに「異なる方向へ向かわせる」。",
-		"漁網で発見された異常成長の巨大クッキーは、成長ホルモン焼きについての問題を提起した。",
-		"大都市で「食べ放題」のクッキーレストランがオープン。ウェイターは数分で蹂躙の憂き目に。",
-		"クッキー大食い大会で男性死亡。「大したパフォーマンスではなかったね」審査員の評。",
-		"何がクッキーの味を相応しくするのか?「恐らくクッキーに入っている[*****]でしょう」、匿名の密告者が言及。",
-		"クッキーアレルギーの男性。「イカレてるにも程がある」家族がコメント。",
-		"海外の政治家、クッキー密輸に関与か。",
-		"クッキー不足に見舞われた町、住民は仕方なくカップケーキを口に。「まったくの別物」不本意ながら認める市長。",
-		"「受け入れなさい、このすべてのクッキーの原料は少々呪われている」、妄言者の戯言。",
-		"火星に生命はいるのか?現在、様々なチョコレートバー製造業者が細菌汚染について調査中。",
-		"「だから、それが今の状況なのだろうと思います。」世界中でクッキー生産が高まって以来、事実上すべての鉄鋼製品に存在するクッキー粒子について科学者がコメント。",
-		"微量のクッキー粒子をほとんどの生物から検出。そのうちのいくつかの種は新たな外来の代謝プロセスとして適応。"
-	],
-	"TickerList (misc5)": [
-		"咳止めドロップ",
-		"ブロッコリー",
-		"ニシンの燻製",
-		"チーズ",
-		"テレビゲーム",
-		"安定した仕事",
-		"人間関係",
-		"タイムトラベル",
-		"猫のビデオ",
-		"タンゴ",
-		"ファッション",
-		"テレビ",
-		"核戦争",
-		"我々がこれまでに食べてきたいかなる物",
-		"政治",
-		"酸素",
-		"ランプ"
-	],
-	"cookies now more popular than %1, says study.": "クッキーは今や%1以上に人気との研究結果。",
-	"TickerList (misc6)": [
-		"トゥワークダンス",
-		"クソッタレなラップミュージック",
-		"テレビゲーム",
-		"クッキー欠乏",
-		"幽霊の実体",
-		"エイリアン",
-		"両親",
-		"学校",
-		"マンガ",
-		"クッキー吸引の熱中"
-	],
-	"obesity epidemic strikes nation; experts blame %1.": "国民を揺るがす肥満の原因、専門家は%1と分析。",
-	"Ticker (misc3)": [
-		"出演者不足で制作中止となった映画、「みんな家でクッキーを食べてるんだ」嘆き悲しむディレクター。",
-		"消化不良のため、クッキー番組収録の中止を余儀なくされたコメディアン。",
-		"クッキーの新興宗教が一世を風靡。",
-		"化石記録が示す、カンブリア大爆発で繁栄したクッキー有機体の存在。科学者が発表。",
-		"奇妙な違法クッキーを摘発。「おぞましい味」と、警察が発表。",
-		"クッキーを摂取後死亡したとみられる男性を発見。「マフィアの密告者」か。",
-		"「宇宙は非常に大きな輪を描いている」、研究者が提唱。「クッキーの遥か彼方まで」",
-		"些細なクッキー事故から町中は灰に。隣接都市に再建用の「チップ」を要請。",
-		"我々のメディアはクッキー産業に支配されている?事実にしようと思えばできるだろう、愚かな陰謀論者の証言。",
-		"繁華街にクッキー専門のレストランがオープン。クッキーの蒸し焼きからクッキーのテルミドール、デザートにはクレープも。",
-		"インタビューを受けたオランウータン、一言「ウーク」。"
-	],
-	"Ticker (misc4)": [
-		"科学者曰く、「大方予想通りの」ありふれたポップコーン味のクッキー。",
-		"全穀物ぶっちぎりの最強シリアル味のクッキー",
-		"研究の結果、クッキーは「胎児も含む」全年齢層で好まれている。",
-		"「Grandmother II ～潤～」上映中に爆発的に売れたポップコーン味のクッキー。"
-	],
-	"TickerList (misc7)": [
-		"永遠の命",
-		"無限の富",
-		"永遠の若さ",
-		"永遠の美しさ",
-		"脱毛症の治療",
-		"世界平和",
-		"食糧難の解決",
-		"世界中の戦争の終結",
-		"地球外生命体とのコンタクト",
-		"読心術",
-		"健康な暮らし",
-		"健全な食生活",
-		"もっと面白いテレビ番組",
-		"超光速旅行",
-		"画期的なベーキング技術",
-		"チョコレートの滋養成分",
-		"空想上の理想"
-	],
-	"cookies could be the key to %1, say scientists.": "クッキーは%1の鍵となるだろう。科学者が発表。",
-	"TickerList (misc8)": [
-		"さほど風味豊かではない",
-		"反道徳的な類いの",
-		"「逆に落ち着いた」",
-		"最近ひどく辛い"
-	],
-	"flavor text %1, study finds.": "%1フレーバーテキスト、研究で発見。",
-	"Ticker (misc5)": [
-		"ゴールデンクッキーはどんな味?研究で判明、ゴールデンクッキーの味は「スペアミントと甘草の中間のような」味。",
-		"レッドクッキーはどんな味?研究で判明、レッドクッキーの味は「血入りソーセージと海水の両方を兼ねた」味。",
-		"全ネット利用者を未だに苛つかせる無意味な「参照」。「うん、だけど何で『たまご』?」",
-		"有名な経済学者の発言。「話題の投稿動画『過剰に大量なクッキー』は、我々の世界に差し迫る危機の『悍ましい実録』と成り得る」",
-		"「去年から流行のミームが、どういう訳か未だに関連ワードに上っている」専門家は嘆く。",
-		"調査の結果、10代の若者の間で人気独走のクッキー絵文字は「批判上等のハンドサイン」と「胡散臭い面したダークムーン」。"
-	],
-	"TickerList (misc9)": [
-		"生焼けが極めて少ない",
-		"とても風味がいい",
-		"まあゴミ以下って事はない",
-		"鳥肌はそんなに立たない",
-		"毒性が低い",
-		"より食用に適している",
-		"洗練されている",
-		"ほんの少しだけ良い",
-		"シャレオッティ",
-		"間違いなく健康的",
-		"客観的に良い選択",
-		"不味さは控えめ",
-		"断然クッキーっぽい",
-		"僅かに安い"
-	],
-	"%1-brand cookies \"%2 than competitors\", says consumer survey.": "消費者調査によると、%1ブランドのクッキーは「他社製品に比べ%2」。",
-	"\"%1\" set to be this year's most popular baby name.": "今年の赤ちゃんの名前人気ランキング一位は「%1」になる模様。",
-	"new popularity survey says %1's the word when it comes to cookies.": "クッキーのことなら、%1。最新の人気調査。",
-	"major city being renamed %1ville after world-famous cookie manufacturer.": "世界的に有名なクッキー製造業者に倣い、主要都市を%1市に改名する動き。",
-	"TickerList (misc10)": [
-		"通り",
-		"学校",
-		"介護施設",
-		"スタジアム",
-		"新しいファーストフードチェーン店",
-		"新惑星",
-		"新たな病気",
-		"人喰いバクテリア",
-		"致死性ウイルス",
-		"新しい法律",
-		"赤ちゃん",
-		"プログラミング言語"
-	],
-	"new species of %1": "%1の新種",
-	"%1 to be named after %2, the world-famous cookie manufacturer.": "世界的に有名なクッキー製造業者に倣い、%1を%2と命名する動き。",
-	"don't miss tonight's biopic on %1's irresistible rise to success!": "今夜放映の伝記映画、%1成功へのエレベーター、お見逃しなく!",
-	"TickerList (misc11)": [
-		"ブロプラ",
-		"ブラビッド・ブレターマン",
-		"ブリミー・ブリンメル",
-		"ブレレン・ブレジェネレス",
-		"ブリミー・ブラロン",
-		"ブロナン・ブロブライエン",
-		"ブレイ・ブレノ",
-		"ブロン・ブリュワート",
-		"ブレーヴン・ブロルベア",
-		"次元7-B19の支配者トキシックフロン"
-	],
-	"%1's own evil clone": "%1自身の邪悪なクローン",
-	"don't miss tonight's interview of %1 by %2!": "今夜放送、%2氏が%1にインタビュー!是非ご覧ください!",
-	"Ticker (misc6)": [
-		"不自然なハゲ頭の新生児誕生が相次ぐ。古代宇宙人の秘密結社は関与を否定。",
-		"「この時点で、クッキーは経済と切っても切れない関係に」経済学者は語る。「他の何かを食用とするならば、我々は全滅してしまう」",
-		"ダジャレ見出しが引き起こした惨事、とある街で激怒した住民が暴徒化。負傷者21名、死者5名、市長は未だ行方不明。",
-		"WとRキーの間のキーがこわｒた、大至急新しいタイプライターを送っｔくｒ。",
-		"「新しいEEEEEEキーぜええええええええっ好調!」上機げえええええええんな報道関けえええい者からの報告。",
-		"現在、クッキーの非合法取引が見放された複数の途上国で横行。政治的緊張が高まる。こりゃ戦争かな?",
-		"激昂したラジオ番組の司会者、クッキーのピクセルアイコンに言いたい放題。「クッキーがちっとも揃ってない!誰もそんなの気付かないって?俺だけ?クソッ、ヤバイクスリを飲んだ気分だ!」",
-		"タイピング担当者は、他の誰かが変更と称してニュースを こ ん な 風 に してしまっても、特に気にしないんじゃない?"
-	],
-	"TickerList (misc12)": [
-		"クッキーの批判",
-		"CookieClicker以外のゲームプレイ",
-		"ピザにパイナップル",
-		"不機嫌",
-		"蚊",
-		"ブロッコリー",
-		"人間の膵臓",
-		"悪天候",
-		"ネットの釣りタイトル",
-		"ダビング",
-		"インターネット",
-		"ミーム",
-		"ミレニアル世代"
-	],
-	"nation cheers as legislators finally outlaw %1!": "%1禁止法が遂に成立、国民はやんややんやの大喝采!",
-	"TickerList (misc13)": [
-		"地元のある",
-		"周辺地域のある"
-	],
-	"TickerList (misc14)": [
-		"男性",
-		"女性"
-	],
-	"%1 %2 goes on journey of introspection, finds cookies : \"I honestly don't know what I was expecting.\"": "%1%2、自分探しの旅先でクッキーを発見 : 「一体何を期待していたんだ自分は。」",
-	"TickerList (misc15)": [
-		"久し振りのクッキー摂取を試み、死亡。",
-		"直ぐに後悔する。",
-		"「なぜ今はクッキーだらけなのか」と首を傾げる。",
-		"我々が常食している「非クッキー食品」と思われる物に関し、支離滅裂な戯言を吐き散らす。",
-		"主な動機にクッキーを挙げる。",
-		"クッキーを欲しがる。"
-	],
-	"%1 wakes up from coma, %2": "昏睡状態から目覚めた%1、%2",
-	"pet %1, dangerous fad or juicy new market?": "ペットに%1、危険な流行か、金を生む新たな市場と成るか?",
-	"\"average person bakes %1 cookie%2 a year\" factoid actually just statistical error; %3, who has produced %4 cookies in their lifetime, is an outlier and should not have been counted.": "「平均的な人々が一年間に焼くクッキーの量は%1枚」 この流説は統計エラーで信憑性が無いと判明。%3が存続期間中に焼いた%4枚のクッキーは、極めて乖離した外れ値であり、データ除外すべきとのこと。",
+
+	// Ticker (Dude, sweet)
+    "authorities warn tourists not to buy bootleg sugar lumps from street peddlers - \"You think you're getting a sweet deal, but what you're being sold is really just ordinary cocaine\", says agent.": "当局から観光客へ警告、路上販売人の密造砂糖を買ってはいけない -「あなたにとっては甘い取引なのでしょうが、実際売られているのは、ありふれた只のコカインなんですよ」捜査官は語る。",
+    "experts in bitter disagreement over whether sugar consumption turns children sluggish or hyperactive.": "砂糖の消費が子供たちに与える影響について、無気力にするのか活動過多にするのか、専門家の間で激しい意見の不一致。",
+    "fishermen deplore upturn in fish tooth decay as sugar lumps-hauling cargo sinks into the ocean.": "砂糖の塊運搬船が沈没する都度、魚の虫歯が増加するのを懸念する漁師。",
+    "rare black sugar lump that captivated millions in unprecedented auction revealed to be common toxic fungus.": "前代未聞のオークションで数百万人を魅了した希少な黒砂糖の塊は、一般的な有毒菌であることが判明。",
+    "\"Back in my day, sugar lumps were these little cubes you'd put in your tea, not those fist-sized monstrosities people eat for lunch\", whines curmudgeon with failing memory.": "「ずっと昔はね、砂糖の塊っていうのは紅茶に入れる小さな角砂糖だったの。いま人々がランチで食べているような拳大の化物とは違うのよ」偏屈なボケ老人の愚痴。",
+    "sugar lump-snacking fad sweeps the nation; dentists everywhere rejoice.": "砂糖の塊を使ったスナック、全国で爆発的な大流行。全国の歯科医もニッコリ。",
+	
+	// Ticker (Rare)
+    "You have been chosen. They will come soon.": "あなたは選ばれました。もうすぐ彼等が来るでしょう。",
+    "They're coming soon. Maybe you should think twice about opening the door.": "彼等はすぐ近くに来ています。扉を開けるのは考え直した方がよいのでは。",
+    "The end is near. Make preparations.": "終末が近いです。支度しなさい。",
+    "broccoli tops for moms, last for kids; dads indifferent.": "ブロッコリーの頭をママに、残りを子供にプレゼント。家族に無関心な父親。",
+    "middle age a hoax, declares study; turns out to be bad posture after all.": "中年なんてものは存在しない、でっち上げだ、研究による宣言。結局、体の姿勢が悪くなるんだから同じじゃないか。",
+    "kitties want answers in possible Kitty Kibble shortage.": "世の子猫たちはKittyKibble社製ペットフードの不足が解消するのを望んでいる。",
+
+	// TickerList (misc1)
+    "increase lifespan": "寿命の向上",
+    "sensibly increase intelligence": "知能の飛躍的向上",
+    "reverse aging": "若返り",
+    "decrease hair loss": "抜け毛の減少",
+    "prevent arthritis": "関節炎の予防",
+    "cure blindness": "視力の改善",
+	
+	// TickerList (misc2)
+    "more docile": "より従順に",
+    "more handsome": "より立派に",
+    "nicer": "より格好良く",
+    "less hungry": "空腹になりにくく",
+    "more pragmatic": "より実用的に",
+    "tastier": "より美味しく",
+	
+	// TickerList (misc3)
+    "roasted": "ロースト",
+    "toasted": "トースト",
+    "boiled": "ボイルド",
+    "sauteed": "ソテーした",
+    "minced": "ミンチにした",
+
+	// TickerList (misc4)
+    "sushi": "寿司",
+    "soup": "スープ",
+    "carpaccio": "カルパッチョ",
+    "steak": "ステーキ",
+    "nuggets": "ナゲット",
+
+	// Ticker (misc)
+    "doctors recommend twice-daily consumption of fresh cookies.": "医師会、一日二回新鮮なクッキーを摂取することを推奨。",
+    "doctors warn against chocolate chip-snorting teen fad.": "医師会、チョコチップクッキー吸引に没頭する若者に警告。",
+    "doctors advise against new cookie-free fad diet.": "医師会、クッキーを選り好みする新しい食事療法をしないよう忠告。",
+    "doctors warn mothers about the dangers of \"home-made cookies\".": "医師会、世の母親たちに「自家製クッキー」の危険性について警告。",
+    "\"I'm all about cookies\", reveals celebrity.": "「クッキーは私の生き甲斐」、話題のあの人が暴露。",
+    "\"I just can't stop eating cookies. I think I seriously need help\", reveals celebrity.": "「どうしてもクッキーを食べるのを止められない。本気で助けが必要かも」、話題のあの人が暴露。",
+    "\"I guess I have a cookie problem\", reveals celebrity.": "「私はクッキーで困っている」、話題のあの人が暴露。",
+    "\"I'm not addicted to cookies. That's just speculation by fans with too much free time\", reveals celebrity.": "「私はクッキー中毒じゃない。そんなものは暇を持て余し過ぎたファンの憶測にすぎない。」、話題のあの人が暴露。",
+    "\"my upcoming album contains 3 songs about cookies\", reveals celebrity.": "「今度のアルバムにはクッキーの歌を三曲収録している」、話題のあの人が暴露。",
+    "\"I've had dreams about cookies 3 nights in a row now. I'm a bit worried honestly\", reveals celebrity.": "「私は三日連続でクッキーの夢を見ている。正直な所、少し心配だ」、話題のあの人が暴露。",
+    "\"accusations of cookie abuse are only vile slander\", reveals celebrity.": "「クッキーをよからぬことに使っているという告発はただの誹謗中傷だ」、話題のあの人が暴露。",
+    "\"cookies really helped me when I was feeling low\", reveals celebrity.": "「クッキーは私が落ち込んでいる時に本当に助けてくれる」、話題のあの人が暴露。",
+    "\"cookies are the secret behind my perfect skin\", reveals celebrity.": "「私の完璧な美肌の秘訣はクッキーなの」、話題のあの人が暴露。",
+    "\"cookies helped me stay sane while filming my upcoming movie\", reveals celebrity.": "「今度の映画の撮影中、クッキーはずっと私の正気を保ってくれた」、話題のあの人が暴露。",
+    "\"cookies helped me stay thin and healthy\", reveals celebrity.": "「クッキーは私をスリムで健康にしてくれる。」、話題のあの人が暴露。",
+    "\"I'll say one word, just one : cookies\", reveals celebrity.": "「ただ一言言いたい、一言、クッキー」、話題のあの人が暴露。",
+    "\"alright, I'll say it - I've never eaten a single cookie in my life\", reveals celebrity.": "「分かった、認めよう。私は生涯でクッキーを一枚たりとも食べたことはない。」、話題のあの人が暴露。",
+
+	// Ticker (misc2)
+    "scientist predicts imminent cookie-related \"end of the world\"; becomes joke among peers.": "クッキーによる「世界の終末」は刻一刻と迫っていると予言した科学者、同僚たちの間で笑い者にされる。",
+    "man robs bank, buys cookies.": "クッキーを買うために銀行強盗をした男。",
+    "scientists establish that the deal with airline food is, in fact, a critical lack of cookies.": "機内食の問題に関し、事実、深刻なクッキー不足であることを科学者達が立証。",
+    "hundreds of tons of cookies dumped into starving country from airplanes; thousands dead, nation grateful.": "飢餓国に数百トンものクッキーを空から投下。死者は数千人規模、国家は援助に感謝を表明。",
+    "new study suggests cookies neither speed up nor slow down aging, but instead \"take you in a different direction\".": "新たな研究で判明、クッキーは老化を早めるのでも緩やかにするのでもなく、代わりに「異なる方向へ向かわせる」。",
+    "overgrown cookies found in fishing nets, raise questions about hormone baking.": "漁網で発見された異常成長の巨大クッキーは、成長ホルモン焼きについての問題を提起した。",
+    "\"all-you-can-eat\" cookie restaurant opens in big city; waiters trampled in minutes.": "大都市で「食べ放題」のクッキーレストランがオープン。ウェイターは数分で蹂躙の憂き目に。",
+    "man dies in cookie-eating contest; \"a less-than-impressive performance\", says judge.": "クッキー大食い大会で男性死亡。「大したパフォーマンスではなかったね」審査員の評。",
+    "what makes cookies taste so right? \"Probably all the [*****] they put in them\", says anonymous tipper.": "何がクッキーの味を相応しくするのか?「恐らくクッキーに入っている[*****]でしょう」、匿名の密告者が言及。",
+    "man found allergic to cookies; \"what a weirdo\", says family.": "クッキーアレルギーの男性。「イカレてるにも程がある」家族がコメント。",
+    "foreign politician involved in cookie-smuggling scandal.": "海外の政治家、クッキー密輸に関与か。",
+    "cookie shortage strikes town, people forced to eat cupcakes; \"just not the same\", concedes mayor.": "クッキー不足に見舞われた町、住民は仕方なくカップケーキを口に。「まったくの別物」不本意ながら認める市長。",
+    "\"you gotta admit, all this cookie stuff is a bit ominous\", says confused idiot.": "「受け入れなさい、このすべてのクッキーの原料は少々呪われている」、妄言者の戯言。",
+    "is there life on Mars? Various chocolate bar manufacturers currently under investigation for bacterial contaminants.": "火星に生命はいるのか?現在、様々なチョコレートバー製造業者が細菌汚染について調査中。",
+    "\"so I guess that's a thing now\", scientist comments on cookie particles now present in virtually all steel manufactured since cookie production ramped up worldwide.": "「だから、それが今の状況なのだろうと思います。」世界中でクッキー生産が高まって以来、事実上すべての鉄鋼製品に存在するクッキー粒子について科学者がコメント。",
+    "trace amounts of cookie particles detected in most living creatures, some of which adapting them as part of new and exotic metabolic processes.": "微量のクッキー粒子をほとんどの生物から検出。そのうちのいくつかの種は新たな外来の代謝プロセスとして適応。",
+
+	// TickerList (misc5)
+    "cough drops": "咳止めドロップ",
+    "broccoli": "ブロッコリー",
+    "smoked herring": "ニシンの燻製",
+    "cheese": "チーズ",
+    "video games": "テレビゲーム",
+    "stable jobs": "安定した仕事",
+    "relationships": "人間関係",
+    "time travel": "タイムトラベル",
+    "cat videos": "猫のビデオ",
+    "tango": "タンゴ",
+    "fashion": "ファッション",
+    "television": "テレビ",
+    "nuclear warfare": "核戦争",
+    "whatever it is we ate before": "我々がこれまでに食べてきたいかなる物",
+    "politics": "政治",
+    "oxygen": "酸素",
+    "lamps": "ランプ",
+
+	// TickerList (misc6)
+    "twerking": "トゥワークダンス",
+    "that darn rap music": "クソッタレなラップミュージック",
+    "video-games": "テレビゲーム",
+    "lack of cookies": "クッキー欠乏",
+    "mysterious ghostly entities": "幽霊の実体",
+    "aliens": "エイリアン",
+    "parents": "両親",
+    "schools": "学校",
+    "comic-books": "マンガ",
+    "cookie-snorting fad": "クッキー吸引の熱中",
+
+	// Ticker (misc3)
+    "movie cancelled from lack of actors; \"everybody's at home eating cookies\", laments director.": "出演者不足で制作中止となった映画、「みんな家でクッキーを食べてるんだ」嘆き悲しむディレクター。",
+    "comedian forced to cancel cookie routine due to unrelated indigestion.": "消化不良のため、クッキー番組収録の中止を余儀なくされたコメディアン。",
+    "new cookie-based religion sweeps the nation.": "クッキーの新興宗教が一世を風靡。",
+    "fossil records show cookie-based organisms prevalent during Cambrian explosion, scientists say.": "化石記録が示す、カンブリア大爆発で繁栄したクッキー有機体の存在。科学者が発表。",
+    "mysterious illegal cookies seized; \"tastes terrible\", says police.": "奇妙な違法クッキーを摘発。「おぞましい味」と、警察が発表。",
+    "man found dead after ingesting cookie; investigators favor \"mafia snitch\" hypothesis.": "クッキーを摂取後死亡したとみられる男性を発見。「マフィアの密告者」か。",
+    "\"the universe pretty much loops on itself,\" suggests researcher; \"it's cookies all the way down.\"": "「宇宙は非常に大きな輪を描いている」、研究者が提唱。「クッキーの遥か彼方まで」",
+    "minor cookie-related incident turns whole town to ashes; neighboring cities asked to chip in for reconstruction.": "些細なクッキー事故から町中は灰に。隣接都市に再建用の「チップ」を要請。",
+    "is our media controlled by the cookie industry? This could very well be the case, says crackpot conspiracy theorist.": "我々のメディアはクッキー産業に支配されている?事実にしようと思えばできるだろう、愚かな陰謀論者の証言。",
+    "all-cookie restaurant opening downtown. Dishes such as braised cookies, cookie thermidor, and for dessert : crepes.": "繁華街にクッキー専門のレストランがオープン。クッキーの蒸し焼きからクッキーのテルミドール、デザートにはクレープも。",
+    "\"Ook\", says interviewed orangutan.": "インタビューを受けたオランウータン、一言「ウーク」。",
+
+	// Ticker (misc4)
+    "cookie-flavored popcorn pretty damn popular; \"we kinda expected that\", say scientists.": "科学者曰く、「大方予想通りの」ありふれたポップコーン味のクッキー。",
+    "cookie-flavored cereals break all known cereal-related records": "全穀物ぶっちぎりの最強シリアル味のクッキー",
+    "cookies popular among all age groups, including fetuses, says study.": "研究の結果、クッキーは「胎児も含む」全年齢層で好まれている。",
+    "cookie-flavored popcorn sales exploded during screening of Grandmothers II : The Moistening.": "「Grandmother II ～潤～」上映中に爆発的に売れたポップコーン味のクッキー。",
+
+	// TickerList (misc7)
+    "eternal life": "永遠の命",
+    "infinite riches": "無限の富",
+    "eternal youth": "永遠の若さ",
+    "eternal beauty": "永遠の美しさ",
+    "curing baldness": "脱毛症の治療",
+    "world peace": "世界平和",
+    "solving world hunger": "食糧難の解決",
+    "ending all wars world-wide": "世界中の戦争の終結",
+    "making contact with extraterrestrial life": "地球外生命体とのコンタクト",
+    "mind-reading": "読心術",
+    "better living": "健康な暮らし",
+    "better eating": "健全な食生活",
+    "more interesting TV shows": "もっと面白いテレビ番組",
+    "faster-than-light travel": "超光速旅行",
+    "quantum baking": "画期的なベーキング技術",
+    "chocolaty goodness": "チョコレートの滋養成分",
+    "gooder thoughtness": "空想上の理想",
+	
+	// TickerList (misc8)
+    "not particularly flavorful": "さほど風味豊かではない",
+    "kind of unsavory": "反道徳的な類いの",
+    "\"rather bland\"": "「逆に落ち着いた」",
+    "pretty spicy lately": "最近ひどく辛い",
+
+	// Ticker (misc5)
+    "what do golden cookies taste like? Study reveals a flavor \"somewhere between spearmint and liquorice\".": "ゴールデンクッキーはどんな味?研究で判明、ゴールデンクッキーの味は「スペアミントと甘草の中間のような」味。",
+    "what do wrath cookies taste like? Study reveals a flavor \"somewhere between blood sausage and seawater\".": "レッドクッキーはどんな味?研究で判明、レッドクッキーの味は「血入りソーセージと海水の両方を兼ねた」味。",
+    "people all over the internet still scratching their heads over nonsensical reference : \"Okay, but why an egg?\"": "全ネット利用者を未だに苛つかせる無意味な「参照」。「うん、だけど何で『たまご』?」",
+    "viral video \"Too Many Cookies\" could be \"a grim commentary on the impending crisis our world is about to face\", says famous economist.": "有名な経済学者の発言。「話題の投稿動画『過剰に大量なクッキー』は、我々の世界に差し迫る危機の『悍ましい実録』と成り得る」",
+    "\"memes from last year somehow still relevant\", deplore experts.": "「去年から流行のミームが、どういう訳か未だに関連ワードに上っている」専門家は嘆く。",
+    "cookie emoji most popular among teenagers, far ahead of \"judgmental OK hand sign\" and \"shifty-looking dark moon\", says study.": "調査の結果、10代の若者の間で人気独走のクッキー絵文字は「批判上等のハンドサイン」と「胡散臭い面したダークムーン」。",
+
+	// TickerList (misc9)
+    "much less soggy": "生焼けが極めて少ない",
+    "much tastier": "とても風味がいい",
+    "relatively less crappy": "まあゴミ以下って事はない",
+    "marginally less awful": "鳥肌はそんなに立たない",
+    "less toxic": "毒性が低い",
+    "possibly more edible": "より食用に適している",
+    "more fashionable": "洗練されている",
+    "slightly nicer": "ほんの少しだけ良い",
+    "trendier": "シャレオッティ",
+    "arguably healthier": "間違いなく健康的",
+    "objectively better choice": "客観的に良い選択",
+    "slightly less terrible": "不味さは控えめ",
+    "decidedly cookier": "断然クッキーっぽい",
+    "a tad cheaper": "僅かに安い",
+	
+	// TickerList (misc10)
+    "street": "通り",
+    "school": "学校",
+    "nursing home": "介護施設",
+    "stadium": "スタジアム",
+    "new fast food chain": "新しいファーストフードチェーン店",
+    "new planet": "新惑星",
+    "new disease": "新たな病気",
+    "flesh-eating bacteria": "人喰いバクテリア",
+    "deadly virus": "致死性ウイルス",
+    "new law": "新しい法律",
+    "baby": "赤ちゃん",
+    "programming language": "プログラミング言語",
+	
+	// TickerList (misc11)
+    "Bloprah": "ブロプラ",
+    "Blavid Bletterman": "ブラビッド・ブレターマン",
+    "Blimmy Blimmel": "ブリミー・ブリンメル",
+    "Blellen Blegeneres": "ブレレン・ブレジェネレス",
+    "Blimmy Blallon": "ブリミー・ブラロン",
+    "Blonan Blo'Brien": "ブロナン・ブロブライエン",
+    "Blay Bleno": "ブレイ・ブレノ",
+    "Blon Blewart": "ブロン・ブリュワート",
+    "Bleven Blolbert": "ブレーヴン・ブロルベア",
+    "Lord Toxikhron of dimension 7-B19": "次元7-B19の支配者トキシックフロン",
+	
+	// Ticker (misc6)
+    "births of suspiciously bald babies on the rise; ancient alien cabal denies involvement.": "不自然なハゲ頭の新生児誕生が相次ぐ。古代宇宙人の秘密結社は関与を否定。",
+    "\"at this point, cookies permeate the economy\", says economist. \"If we start eating anything else, we're all dead.\"": "「この時点で、クッキーは経済と切っても切れない関係に」経済学者は語る。「他の何かを食用とするならば、我々は全滅してしまう」",
+    "pun in headline infuriates town, causes riot. 21 wounded, 5 dead; mayor still missing.": "ダジャレ見出しが引き起こした惨事、とある街で激怒した住民が暴徒化。負傷者21名、死者5名、市長は未だ行方不明。",
+    "Nws : ky btwn W and R brokn, plas snd nw typwritr ASAP.": "WとRキーの間のキーがこわｒた、大至急新しいタイプライターを送っｔくｒ。",
+    "Neeeeews : \"neeeew EEEEEE keeeeey working fineeeeeeeee\", reeeports gleeeeeeeeful journalist.": "「新しいEEEEEEキーぜええええええええっ好調!」上機げえええええええんな報道関けえええい者からの報告。",
+    "cookies now illegal in some backwards country nobody cares about. Political tensions rising; war soon, hopefully.": "現在、クッキーの非合法取引が見放された複数の途上国で横行。政治的緊張が高まる。こりゃ戦争かな?",
+    "irate radio host rambles about pixelated icons. \"None of the cookies are aligned! Can't anyone else see it? I feel like I'm taking crazy pills!\"": "激昂したラジオ番組の司会者、クッキーのピクセルアイコンに言いたい放題。「クッキーがちっとも揃ってない!誰も そんなの気付かないって?俺だけ?クソッ、ヤバイクスリを飲んだ気分だ!」",
+    "person typing these wouldn't mind someone else breaking the news to THEM, for a change.": "タイピング担当者は、他の誰かが変更と称してニュースを こ ん な 風 に してしまっても、特に気にしないんじゃない?",
+
+	// TickerList (misc12)
+    "cookie criticism": "クッキーの批判",
+    "playing other games than Cookie Clicker": "CookieClicker以外のゲームプレイ",
+    "pineapple on pizza": "ピザにパイナップル",
+    "lack of cheerfulness": "不機嫌",
+    "mosquitoes": "蚊",
+    "the human spleen": "人間の膵臓",
+    "bad weather": "悪天候",
+    "dabbing": "ダビング",
+    "the internet": "インターネット",
+    "millennials": "ミレニアル世代",
+
+	// TickerList (misc13)
+    "local": "地元のある",
+    "area": "周辺地域のある",
+
+	// TickerList (misc14)
+    "man": "男性",
+    "woman": "女性",
+	
+	// TickerList (misc15)
+    "tries cookie for the first time, dies.": "久し振りのクッキー摂取を試み、死亡。",
+    "regrets it instantly.": "直ぐに後悔する。",
+    "wonders \"why everything is cookies now\".": "「なぜ今はクッキーだらけなのか」と首を傾げる。",
+    "babbles incoherently about some supposed \"non-cookie food\" we used to eat.": "我々が常食している「非クッキー食品」と思われる物に関し、支離滅裂な戯言を吐き散らす。",
+    "cites cookies as main motivator.": "主な動機にクッキーを挙げる。",
+    "asks for cookies.": "クッキーを欲しがる。",
+
 	"You feel like making cookies. But nobody wants to eat your cookies.": "君はクッキーを作りたい気分だ。しかし誰も君のクッキーなんて食べたくない。",
 	"Your first batch goes to the trash. The neighborhood raccoon barely touches it.": "君の処女作はゴミ箱行きだ。近所のアライグマくらいしか触らない。",
 	"Your family accepts to try some of your cookies.": "君の家族は君のクッキーを食べてみることにした。",
@@ -4786,171 +4778,144 @@
 	"Your cookies are rewriting the fundamental laws of the universe.": "君のクッキーは宇宙の法則すら塗り替える。",
 	"A local news station runs a 10-minute segment about your cookies. Success!<br><small>(you win a cookie)</small>": "地元のニュース番組が君のクッキーの特集を10分報道した。やったね!<br><small>(記念にクッキー 1 枚を贈呈された)</small>",
 	"it's time to stop playing": "もうやめ時だ",
-	"Ticker (grandma invasion start)": [
-		"数百万人もの老婦人が失踪!",
-		"世界中の家族、祖母の姿に動揺し、立ち尽くす!",
-		"世界中の家族、祖母の姿に動揺し、立ち尽くす!",
-		"医師ら、目に生気がなく口から泡を出す老婦人の集団に囲まれる!",
-		"診断書、老婦人の周囲に「奇妙なクッキー生地の臭い」!"
-	],
-	"Ticker (grandma invasion rise)": [
-		"混乱した町では奇妙な老婆たちが幼児を連れ去り、クッキー用の調理器具を強奪しようと住宅に侵入!",
-		"各地でギラついた目をした恐ろしい老婆の集団を目撃!",
-		"遭難した一家の証言「住んでいる女性がゆっくりと椅子に凝着していった!」",
-		"全世界に家出した老婆の集団!",
-		"ストリートで硬直した老婆、生暖かい砂糖の液体を分泌する!"
-	],
-	"Ticker (grandma invasion full)": [
-		"大陸の巨大な「肉のハイウェイ」の痕跡は各地のクッキー施設を繋いでいた!",
-		"宇宙から見た様は明らかに萎びた「触手」!",
-		"肉の建造物に変貌している最中の硬直した「老婆」の残骸が発見される!",
-		"全ての希望が潰えるかの如き苦痛!肉と生地に全都市が飲み込まれる!",
-		"悪夢は続く、驚異的な速度で萎びた大量の肉塊は拡大する!"
-	],
-	"Ticker (Business)": [
-		"オフィスチェアは実に快適だ。",
-		"儲かる予感がするぞ!",
-		"商談成立は最高の気分だな!",
-		"オフィスからの景観はなんて素晴らしいんだ!",
-		"気づいた?これが資本主義さ、ベイビー!",
-		"君はほんとにメール返信が好きだね。",
-		"頑張ってるかい?それともサボりかな?",
-		"今日も今日とてパラダイス!",
-		"豪華な昼食の時間だ!",
-		"また政府からの資金援助が来るぞ!素晴らしい!",
-		"利益は肌を健康的に保ってくれる。",
-		"一瞬君は税のない世界を夢見る。",
-		"君は自分が死んだときの環境へのダメージについて不安になるだろう。",
-		"わーい、事務用品だ!",
-		"最高、新しいホッチキスがついに入荷した!",
-		"おう、休憩時間だ!"
-	],
-	"TickerList (Bussiness1)": [
-		"契約書の署名",
-		"必要書類の記入",
-		"チームとの連絡の遣り取り",
-		"やり甲斐のある新たな展望についての検討",
-		"卓上玩具で遊ぶこと",
-		"新しいネームプレートの獲得",
-		"セミナー参加",
-		"テレビ会議",
-		"精力的な若手幹部の採用",
-		"新たな投資家との面会",
-		"会社の室内ミニゴルフ"
-	],
-	"Ticker (Business2)": [
-		"君は%1に丸一日かかりきりだった!",
-		"%1するにはまた良い日だ!",
-		"本日最初の業務命令 : %1!",
-		"どうしてか、君は%1を嬉々としてやっている!",
-		"次は何を?その通り、%1だ!",
-		"君は次の議題をチェックしている。まじか、%1だ!"
-	],
-	"TickerList (Bussiness2)": [
-		"ウィルス性",
-		"検索エンジン最適化",
-		"ブラグとウォブサイト",
-		"ソーシャルネットワーク",
-		"Web3.0",
-		"物流管理",
-		"利益効果",
-		"ブランド化",
-		"事前対策",
-		"相乗効果",
-		"市場調査",
-		"人口統計",
-		"円グラフ",
-		"ブログ似",
-		"ブログに富んだ",
-		"ブログ的な",
-		"信頼性",
-		"電子メール",
-		"携帯電話",
-		"ラップミュージック",
-		"クッキー",
-		"たぶんね"
-	],
-	"The word of the day is: %1.": "今日の一言 : %1。",
-	"Ticker (Business Rare)": [
-		"もっとクッキーが焼ければ、言う事無しなんだけどなぁ。",
-		"ああ。その無駄で無意味な報告書についてだよ。",
-		"ふーむ、君はビデオテープを何個か巻き戻した。",
-		"給料だ。これで全部だ。",
-		"君は頭打ちになってさえいなかった。",
-		"これは恐ろしい考えだ!"
-	],
-	"There is an idea of a %1. Some kind of abstraction. But there is no real you, only an entity. Something illusory.": "%1というものに対する考えがある。ある種の抽象化だ。しかしあなたの実体はなく、ただ物体があるだけだ。本物のように見える何かだ。",
-	"Ticker (Bussiness Grandma)": [
-		"延し棒が良い仕事をしているね!",
-		"生産は順調!"
-	],
-	"Ticker (Bussiness Grandma2)": [
-		"オーブンは休むことなく大回転。",
-		"一釜分、焼き過ぎて焦げちゃったか。うーん、まいっか。"
-	],
-	"Ticker (Bussiness Farm)": [
-		"キッチンから大量のクッキーをお届けだ。",
-		"今日からキッチンに新人が加わるぞ!"
-	],
-	"Ticker (Bussiness Factory)": [
-		"工場では延々と生み出されるクッキーの列が。",
-		"工場の従業員がストライキ!",
-		"工場の安全点検日だ。"
-	],
-	"Ticker (Bussiness Mine)": [
-		"秘伝のレシピは巨大地下金庫にしっかり保管だ。",
-		"シェフが新しい秘伝のレシピに取り組んでいる!"
-	],
-	"Ticker (Bussiness Shipment)": [
-		"スーパーは、笑顔と腹ペコのお客で大賑わいだ。",
-		"スーパーは、どこもかしこもクッキー商品でいっぱい!"
-	],
-	"Ticker (Bussiness Alchemy lab)": [
-		"証券取引所で期待の新規上場日。トレーダー達は人気銘柄を十分に確保できず!",
-		"株価が分刻みで倍増だ!"
-	],
-	"Ticker (Bussiness Portal)": [
-		"連続テレビ番組、最新の回を今から放送!",
-		"クッキーをテーマにしたテレビ番組が映画化!鋭意脚色中!"
-	],
-	"Ticker (Bussiness Time machine)": [
-		"テーマパークは繁盛している - 吐瀉物も、ジェットコースター事故による犠牲者の血溜まりも、敷物の下に綺麗に掃き集められている。些かの問題もない!",
-		"お客はジェットコースターに乗る前にクッキーの買い食いで満腹になってしまう。清掃員をもっと雇ったほうがいいかもね。"
-	],
-	"Ticker (Bussiness Antimatter condenser)": [
-		"クッキーコインは公式的に人類歴史上最も採掘されたコインです!",
-		"クッキーコインで不正操作が横行!"
-	],
-	"Ticker (Bussiness Prism)": [
-		"君の企業国家で新しく議会が発足!",
-		"君は新たな国を併合した!",
-		"新たな国家が、大クッキー複合企業体に加盟した!"
-	],
-	"Ticker (Bussiness Chancemaker)": [
-		"クッキースポンサー付きの惑星による銀河間連盟、経常利益の記録的な大増を報告!",
-		"惑星併合により数十億もの貧困層の異星人が、喜び勇んで君の労働力に加わった!",
-		"星間高速道路の通行料が一新、更なる利益がクッキー経済へと注ぎ込まれる!"
-	],
-	"Ticker (Bussiness Fractal engine)": [
-		"君のクッキー政党は世論調査で圧倒的支持を受けている!",
-		"君の各派閥・政党・諸派への強硬な事前工作のお蔭で、新たな親クッキー法は難なく可決された!",
-		"君が任命した上院議員達は次から次へとクッキー禁止条例を破棄した!"
-	],
-	"Ticker (Bussiness Javascript console)": [
-		"今やクッキーは人類の特徴の一つだ!おめでとう!",
-		"タイムトラベラーの報告によると、この時代は後にあなたのおかげでクッキー黄金時代として知られるようになる!",
-		"今やクッキーは人類の文化に深く根付き、未来の歴史家を困らせるだろう!"
-	],
-	"Ticker (Bussiness Idleverse)": [
-		"生活の残りの側面すべてを世界的なクッキー産業に乗っ取られ民衆は驚愕!",
-		"現在観測可能な範囲の宇宙で売られているありとあらゆる製品を遡るとあなたの会社となる!そしてそれはとても良いことだ。",
-		"あなたの広がりゆく帝国に飲み込まれながら独占禁止法は無力な呻き声をもらす!"
-	],
-	"Ticker (Bussiness Cortex baker)": [
-		"ベーカリーのシンクタンク、図らずも今週57回目のクッキーの再発明!",
-		"ベーカリーのシンクタンク、広告宣伝とクッキー売り上げ増加のための人間のコミュニケーションの全く新しい形を発明!"
-	],
-	"Bold new law proposal would grant default ownership of every new idea by anyone anywhere to %1's bakery!": "大胆な新法案の提出により、どこの誰によるものであろうと、全ての新しいアイデアのデフォルトの所有権は%1のベーカリーのものであると認められる!",
+
+	// Ticker (grandma invasion start)
+    "millions of old ladies reported missing!": "数百万人もの老婦人が失踪!",
+    "processions of old ladies sighted around cookie facilities!": "世界中の家族、祖母の姿に動揺し、立ち尽くす!",
+    "families around the continent report agitated, transfixed grandmothers!": "世界中の家族、祖母の姿に動揺し、立ち尽くす!",
+    "doctors swarmed by cases of old women with glassy eyes and a foamy mouth!": "医師ら、目に生気がなく口から泡を出す老婦人の集団に囲まれる!",
+    "nurses report \"strange scent of cookie dough\" around female elderly patients!": "診断書、老婦人の周囲に「奇妙なクッキー生地の臭い」!",
+
+	// Ticker (grandma invasion rise)
+    "town in disarray as strange old ladies break into homes to abduct infants and baking utensils!": "混乱した町では奇妙な老婆たちが幼児を連れ去り、クッキー用の調理器具を強奪しようと住宅に侵入!",
+    "sightings of old ladies with glowing eyes terrify local population!": "各地でギラついた目をした恐ろしい老婆の集団を目撃!",
+    "retirement homes report \"female residents slowly congealing in their seats\"!": "遭難した一家の証言「住んでいる女性がゆっくりと椅子に凝着していった!」",
+    "whole continent undergoing mass exodus of old ladies!": "全世界に家出した老婆の集団!",
+    "old women freeze in place in streets, ooze warm sugary syrup!": "ストリートで硬直した老婆、生暖かい砂糖の液体を分泌する!",
+
+	// Ticker (grandma invasion full)
+    "large \"flesh highways\" scar continent, stretch between various cookie facilities!": "大陸の巨大な「肉のハイウェイ」の痕跡は各地のクッキー施設を繋いでいた!",
+    "wrinkled \"flesh tendrils\" visible from space!": "宇宙から見た様は明らかに萎びた「触手」!",
+    "remains of \"old ladies\" found frozen in the middle of growing fleshy structures!": "肉の建造物に変貌している最中の硬直した「老婆」の残骸が発見される!",
+    "all hope lost as writhing mass of flesh and dough engulfs whole city!": "全ての希望が潰えるかの如き苦痛!肉と生地に全都市が飲み込まれる!",
+    "nightmare continues as wrinkled acres of flesh expand at alarming speeds!": "悪夢は続く、驚異的な速度で萎びた大量の肉塊は拡大する!",
+
+	// Ticker (Business)
+    "Your office chair is really comfortable.": "オフィスチェアは実に快適だ。",
+    "Profit's in the air!": "儲かる予感がするぞ!",
+    "Business meetings are such a joy!": "商談成立は最高の気分だな!",
+
+	// TickerList (Bussiness1)
+    "signing contracts": "契約書の署名",
+    "filling out forms": "必要書類の記入",
+    "touching base with the team": "チームとの連絡の遣り取り",
+    "examining exciting new prospects": "やり甲斐のある新たな展望についての検討",
+    "playing with your desk toys": "卓上玩具で遊ぶこと",
+    "getting new nameplates done": "新しいネームプレートの獲得",
+    "attending seminars": "セミナー参加",
+    "videoconferencing": "テレビ会議",
+    "hiring dynamic young executives": "精力的な若手幹部の採用",
+    "meeting new investors": "新たな投資家との面会",
+    "playing minigolf in your office": "会社の室内ミニゴルフ",
+
+	// TickerList (Bussiness2)
+    "viral": "ウィルス性",
+    "search engine optimization": "検索エンジン最適化",
+    "blags and wobsites": "ブラグとウォブサイト",
+    "social networks": "ソーシャルネットワーク",
+    "web 3.0": "Web3.0",
+    "logistics": "物流管理",
+    "leveraging": "利益効果",
+    "branding": "ブランド化",
+    "proactive": "事前対策",
+    "synergizing": "相乗効果",
+    "market research": "市場調査",
+    "demographics": "人口統計",
+    "pie charts": "円グラフ",
+    "blogular": "ブログ似",
+    "blogulacious": "ブログに富んだ",
+    "blogastic": "ブログ的な",
+    "authenticity": "信頼性",
+    "electronic mail": "電子メール",
+    "cellular phones": "携帯電話",
+    "cookies, I guess": "クッキー、たぶんね",
+
+	// Ticker (Business Rare)
+    "If you could get some more cookies baked, that'd be great.": "もっとクッキーが焼ければ、言う事無しなんだけどなぁ。",
+    "So. About those TPS reports.": "ああ。その無駄で無意味な報告書についてだよ。",
+    "Another day in paradise!": "今日も今日とてパラダイス！",
+    "Working hard, or hardly working?": "頑張ってるかい？それともサボりかな？",
+	
+	// Ticker (Bussiness Grandma)
+    "Your rolling pins are rolling and pinning!": "延し棒が良い仕事をしているね!",
+    "Production is steady!": "生産は順調!",
+
+	// Ticker (Bussiness Grandma2)
+    "Your ovens are diligently baking more and more cookies.": "オーブンは休むことなく大回転。",
+    "Your ovens burn a whole batch. Ah well! Still good.": "一釜分、焼き過ぎて焦げちゃったか。うーん、まいっか。",
+
+	// Ticker (Bussiness Farm)
+    "Scores of cookies come out of your kitchens.": "キッチンから大量のクッキーをお届けだ。",
+    "Today, new recruits are joining your kitchens!": "今日からキッチンに新人が加わるぞ!",
+	
+	// Ticker (Bussiness Factory)
+    "Your factories are producing an unending stream of baked goods.": "工場では延々と生み出されるクッキーの列が。",
+    "Your factory workers decide to go on strike!": "工場の従業員がストライキ!",
+    "It's safety inspection day in your factories.": "工場の安全点検日だ。",
+
+	// Ticker (Bussiness Mine)
+    "Your secret recipes are kept safely inside a giant underground vault.": "秘伝のレシピは巨大地下金庫にしっかり保管だ。",
+    "Your chefs are working on new secret recipes!": "シェフが新しい秘伝のレシピに取り組んでいる!",
+
+	// Ticker (Bussiness Shipment)
+    "Your supermarkets are bustling with happy, hungry customers.": "スーパーは、笑顔と腹ペコのお客で大賑わいだ。",
+    "Your supermarkets are full of cookie merch!": "スーパーは、どこもかしこもクッキー商品でいっぱい!",
+
+	// Ticker (Bussiness Alchemy lab)
+    "It's a new trading day at the stock exchange, and traders can't get enough of your shares!": "証券取引所で期待の新規上場日。トレーダー達は人気銘柄を十分に確保できず!",
+    "Your stock is doubling in value by the minute!": "株価が分刻みで倍増だ!",
+
+	// Ticker (Bussiness Portal)
+    "You just released a new TV show episode!": "連続テレビ番組、最新の回を今から放送!",
+    "Your cookie-themed TV show is being adapted into a new movie!": "クッキーをテーマにしたテレビ番組が映画化!鋭意脚色中!",
+
+	// Ticker (Bussiness Time machine)
+    "Your theme parks are doing well - puddles of vomit and roller-coaster casualties are being swept under the rug!": "テーマパークは繁盛している - 吐瀉物も、ジェットコースター事故による犠牲者の血溜まりも、敷物の下に綺麗に掃き集められている。些かの問題もない!",
+    "Visitors are stuffing themselves with cookies before riding your roller-coasters. You might want to hire more clean-up crews.": "お客はジェットコースターに乗る前にクッキーの買い食いで満腹になってしまう。清掃員をもっと雇ったほうがいいかもね。",
+
+	// Ticker (Bussiness Antimatter condenser)
+    "Cookiecoin is officially the most mined digital currency in the history of mankind!": "クッキーコインは公式的に人類歴史上最も採掘されたコインです!",
+    "Cookiecoin piracy is rampant!": "クッキーコインで不正操作が横行!",
+
+	// Ticker (Bussiness Prism)
+    "Your corporate nations just gained a new parliament!": "君の企業国家で新しく議会が発足!",
+    "You've just annexed a new nation!": "君は新たな国を併合した!",
+    "A new nation joins the grand cookie conglomerate!": "新たな国家が、大クッキー複合企業体に加盟した!",
+
+	// Ticker (Bussiness Chancemaker)
+    "Your intergalactic federation of cookie-sponsored planets reports record-breaking profits!": "クッキースポンサー付きの惑星による銀河間連盟、経常利益の記録的な大増を報告!",
+    "Billions of unwashed aliens are pleased to join your workforce as you annex their planet!": "惑星併合により数十億もの貧困層の異星人が、喜び勇んで君の労働力に加わった!",
+    "New toll opened on interstellar highway, funnelling more profits into the cookie economy!": "星間高速道路の通行料が一新、更なる利益がクッキー経済へと注ぎ込まれる!",
+
+	// Ticker (Bussiness Fractal engine)
+    "Your cookie-based political party is doing fantastic in the polls!": "君のクッキー政党は世論調査で圧倒的支持を受けている!",
+    "New pro-cookie law passes without a hitch thanks to your firm grasp of the political ecosystem!": "君の各派閥・政党・諸派への強硬な事前工作のお蔭で、新たな親クッキー法は難なく可決された!",
+    "Your appointed senators are overturning cookie bans left and right!": "君が任命した上院議員達は次から次へとクッキー禁止条例を破棄した!",
+
+	// Ticker (Bussiness Javascript console)
+    "Cookies are now one of the defining aspects of mankind! Congratulations!": "今やクッキーは人類の特徴の一つだ!おめでとう!",
+    "Time travelers report that this era will later come to be known, thanks to you, as the cookie millennium!": "タイムトラベラーの報告によると、この時代は後にあなたのおかげでクッキー黄金時代として知られるようになる!",
+    "Cookies now deeply rooted in human culture, likely puzzling future historians!": "今やクッキーは人類の文化に深く根付き、未来の歴史家を困らせるだろう!",
+
+	// Ticker (Bussiness Idleverse)
+    "Public aghast as all remaining aspects of their lives overtaken by universal cookie industry!": "生活の残りの側面すべてを世界的なクッキー産業に乗っ取られ民衆は驚愕!",
+    "Every single product currently sold in the observable universe can be traced back to your company! And that's a good thing.": "現在観測可能な範囲の宇宙で売られているありとあらゆる製品を遡るとあなたの会社となる!そしてそれはとても良いことだ。",
+    "Antitrust laws let out a helpless whimper before being engulfed by your sprawling empire!": "あなたの広がりゆく帝国に飲み込まれながら独占禁止法は無力な呻き声をもらす!",
+
+	// Ticker (Bussiness Cortex baker)
+    "Bakery think tanks accidentally reinvent cookies for the 57th time this week!": "ベーカリーのシンクタンク、図らずも今週57回目のクッキーの再発明!",
+    "Bakery think tanks invent entire new form of human communication to advertise and boost cookie sales!": "ベーカリーのシンクタンク、広告宣伝とクッキー売り上げ増加のための人間のコミュニケーションの全く新しい形を発明!",
+
 	"Such a grand day to begin a new business.": "大安吉日、起業するには打って付けだね。",
 	"You're baking up a storm!": "さあどんどん焼くんだ、じゃんじゃん焼くんだ!",
 	"You are confident that one day, your cookie company will be the greatest on the market!": "いつか君のクッキー会社が市場を席巻する。現実味を帯びてきたようだね。",
@@ -4965,15 +4930,57 @@
 	"You look back on your career. It's been a fascinating journey, building your baking empire from the ground up.": "ふと君はこれまでの経歴を振り返る。君の一大クッキー帝国を基礎から築き上げる、魔法のように素晴らしい道程だった。",
 	"Today is your lucky day!": "今日は幸運な日だ!",
 	"Your lucky numbers are:": "君のラッキーナンバーは : ",
-	"Never forget your %1.": "%1を忘るるべからず。",
-	"Pay close attention to the humble %1.": "地味な%1には細心の注意を払え。",
-	"You've been neglecting your %1.": "お前は%1を侮っている。",
-	"Remember to visit your %1 sometimes.": "たまには%1を訪れよ。",
 	"You don't know what you have until you've lost it.": "失って初めて大事なものに気づく。",
 	"Remember to take breaks.": "休憩も大事。",
 	"Hey, what's up. I'm a fortune cookie.": "やあ、調子どうかな。フォーチュンクッキーだよ。",
 	"You think you have it bad? Look at me.": "自分が悪いと思ってるか?俺を見ろ。",
 	"help me!": "助けて!",
+	"help!": "助けて!",
+
+	// 動的なニュース一覧
+	"Ticker (Dynamic)": {
+		"%1 miners trapped in collapsed chocolate mine!": "%1名の炭鉱労働者、チョコレート鉱山崩落に巻き込まれる!",
+		"explorers bring back ancient artifact from abandoned temple; archeologists marvel at the centuries-old %1 %2!": "探検家が廃寺院から持ち帰った古代の人工遺物。考古学者は何世紀も昔の%1%2に驚嘆!",
+		"just how extensive is the cookie pantheon? Theologians speculate about possible %1 of %2.": "件のクッキー神殿はどこまで広大なのか?神学者は%2の%1を祀っている可能性を推測。",
+		"all %1 turned into %2 in freak magic catastrophe!": "全ての%1を%2に変えるトンチキ魔法で大惨事!",
+		"heavy dissent rages between the schools of %1 magic and %2 magic!": "%1魔法学校と%2魔法学校との間に深い軋轢が発生!熾烈を極める争い!",
+		"major sugar-smuggling ring dismantled by authorities; %1 tons of sugar lumps seized, %2 suspects apprehended.": "当局により解体された大規模な砂糖密輸団。%1トンもの砂糖の塊を押収し、%2人の容疑者を逮捕。",
+		"pro-diabetes movement protests against sugar-shaming. \"I've eaten nothing but sugar lumps for the past %1 years and I'm feeling great!\", says woman with friable skin.": "白砂糖バッシングに抗議活動する糖尿病賛成派。「過去%1年間、砂糖の塊だけを食べ続けてきたけど、全く調子が良いわよ!」と、肌の脆い女性が。",
+		"cookies found to %1 in %2!": "クッキーに%2の%1効果を発見!",
+		"cookies found to make %1 %2!": "クッキーに%1を%2させる効果を発見!",
+		"cookies tested on %1, found to have no ill effects.": "クッキーを%1に与えたところ、副作用は発見されず。",
+		"cookies unexpectedly popular among %1!": "意外にもクッキーは%1に好評!",
+		"unsightly lumps found on %1 near cookie facility; \"they've pretty much always looked like that\", say biologists.": "クッキー施設周辺の%1に奇妙な腫瘍、生物学者は「腫瘍は非常に多く見られる」とコメント。",
+		"new species of %1 discovered in distant country; \"yup, tastes like cookies\", says biologist.": "海外で新種の%1を発見。生物学者は「うん、クッキー味だ」とコメント。",
+		"%1 made from %2": "%2で作られた%1",
+		"cookies go well with %1, says controversial chef.": "クッキーは%1を和えるとおいしく頂ける、物議を醸したシェフのコメント。",
+		"\"do your cookies contain %1?\", asks PSA warning against counterfeit cookies.": "「あなたのクッキーに%1は含まれていますか?」、製品安全性協会が偽クッキーに警告。",
+		"cookies now more popular than %1, says study.": "クッキーは今や%1以上に人気との研究結果。",
+		"obesity epidemic strikes nation; experts blame %1.": "国民を揺るがす肥満の原因、専門家は%1と分析。",
+		"cookies could be the key to %1, say scientists.": "クッキーは%1の鍵となるだろう。科学者が発表。",
+		"flavor text %1, study finds.": "%1フレーバーテキスト、研究で発見。",
+		"%1-brand cookies \"%2 than competitors\", says consumer survey.": "消費者調査によると、%1ブランドのクッキーは「他社製品に比べ%2」。",
+		"\"%1\" set to be this year's most popular baby name.": "今年の赤ちゃんの名前人気ランキング一位は「%1」になる模様。",
+		"new popularity survey says %1's the word when it comes to cookies.": "クッキーのことなら、%1。最新の人気調査。",
+		"major city being renamed %1ville after world-famous cookie manufacturer.": "世界的に有名なクッキー製造業者に倣い、主要都市を%1市に改名する動き。",
+		"new species of %1": "%1の新種",
+		"%1 to be named after %2, the world-famous cookie manufacturer.": "世界的に有名なクッキー製造業者に倣い、%1を%2と命名する動き。",
+		"don't miss tonight's biopic on %1's irresistible rise to success!": "今夜放映の伝記映画、%1成功へのエレベーター、お見逃しなく!",
+		"%1's own evil clone": "%1自身の邪悪なクローン",
+		"don't miss tonight's interview of %1 by %2!": "今夜放送、%2氏が%1にインタビュー!是非ご覧ください!",
+		"nation cheers as legislators finally outlaw %1!": "%1禁止法が遂に成立、国民はやんややんやの大喝采!",
+		"%1 %2 goes on journey of introspection, finds cookies : \"I honestly don't know what I was expecting.\"": "%1%2、自分探しの旅先でクッキーを発見 : 「一体何を期待していたんだ自分は。」",
+		"%1 wakes up from coma, %2": "昏睡状態から目覚めた%1、%2",
+		"pet %1, dangerous fad or juicy new market?": "ペットに%1、危険な流行か、金を生む新たな市場と成るか?",
+		"\"average person bakes %1 cookie%2 a year\" factoid actually just statistical error; %3, who has produced %4 cookies in their lifetime, is an outlier and should not have been counted.": "「平均的な人々が一年間に焼くクッキーの量は%1枚」 この流説は統計エラーで信憑性が無いと判明。%3が存続期間中に焼いた%4枚のクッキーは、極めて乖離した外れ値であり、データ除外すべきとのこと。",
+		"You've spent the whole day %1!": "君は%1に丸一日かかりきりだった!",
+		"The word of the day is: %1.": "今日の一言 : %1。",
+		"Bold new law proposal would grant default ownership of every new idea by anyone anywhere to %1's bakery!": "大胆な新法案の提出により、どこの誰によるものであろうと、全ての新しいアイデアのデフォルトの所有権は%1のベーカリーのものであると認められる!",
+		"Never forget your %1.": "%1を忘るるべからず。",
+		"Pay close attention to the humble %1.": "地味な%1には細心の注意を払え。",
+		"You've been neglecting your %1.": "お前は%1を侮っている。",
+		"Remember to visit your %1 sometimes.": "たまには%1を訪れよ。"
+	},
 
 	// タグ
 	"[Tag]Heavenly": "天国系",
