@@ -562,45 +562,62 @@ const betterJapanese = {
 
     locTicker: function(tickerText) {
         let baseTickerText = tickerText
-        let isContainsHtmlTag = tickerText.startsWith('<')
+        let newsRegex = /N.*ws : /
+        let isStartWithHtmlTag = tickerText.startsWith('<')
+        let isContainsNewsText = tickerText.match(newsRegex)
 
-        // 文頭の"News : "を除去
-        let ticker = tickerText.replace(/N.*ws : /, '')
+        // "News : "があれば除去
+        let ticker = isContainsNewsText ? tickerText.replace(newsRegex, '') : tickerText
 
         // htmlタグが含まれている場合はタグを除去
-        if (isContainsHtmlTag) ticker = ticker.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')
+        if (isStartWithHtmlTag) ticker = ticker.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')
 
-        // 静的なニュースであればlocStringsから探して返す
-        let staticLocStr = locStrings[ticker]
-        if (staticLocStr) return !isContainsHtmlTag ? staticLocStr : baseTickerText.replace(ticker, staticLocStr)
+        // 翻訳
+        let localizedStr = betterJapanese.replaceString(ticker)
+
+        // 先程削除したNewsを追加 (含んでいなければ何もしない)
+        if (isContainsNewsText) localizedStr = loc('News :').replace(' ', '&nbsp;') + ' ' + localizedStr
+
+        // htmlタグが含まれている場合はタグを追加
+        if (isStartWithHtmlTag) localizedStr = baseTickerText.replace(ticker, localizedStr)
+
+        return localizedStr
+    },
+
+    replaceString(str) {
+        // locStringsから探して見つかれば返す
+        let staticLocStr = locStrings[str]
+        if(staticLocStr) return staticLocStr
 
         // 動的なニュース(Ticker (Dynamic))のリストが読み込めていなければそのまま返す
-        let dynamicTickerList = locStrings['Ticker (Dynamic)']
-        if (!dynamicTickerList) return tickerText
+        let dynamicLocList = locStrings['Ticker (Dynamic)']
+        if (!dynamicLocList) return str
 
         // 動的ニュースリストから対象のニュースを探す
-        let targetTicker = Object.keys(dynamicTickerList).find((text) => {
+        let targetStr = Object.keys(dynamicLocList).find((text) => {
             // エスケープが必要な文字をエスケープしてから動的な部分 (%1や%2など) を置き換え
-            return betterJapanese.getReplacedRegex(text).test(ticker)
+            return betterJapanese.getReplacedRegex(text).test(str)
         })
 
-        if (!targetTicker) return tickerText
+        if (!targetStr) return str
 
-        let localizedStr = dynamicTickerList[targetTicker]
+        let dynamicLocStr = dynamicLocList[targetStr]
 
         // 置き換える単語を取得
-        let tickerParams = betterJapanese.getReplacedRegex(targetTicker).exec(ticker)
+        let strParams = betterJapanese.getReplacedRegex(targetStr).exec(str)
+
+        console.log(strParams)
 
         // 置き換え
-        for (let i = 0; i < tickerParams.length - 1; i++) {
-            localizedStr = localizedStr.replace(`%${i + 1}`, loc(tickerParams[i + 1]))
+        for (let i = 0; i < strParams.length - 1; i++) {
+            dynamicLocStr = dynamicLocStr.replace(`%${i + 1}`, betterJapanese.replaceString(strParams[i + 1]))
         }
 
-        return !isContainsHtmlTag ? localizedStr : baseTickerText.replace(ticker, localizedStr)
+        return dynamicLocStr
     },
 
     getReplacedRegex: function(str, splitRegex = /%\d+/g) {
-        return new RegExp(str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1').replace(splitRegex, '(.*)'), 'g')
+        return new RegExp(str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1').replace(splitRegex, '(.*?)'), 'g')
     },
     
     devCheck: function(isDev = false) {
