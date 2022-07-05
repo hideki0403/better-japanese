@@ -617,7 +617,7 @@ const betterJapanese = {
     },
 
     getReplacedRegex: function(str, splitRegex = /%\d+/g) {
-        return new RegExp(str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1').replace(splitRegex, '(.*?)'), 'g')
+        return new RegExp(str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1').replace(splitRegex, '(.*)'), 'g')
     },
     
     devCheck: function(isDev = false) {
