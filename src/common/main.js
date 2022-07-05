@@ -332,6 +332,10 @@ const betterJapanese = {
             }
         }
 
+        // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
+        let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+        eval(`Game.getNewTicker = ${tickerOrigin}`)
+
         // ニュースを英語で出力させるように
         betterJapanese.origins.getNewTicker = Game.getNewTicker
         Game.getNewTicker = function(manual) {
