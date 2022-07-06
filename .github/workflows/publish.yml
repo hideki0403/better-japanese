@@ -10,6 +10,7 @@ on:
       - 'release'
     paths:
       - 'locales/*.json5'
+  workflow_dispatch:
       
 jobs:
   build:
