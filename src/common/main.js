@@ -2,7 +2,7 @@ const betterJapanese = {
     name: 'betterJapanese',
     apiUrl: {
         release: 'https://pages.yukineko.me/better-japanese/api/release.json',
-        dev: '../mods/local/better-japanese/translate.json'
+        dev: '../mods/local/better-japanese'
     },
     config: {
         hash: '0',
@@ -459,7 +459,7 @@ const betterJapanese = {
     checkUpdate: async function() {
         this.log('Checking updates')
 
-        if (this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
+        if (this.isDev) return await this.updateLanguagePack(this.apiUrl.dev + '/translate.json')
         let res = await fetch(this.apiUrl.release).then(res => res.json()).catch((err) => {
             this.log(`An error occurred while checking for updates: ${err}`)
             return this.config
