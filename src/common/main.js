@@ -606,8 +606,6 @@ const betterJapanese = {
         // 置き換える単語を取得
         let strParams = betterJapanese.getReplacedRegex(targetStr).exec(str)
 
-        console.log(strParams)
-
         // 置き換え
         for (let i = 0; i < strParams.length - 1; i++) {
             dynamicLocStr = dynamicLocStr.replace(`%${i + 1}`, betterJapanese.replaceString(strParams[i + 1]))
@@ -617,7 +615,11 @@ const betterJapanese = {
     },
 
     getReplacedRegex: function(str, splitRegex = /%\d+/g) {
-        return new RegExp(str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1').replace(splitRegex, '(.*)'), 'g')
+        let regex = str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1')
+        if (str.match('%1 %2')) regex = regex.replace('%1', '(.*?)')
+        regex = regex.replace(splitRegex, '(.*)')
+
+        return new RegExp(regex, 'g')
     },
     
     devCheck: function(isDev = false) {

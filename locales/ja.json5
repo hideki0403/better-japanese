@@ -4538,9 +4538,9 @@
     "tastier": "より美味しく",
 	
 	// TickerList (misc3)
-    "roasted": "ロースト",
-    "toasted": "トースト",
-    "boiled": "ボイルド",
+    "roasted": "ローストした",
+    "toasted": "トーストした",
+    "boiled": "ボイルした",
     "sauteed": "ソテーした",
     "minced": "ミンチにした",
 
@@ -4953,7 +4953,7 @@
 		"unsightly lumps found on %1 near cookie facility; \"they've pretty much always looked like that\", say biologists.": "クッキー施設周辺の%1に奇妙な腫瘍、生物学者は「腫瘍は非常に多く見られる」とコメント。",
 		"new species of %1 discovered in distant country; \"yup, tastes like cookies\", says biologist.": "海外で新種の%1を発見。生物学者は「うん、クッキー味だ」とコメント。",
 		"cookies go well with %1 %2, says controversial chef.": "クッキーは%1%2を和えるとおいしく頂ける、物議を醸したシェフのコメント。",
-		"%1 made from": "%1で作られた",
+		"made from %1": "で作られた%1",
 		"\"do your cookies contain %1?\", asks PSA warning against counterfeit cookies.": "「あなたのクッキーに%1は含まれていますか?」、製品安全性協会が偽クッキーに警告。",
 		"cookies now more popular than %1, says study.": "クッキーは今や%1以上に人気との研究結果。",
 		"obesity epidemic strikes nation; experts blame %1.": "国民を揺るがす肥満の原因、専門家は%1と分析。",
