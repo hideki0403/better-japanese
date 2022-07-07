@@ -1,15 +1,23 @@
 const betterJapanese = {
     name: 'betterJapanese',
-    apiUrl: {
-        release: 'https://pages.yukineko.me/better-japanese/api/release.json',
-        dev: '../mods/local/better-japanese'
+    api: {
+        url: {
+            release: 'https://pages.yukineko.me/better-japanese/api/release.json',
+            dev: '../mods/local/better-japanese'
+        },
+        endpoints: {
+            'TRANSLATE': null,
+            'CATEGORY': null
+        },
+        cache: null
     },
     config: {
         hash: '0',
         replaceJP: true,
         numberJP: true,
         shortFormatJP: false,
-        secondFormatJP: true
+        secondFormatJP: true,
+        ignoreList: []
     },
     isDev: false,
     initialized: false,
@@ -20,6 +28,7 @@ const betterJapanese = {
         suffixes: [], // 上数用の単位
         short: [] // 塵劫記用の単位
     },
+    tmpIgnoreList: {},
     isRegisteredHook: false,
 
     init: function() {
@@ -47,7 +56,7 @@ const betterJapanese = {
         origin.splice(origin.length - 1, 0, `
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
-            } 
+            }
             
             if (Game.onMenu == 'stats') {
                 betterJapanese.fixStats()
@@ -128,6 +137,16 @@ const betterJapanese = {
             font-weight:bold;
             margin-top:-2px;
         }
+
+        #prompt.ignoreList {
+            width: 50vw;
+            left: -25vw;
+        }
+
+        #prompt input {
+            width: auto;
+            margin: 4px;
+        }
         `
 
         document.head.appendChild(customStyle)
@@ -185,7 +204,7 @@ const betterJapanese = {
                 </div>`) : '')}
             </div>
             <div class="subsection">
-                <div class="title">${loc('Version history')}</div>`
+            <div class="title">${loc('Version history')}</div>`
         let logUpdates = ''
         let logPerUpdate = ''
         let logIndex = ''
@@ -381,7 +400,7 @@ const betterJapanese = {
 
     load: function() {
         let conf = localStorage.getItem('BJPConfig')
-        if (conf) this.config = JSON.parse(conf)
+        if (conf) this.config = Object.assign(this.config, JSON.parse(conf))
     },
 
     log: function(msg) {
@@ -394,8 +413,13 @@ const betterJapanese = {
             Game.RefreshStore()
             Game.upgradesToRebuild = 1
         }
+
+        let openPrompt = () => {
+            betterJapanese.openIgnorePrompt()
+        }
+
         this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます。変更は再起動後に適用されます。', updateAll)
-        // this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', betterJapanese.openIgnorePrompt)
+        this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', openPrompt)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
@@ -456,28 +480,45 @@ const betterJapanese = {
         document.body.append(element)
     },
 
-    checkUpdate: async function() {
-        this.log('Checking updates')
-
-        if (this.isDev) return await this.updateLanguagePack(this.apiUrl.dev + '/translate.json')
-        let res = await fetch(this.apiUrl.release).then(res => res.json()).catch((err) => {
-            this.log(`An error occurred while checking for updates: ${err}`)
-            return this.config
+    getJSON: async function(url) {
+        let res = await fetch(url).then(res => res.json()).catch((err) => {
+            this.log(`An error occurred while retrieving data: ${err}`)
+            return null
         })
 
-        if (res.hash !== this.config.hash) {
-            if (await this.updateLanguagePack(res.url)) {
-                this.config.hash = res.hash
-                this.save()
-                this.showUpdateNotification()
-            }
-        } else {
-            this.log('No updates available')
-        }
+        if (!res) return null
+
+        return res
     },
 
-    showUpdateNotification: function() {
-        Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
+    getAssetsData: async function() {
+        // キャッシュがあればキャッシュを返す
+        if(this.api.cache) return this.api.cache
+
+        // なければ取得して定義
+        this.api.cache = await this.getJSON(this.api.url.release)
+        this.api.endpoints.TRANSLATE = !this.isDev ? this.api.cache?.url?.translate : this.api.url.dev + '/translate.json'
+        this.api.endpoints.CATEGORY = !this.isDev ? this.api.cache?.url?.category : this.api.url.dev + '/category.json'
+        
+        return this.api.cache
+    },
+
+    checkUpdate: async function(force = false) {
+        this.log('Checking updates')
+
+        // 開発者モードがONであれば強制的に更新
+        if (this.isDev) return await this.updateLanguagePack()
+
+        // APIからアセットのデータを取得
+        let data = await this.getAssetsData()
+
+        // データが正しく取得できなかったら終了
+        if (!data) return this.log('An error occurred while checking updates')
+
+        // 更新がなかったら終了
+        if (data.hash === this.config.hash && !force) return this.log('No updates available')
+
+        return await this.updateLanguagePack()
     },
 
     reload: function() {
@@ -487,28 +528,103 @@ const betterJapanese = {
 
     reloadLanguagePack: async function() {
         await this.checkUpdate()
-        this.showUpdateNotification()
         ModLanguage('JA', JSON.parse(localStorage.getItem('BJPLangPack')))
     },
 
-    updateLanguagePack: async function(url) {
-        let base = {
-            '': {
-                'language': 'JA',
-                'plural-forms': 'nplurals=2;plural=(n!=1);'
-            },
+    updateLanguagePack: async function() {
+        let assetsData = await this.getAssetsData()
+
+        // assetsDataが存在せず、なおかつ開発者モードではなければ終了
+        if (!assetsData && !this.isDev) return null
+
+        // TODO: apiのエンドポイント変更
+
+        let translateJson = await this.getJSON(this.api.endpoints.TRANSLATE)
+        let ignoreList = this.config.ignoreList
+
+        for (let key of ignoreList) {
+            delete translateJson[key]
         }
 
-        try {
-            let lang = await fetch(url).then(res => res.json())
-            localStorage.setItem('BJPLangPack', JSON.stringify(Object.assign(base, lang)))
-        } catch {
-            this.log('Update failed')
-            return false
+        translateJson[''] = {
+            'language': 'JA',
+            'plural-forms': 'nplurals=2;plural=(n!=1);'
         }
 
+        localStorage.setItem('BJPLangPack', JSON.stringify(translateJson))
         this.log('Update successfull')
-        return true
+
+        Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
+    },
+
+    openIgnorePrompt: async function() {
+        // let categoryList = await betterJapanese.getJSON(betterJapanese.api.endpoints.CATEGORY)
+        betterJapanese.tmpIgnoreList = {}
+
+        let content = `
+            <h3>非公式日本語訳 置き換え除外リスト</h3>
+            <p>単語の左にあるチェックボックスにチェックを付けるとその単語の置き換えを無効化します。</p>
+            <input id="ignorelist-search" type="search" placeholder="単語を検索" onchange="betterJapanese.createIgnoreList()">
+            <form id="ignorelist-content" style="height: 50vh; overflow-y: scroll; text-align: left; margin: 10px;">読み込み中</form>
+        `
+
+        Game.Prompt(content, [['保存', 'betterJapanese.saveIgnoreList();Game.ClosePrompt();'], 'キャンセル'], null, 'ignoreList')
+        document.getElementById('ignorelist-search').addEventListener('input', betterJapanese.createIgnoreList)
+        document.getElementById('ignorelist-content').addEventListener('change', (e) => {
+            betterJapanese.tmpIgnoreList[e.target.name.replace(/\\"/g, '"')] = e.target.checked
+        })
+
+        betterJapanese.createIgnoreList()
+    },
+
+    createIgnoreList: async function() {
+        let searchWord = document.getElementById('ignorelist-search')?.value || ''
+        let translateList = await betterJapanese.getJSON(betterJapanese.api.endpoints.TRANSLATE)
+        let ignoreList = betterJapanese.processIgnoreList()
+
+        let translateListHtml = []
+        for (let key of Object.keys(translateList)) {
+            let value = translateList[key]
+            let isChecked = ignoreList.includes(key)
+
+            if (value.constructor === Object) continue
+            if (value.constructor === Array) value = value[0]
+
+            if (searchWord && !value.match(searchWord)) continue
+
+            key = key.replace(/"/g, '\\$1')
+
+            translateListHtml.push(`<div><input type="checkbox" name="${key}" ${isChecked ? 'checked' : ''}><label for="${key}">${value.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')}</label></div>`)
+        }
+
+        if (!translateListHtml.length) translateListHtml.push('<p>該当する単語が見つかりませんでした。</p>')
+
+        document.getElementById('ignorelist-content').innerHTML = translateListHtml.join('')
+    },
+
+    processIgnoreList: function() {
+        let array = betterJapanese.config.ignoreList.concat()
+
+        for (let key of Object.keys(betterJapanese.tmpIgnoreList)) {
+            // 変更予定リストに含まれている要素がtrueであればignoreListに追加
+            if (betterJapanese.tmpIgnoreList[key]) {
+                array.push(key)
+                continue
+            }
+
+            // 変更予定リストに含まれている要素がfalseでなおかつignoreListに追加されていればignoreListから削除
+            if (array.includes(key)) {
+                array.splice(array.indexOf(key), 1)
+            }
+        }
+
+        return array
+    },
+
+    saveIgnoreList: function() {
+        betterJapanese.config.ignoreList = betterJapanese.processIgnoreList()
+        betterJapanese.checkUpdate(true)
+        // Game.Notify('日本語訳改善Mod', '置き換え除外リストを保存しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
     },
 
     formatEveryFourthPower: function() {
@@ -554,10 +670,6 @@ const betterJapanese = {
 
     createSynergyUpgradeDesc: function(upgrade) {
         return `${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie1.plural), 5, upgrade.buildingTie2.single])}<br>${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie2.plural), 0.1, upgrade.buildingTie1.single])}`
-    },
-
-    openIgnorePrompt: function() {
-        Game.Prompt('非公式翻訳の置き換え除外リスト', ['保存', 'キャンセル'])
     },
 
     locTicker: function(tickerText) {
