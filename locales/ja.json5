@@ -756,7 +756,7 @@
 	"Sugar lumps coalesce <b>a whole lot faster</b>.": "角砂糖の融合が<b>大変早く</b>なる。",
 	"<b>+%1%</b> prestige level effect on CpS.": "名声レベルのCpSへの効果が <b>+%1%</b> される。",
 	"<b>+%1%</b> prestige level effect on CpS.<br><b>+%2%</b> golden cookie effect duration.<br><b>+%3%</b> golden cookie lifespan.": "名声レベルのCpSへの効果が <b>+%1%</b> される。<br>ゴールデンクッキーの効果の時間が <b>+%2%</b> される。<br>ゴールデンクッキーの画面に残る時間が <b>+%3%</b> される。",
-	"Each unspent sugar lump (up to %1) gives <b>+%2% CpS</b>.<div class=\"warning\">Note: this means that spending sugar lumps will decrease your CpS until they grow back.</div>": "未使用の角砂糖1つにつきCpSが <b>+%21%</b> される(上限%1個)。<div class=\"warning\">メモ : このアップグレードにより角砂糖を使用時に、角砂糖が成長して元の数に戻るまでCpSが下がります。</div>",
+	"Each unspent sugar lump (up to %1) gives <b>+%2% CpS</b>.<div class=\"warning\">Note: this means that spending sugar lumps will decrease your CpS until they grow back.</div>": "未使用の角砂糖1つにつきCpSが <b>+%2%</b> される(上限%1個)。<div class=\"warning\">メモ : このアップグレードにより角砂糖を使用時に、角砂糖が成長して元の数に戻るまでCpSが下がります。</div>",
 	"Once an ascension, you may use the \"Sugar frenzy\" switch to <b>triple your CpS</b> for 1 hour, at the cost of <b>1 sugar lump</b>.": "転生1回につき一度、 角砂糖 <b>1個</b> を消費することで、1時間CpSが <b>3倍</b>になる「砂糖フィーバー」スイッチが解禁される。",
 	"Each grandma (up to %1) makes sugar lumps ripen <b>%2</b> sooner.": "角砂糖の成長がグランマ1人につき(最大%1人) <b>%2</b> 早くなる。",
 	"Activating this will <b>triple your CpS</b> for 1 hour, at the cost of <b>1 sugar lump</b>.": "<b>1角砂糖</b> を消費して有効化することで、1時間 <b>CpSが3倍</b> になる。",

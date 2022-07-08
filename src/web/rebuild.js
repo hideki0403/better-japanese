@@ -25,6 +25,10 @@ function rebuildLocalization() {
     l('ascendButton').outerHTML = `<a id="ascendButton" class="option framed large red" ${Game.getTooltip(`<div style="min-width:300px;text-align:center;font-size:11px;padding:8px;" id="tooltipReincarnate">${loc('Click this once you\'ve bought<br>everything you need!')}</div>`, 'bottom-right')} style="font-size:16px;margin-top:0px;"><span class="fancyText" style="font-size:20px;">${loc('Reincarnate')}</span></a>`
     l('ascendInfo').getElementsByClassName('ascendData')[0].innerHTML = loc('You are ascending.<br>Drag the screen around<br>or use arrow keys!<br>When you\'re ready,<br>click Reincarnate.')
     Game.UpdateAscensionModePrompt()
+    AddEvent(l('ascendButton'), 'click', function() {
+        PlaySound('snd/tick.mp3')
+        Game.Reincarnate()
+    })
     
     // 設定画面オンオフ
     ON = ' ' + loc('ON')
@@ -165,14 +169,14 @@ function rebuildLocalization() {
         let name = result[1].replaceAll('\\\'', '\'')
         let obj = Game.Upgrades[name]
         let pow = typeof (obj.power) === 'function' ? obj.power(obj) : obj.power
-        obj.ddesc = loc('Cookie production multiplier <b>+%1%</b>.', pow)
+        obj.baseDesc = loc('Cookie production multiplier <b>+%1%</b>.', pow)
     }
     
     // シナジー系アップグレード概要
     for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.SynergyUpgrade\('(.+?)(?<!\\)',/g)) {
         let name = result[1].replaceAll('\\\'', '\'')
         let obj = Game.Upgrades[name]
-        obj.ddesc = loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie1.plural), 5, obj.buildingTie2.single]) + '<br>' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie2.plural), 0.1, obj.buildingTie1.single])
+        obj.baseDesc = loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie1.plural), 5, obj.buildingTie2.single]) + '<br>' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie2.plural), 0.1, obj.buildingTie1.single])
     }
     
     // ティアありアップグレード概要
@@ -180,9 +184,9 @@ function rebuildLocalization() {
         let name = result[1].replaceAll('\\\'', '\'')
         let obj = Game.Upgrades[name]
         if (result[3] === '\'fortune\'') {
-            obj.ddesc = loc('%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.', [cap(obj.buildingTie1.plural), 7, 7])
+            obj.baseDesc = loc('%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.', [cap(obj.buildingTie1.plural), 7, 7])
         } else {
-            obj.ddesc = loc('%1 are <b>twice</b> as efficient.', cap(obj.buildingTie1.plural))
+            obj.baseDesc = loc('%1 are <b>twice</b> as efficient.', cap(obj.buildingTie1.plural))
         }
     }
     
@@ -192,9 +196,9 @@ function rebuildLocalization() {
         let building = Game.Objects[name]
         let obj = Game.Upgrades['Unshackled ' + building.bplural]
         if (name === 'Cursor') {
-            obj.ddesc = getStrThousandFingersGain(25)
+            obj.baseDesc = getStrThousandFingersGain(25)
         } else {
-            obj.ddesc = loc('Tiered upgrades for <b>%1</b> provide an extra <b>+%2%</b> production.<br>Only works with unshackled upgrade tiers.', [cap(building.plural), Math.round((building.id == 1 ? 0.5 : (20 - building.id) * 0.1) * 100)])
+            obj.baseDesc = loc('Tiered upgrades for <b>%1</b> provide an extra <b>+%2%</b> production.<br>Only works with unshackled upgrade tiers.', [cap(building.plural), Math.round((building.id == 1 ? 0.5 : (20 - building.id) * 0.1) * 100)])
         }
     }
     
@@ -208,13 +212,13 @@ function rebuildLocalization() {
             obj = Game.Upgrades['Unshackled ' + Game.Tiers[tier].name.toLowerCase()]
         }
         tier = Game.Tiers[tier]
-        obj.ddesc = loc('Unshackles all <b>%1-tier upgrades</b>, making them more powerful.<br>Only applies to unshackled buildings.', cap(loc('[Tier]' + tier.name, 0, tier.name)))
+        obj.baseDesc = loc('Unshackles all <b>%1-tier upgrades</b>, making them more powerful.<br>Only applies to unshackled buildings.', cap(loc('[Tier]' + tier.name, 0, tier.name)))
     }
     
     // グランマシナジー系アップグレード概要
     for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.GrandmaSynergy\('(.+?)(?<!\\)',/g)) {
         let obj = Game.Upgrades[result[1].replaceAll('\\\'', '\'')]
-        obj.ddesc = loc('%1 are <b>twice</b> as efficient.', cap(Game.Objects['Grandma'].plural)) + ' ' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie.plural), 1, loc('%1 grandma', LBeautify(obj.buildingTie.id - 1))])
+        obj.baseDesc = loc('%1 are <b>twice</b> as efficient.', cap(Game.Objects['Grandma'].plural)) + ' ' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie.plural), 1, loc('%1 grandma', LBeautify(obj.buildingTie.id - 1))])
     }
     
     let angelUpgrades = ['Angels', 'Archangels', 'Virtues', 'Dominions', 'Cherubim', 'Seraphim', 'God']// 天使系アップグレード
@@ -224,15 +228,15 @@ function rebuildLocalization() {
     for (let result of funcInitString.matchAll(/(?<!\/\/|=)new Game\.Upgrade\('(.+?)(?<!\\)',(.+?)(?<!\([^,\)]+?),((?:[^,]|(?:(?<=\([^\)]+?),(?=[^\(]+?\))))+)(?<!\([^,\)]+?),(?:\[\d+?,\d+?\]|Game.GetIcon\(.+?\))(?:,function\(\){.+?})?\);/g)) {
         let obj = Game.Upgrades[result[1].replaceAll('\\\'', '\'')]
         if (obj.name.indexOf('Permanent upgrade slot ') == 0) {
-            obj.ddesc = loc('Placing an upgrade in this slot will make its effects <b>permanent</b> across all playthroughs.')
+            obj.baseDesc = loc('Placing an upgrade in this slot will make its effects <b>permanent</b> across all playthroughs.')
         } else if (angelUpgrades.includes(obj.name)) {
             let match = result[2].match(/desc\((\d+?),(\d+?)\)/)
-            obj.ddesc = loc('You gain another <b>+%1%</b> of your regular CpS while the game is closed, for a total of <b>%2%</b>.', [Number(match[1]), Number(match[2])])
+            obj.baseDesc = loc('You gain another <b>+%1%</b> of your regular CpS while the game is closed, for a total of <b>%2%</b>.', [Number(match[1]), Number(match[2])])
         } else if (demonUpgrades.includes(obj.name)) {
             let match = result[2].match(/desc\((\d+?)\)/)
-            obj.ddesc = loc('You retain optimal cookie production while the game is closed for twice as long, for a total of <b>%1</b>.', Game.sayTime(Number(match[1]) * 60 * 60 * Game.fps, -1))
+            obj.baseDesc = loc('You retain optimal cookie production while the game is closed for twice as long, for a total of <b>%1</b>.', Game.sayTime(Number(match[1]) * 60 * 60 * Game.fps, -1))
         } else {
-            obj.ddesc = eval(result[2])
+            obj.baseDesc = eval(result[2])
         }
     }
     
@@ -241,12 +245,13 @@ function rebuildLocalization() {
         let obj = Game.Upgrades[upg]
         let quote = loc(FindLocStringByPart('Upgrade quote ' + obj.id))
         if (typeof (quote) !== 'undefined') {
-            let qpos = obj.ddesc.indexOf('<q>')
+            let qpos = obj.baseDesc.indexOf('<q>')
             if (qpos >= 0) {
-                obj.ddesc = obj.ddesc.substring(0, qpos)
+                obj.baseDesc = obj.baseDesc.substring(0, qpos)
             }
-            obj.ddesc += `<q>${quote}</q>`
+            obj.baseDesc += `<q>${quote}</q>`
         }
+        obj.ddesc = obj.baseDesc
     }
     
     // ティアあり実績概要
