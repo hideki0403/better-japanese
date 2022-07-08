@@ -351,6 +351,10 @@ const betterJapanese = {
             }
         }
 
+        // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
+        let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+        eval(`Game.getNewTicker = ${tickerOrigin}`)
+
         // ニュースを英語で出力させるように
         betterJapanese.origins.getNewTicker = Game.getNewTicker
         Game.getNewTicker = function(manual) {
@@ -700,14 +704,6 @@ const betterJapanese = {
         // 動的なニュース(Ticker (Dynamic))のリストが読み込めていなければそのまま返す
         let dynamicLocList = locStrings['Ticker (Dynamic)']
         if (!dynamicLocList) return str
-
-        // フォーチュン系のニュースの場合に翻訳
-        for (let i in Game.Tiers['fortune'].upgrades) {
-			let it = Game.Tiers['fortune'].upgrades[i]
-			if (it.dname.substring('Fortune '.length) + ' : ' + it.baseDesc.substring(it.baseDesc.indexOf('<q>') + 3, it.baseDesc.length - '</q>'.length) === str) {
-                return it.dname.substring(it.dname.indexOf('No.')) + ' : ' + it.baseDesc.substring(it.baseDesc.indexOf('<q>') + 3, it.baseDesc.length - '</q>'.length)
-            }
-		}
 
         // 動的ニュースリストから対象のニュースを探す
         let targetStr = Object.keys(dynamicLocList).find((text) => {
