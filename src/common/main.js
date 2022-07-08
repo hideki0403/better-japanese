@@ -286,7 +286,7 @@ const betterJapanese = {
         }
 
         // 一級品の壁紙アソートメントの説明翻訳
-        upgrade = Game.Upgrades['Distinguished wallpaper assortment'].desc = loc('Contains more wallpapers for your background selector.')
+        Game.Upgrades['Distinguished wallpaper assortment'].desc = loc('Contains more wallpapers for your background selector.')
 
         // ゴールデンスイッチの説明翻訳
         let func = function() {

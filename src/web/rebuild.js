@@ -247,7 +247,7 @@ function rebuildLocalization() {
         if (typeof (quote) !== 'undefined') {
             let qpos = obj.baseDesc.indexOf('<q>')
             if (qpos >= 0) {
-                obj.ddesc = obj.baseDesc.substring(0, qpos)
+                obj.baseDesc = obj.baseDesc.substring(0, qpos)
             }
             obj.baseDesc += `<q>${quote}</q>`
         }
