@@ -30,6 +30,7 @@ const betterJapanese = {
     },
     tmpIgnoreList: {},
     tmpCategoryList: {},
+    currentIgnoreList: [],
     isRegisteredHook: false,
 
     init: function() {
@@ -611,6 +612,8 @@ const betterJapanese = {
                     <h4>単語を個別に選択</h4>
                     <p>単語の左にあるチェックボックスにチェックを付けるとその単語の置き換えを無効化します。</p>
                     <input id="ignorelist-search" type="search" placeholder="単語を検索" onchange="betterJapanese.createIgnoreWordList()">
+                    <button type="button" onclick="betterJapanese.changeAllIgnoreList(true)">全選択</button>
+                    <button type="button" onclick="betterJapanese.changeAllIgnoreList(false)">全解除</button>
                     <div id="ignorelist-content" style="height: 50vh; overflow-y: scroll; text-align: left;">読み込み中</div>
                 </div>
             </div>
@@ -706,6 +709,7 @@ const betterJapanese = {
         let searchWord = document.getElementById('ignorelist-search')?.value || ''
         let translateList = await betterJapanese.getJSON(betterJapanese.api.endpoints.TRANSLATE)
         let ignoreList = betterJapanese.processIgnoreList()
+        betterJapanese.currentIgnoreList = []
 
         let translateListHtml = []
         for (let key of Object.keys(translateList)) {
@@ -717,6 +721,7 @@ const betterJapanese = {
 
             if (searchWord && !value.match(searchWord)) continue
 
+            betterJapanese.currentIgnoreList.push(key)
             key = key.replace(/"/g, '\\$1')
 
             translateListHtml.push(`<div><label><input type="checkbox" name="word:${key}" ${isChecked ? 'checked' : ''}>${value.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')}</label></div>`)
@@ -757,6 +762,13 @@ const betterJapanese = {
         categoryListHtml += '</ul>'
 
         document.getElementById('ignorelist-category').innerHTML = categoryListHtml
+    },
+
+    changeAllIgnoreList: function(state) {
+        betterJapanese.currentIgnoreList.forEach(key => {
+            betterJapanese.tmpIgnoreList[key] = state
+        })
+        betterJapanese.createIgnoreWordList()
     },
 
     processIgnoreList: function() {
