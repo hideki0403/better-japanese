@@ -34,8 +34,6 @@ const betterJapanese = {
     isRegisteredHook: false,
 
     init: function() {
-        this.load()
-
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
             this.initialized = true
@@ -52,6 +50,8 @@ const betterJapanese = {
     },
 
     initAfterLoad: async function() {
+        betterJapanese.load()
+
         // メニューに独自ボタンを実装
         // この方法で実装しないとCCSEなどのメニュー独自実装Modと競合してしまう
         let origin = eval('Game.UpdateMenu.toString()').split('\n')
@@ -112,12 +112,6 @@ const betterJapanese = {
             }
             if (output == '0') negative = false
             return negative ? '-' + output : output + decimal
-        }
-
-        // 背景の名前を翻訳
-        for (let i = 1; i < Game.AllBGs.length; i++) {
-            Game.AllBGs[i].enName = Game.AllBGs[i].name
-            Game.AllBGs[i].name = loc(Game.AllBGs[i].enName)
         }
 
         // カスタムCSSを適用
@@ -187,6 +181,17 @@ const betterJapanese = {
         `
 
         document.head.appendChild(customStyle)
+
+        // 設定の「日本語訳の改善」がOFFになっている場合はここから下は実行しない (ニュース欄やアップデート履歴が壊れる)
+        if (!betterJapanese.config.replaceJP) return
+
+        console.log(betterJapanese.config.replaceJP)
+
+        // 背景の名前を翻訳
+        for (let i = 1; i < Game.AllBGs.length; i++) {
+            Game.AllBGs[i].enName = Game.AllBGs[i].name
+            Game.AllBGs[i].name = loc(Game.AllBGs[i].enName)
+        }
 
         // 在庫市場のquoteを実装
         while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
