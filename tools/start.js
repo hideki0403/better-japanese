@@ -33,7 +33,7 @@ async function copyFiles(file) {
 
     let translatedJson = json5.parse(fs.readFileSync(localeFile, 'utf-8'))
     let category = {}
-    if (file && file.match('.json5')) {
+    if (!file || file.match('.json5')) {
         let currentCategory = null
         let parent = null
         let parentKey = null
@@ -81,7 +81,8 @@ async function copyFiles(file) {
     fs.copySync(srcDir, distDir)
     fs.copySync(assetsDir, distDir)
     fs.writeJSONSync(path.join(distDir, 'translate.json'), translatedJson)
-    fs.writeJSONSync(path.join(distDir, 'category.json'), category)
+    if (Object.keys(category).length) fs.writeJSONSync(path.join(distDir, 'category.json'), category)
+
     return true
 }
 
