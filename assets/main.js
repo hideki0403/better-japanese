@@ -588,6 +588,9 @@ const betterJapanese = {
         }
 
         localStorage.setItem('BJPLangPack', JSON.stringify(translateJson))
+        this.config.hash = assetsData.hash
+        this.save()
+        
         this.log('Update successfull')
 
         Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
