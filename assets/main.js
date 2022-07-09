@@ -1,15 +1,23 @@
 const betterJapanese = {
     name: 'betterJapanese',
-    apiUrl: {
-        release: 'https://pages.yukineko.me/better-japanese/api/release.json',
-        dev: '../mods/local/better-japanese/translate.json'
+    api: {
+        url: {
+            release: 'https://pages.yukineko.me/better-japanese/api/release.json',
+            dev: '../mods/local/better-japanese'
+        },
+        endpoints: {
+            'TRANSLATE': null,
+            'CATEGORY': null
+        },
+        cache: null
     },
     config: {
         hash: '0',
         replaceJP: true,
         numberJP: true,
         shortFormatJP: false,
-        secondFormatJP: true
+        secondFormatJP: true,
+        ignoreList: []
     },
     isDev: false,
     initialized: false,
@@ -20,6 +28,8 @@ const betterJapanese = {
         suffixes: [], // 上数用の単位
         short: [] // 塵劫記用の単位
     },
+    tmpIgnoreList: {},
+    tmpCategoryList: {},
     isRegisteredHook: false,
 
     init: function() {
@@ -33,23 +43,14 @@ const betterJapanese = {
         if (App) send({ id: 'init bridge' })
 
         if (!this.isRegisteredHook) this.initAfterLoad()
-        if (!App && Game.ready) this.initAfterDOMCreated()
+
+        // Web版で既にDOMが構築されていた場合はDOMを再構成するスクリプトを読み込む (一部の翻訳が適用されないため)
+        if (!App && Game.ready) Game.LoadMod('https://pages.yukineko.me/better-japanese/rebuild.js')
 
         this.log('Initialized')
     },
 
     initAfterLoad: async function() {
-        betterJapanese.origins.sayTime = Game.sayTime
-        betterJapanese.origins.beautify = Beautify
-        betterJapanese.origins.parseLoc = parseLoc
-
-        // 翻訳対象の文章の末尾に%が付いている場合に消えてしまう問題を修正
-        parseLoc = function(str, params) {
-            let baseStr = betterJapanese.origins.parseLoc(str, params)
-            if (typeof str === 'string' && str.endsWith('%')) baseStr += '%'
-            return baseStr
-        }
-
         // メニューに独自ボタンを実装
         // この方法で実装しないとCCSEなどのメニュー独自実装Modと競合してしまう
         let origin = eval('Game.UpdateMenu.toString()').split('\n')
@@ -57,10 +58,15 @@ const betterJapanese = {
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
             }
+            
+            if (Game.onMenu == 'stats') {
+                betterJapanese.fixStats()
+            }
         `)
         eval(`Game.UpdateMenu = ${origin.join('\n')}`)
 
         // 時間表記からカンマを取り除く
+        betterJapanese.origins.sayTime = Game.sayTime
         Game.sayTime = function(time, detail) {
             return betterJapanese.origins.sayTime(time, detail).replaceAll(', ', '')
         }
@@ -87,6 +93,7 @@ const betterJapanese = {
         ]
 
         // 設定によって日本語単位を使用するように変更、同時にカンマ区切りも場合によって変更
+        betterJapanese.origins.beautify = Beautify
         Beautify = function(val, floats) {
             let negative = (val < 0)
             let decimal = ''
@@ -131,6 +138,51 @@ const betterJapanese = {
             font-weight:bold;
             margin-top:-2px;
         }
+
+        #prompt.ignoreList {
+            width: 50vw;
+            left: -25vw;
+        }
+
+        #prompt input {
+            width: auto;
+            margin: 4px;
+        }
+
+        .accordion-parent {
+            display: none;
+        }
+
+        .accordion-child {
+            display: none;
+        }
+
+        .accordion-parent:checked + label + .accordion-child {
+            display: block;
+        }
+
+        .accordion-parent + label > li:after {
+            content: "▼";
+            margin-left: 10px;
+            background-color: #555;
+            padding: 2px;
+            border-radius: 8px;
+        }
+
+        .accordion-parent:checked + label > li:after {
+            content: "▲";
+        }
+
+        #prompt li {
+            margin: 5px 0;
+            padding: 5px;
+            background: #222;
+        }
+
+        #prompt ul ul {
+            list-style: none;
+            padding-left: 20px;
+        }
         `
 
         document.head.appendChild(customStyle)
@@ -149,31 +201,76 @@ const betterJapanese = {
             }
         }
 
-        // 更新履歴の翻訳
+        // 情報欄の翻訳
+        betterJapanese.origins.updateLog = Game.updateLog
+        Game.updateLog = `
+            <div class="selectable">
+	            <div class="section">${loc('Info')}</div>
+	            <div class="subsection">
+	                <div class="title">${loc('About')}</div>
+    	            ${(App ? `<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">${loc('Note: links will open in your web browser.')}</div>` : '')}
+	                <div class="listing">
+                        ${loc('Cookie Clicker is a javascript game by %1 and %2.', [
+                            '<a href="//orteil.dashnet.org" target="_blank">Orteil</a>',
+                            '<a href="//dashnet.org" target="_blank">Opti</a>'
+                        ])}
+                    </div>
+	                ${(App ? `<div class="listing">${loc('Music by %1.', '<a href="https://twitter.com/C418" target="_blank">C418</a>')}</div>` : '')}
+	                <div class="listing">
+                        ${loc('We have an %1; if you\'re looking for help, you may also want to visit the %2 or the %3.<br>News and teasers are usually posted on Orteil\'s %4 and %5.', [
+                            `<a href="https://discordapp.com/invite/cookie" target="_blank">${loc('official Discord')}</a>`,
+                            '<a href="https://www.reddit.com/r/CookieClicker" target="_blank">subreddit</a>',
+		                    '<a href="https://cookieclicker.wikia.com/wiki/Cookie_Clicker_Wiki" target="_blank">wiki</a>',
+		                    '<a href="https://orteil42.tumblr.com/" target="_blank">tumblr</a>',
+		                    '<a href="https://twitter.com/orteil42" target="_blank">twitter</a>',
+		                ])}
+	                </div>
+                    ${(!App ? `<div class="listing block" style="margin:8px 32px;font-size:11px;line-height:110%;color:rgba(200,200,255,1);background:rgba(128,128,255,0.15);" id="supportSection">
+                        ${loc('This version of Cookie Clicker is 100% free, forever. Want to support us so we can keep developing games? Here\'s some ways you can help:%1', [`<br><br>
+                            &bull; ${loc('get %1 (it\'s about 5 bucks)', `<a href="https://store.steampowered.com/app/1454400/Cookie_Clicker/" target="_blank" class="highlightHover smallWhiteButton">${loc('Cookie Clicker on Steam')}</a>`)}<br><br>
+                            &bull; ${loc('support us on %1 (there\'s perks!)', '<a href="https://www.patreon.com/dashnet" target="_blank" class="highlightHover smallOrangeButton">Patreon</a>')}<br><br>
+                            &bull; ${loc('check out our %1 with rad cookie shirts, hoodies and stickers', `<a href="http://www.redbubble.com/people/dashnet" target="_blank" class="highlightHover smallWhiteButton">${loc('Shop')}</a>`)}<br><br>
+                            &bull; ${loc('disable your adblocker (if you want!)')}
+                        `])}
+                    </div>
+                </div>` : '')}
+                <div class="listing warning">${loc('Note: if you find a new bug after an update and you\'re using a 3rd-party add-on, make sure it\'s not just your add-on causing it!')}</div>
+                ${(!App ? (`<div class="listing warning">
+                    ${loc('Warning: clearing your browser cache or cookies <small>(what else?)</small> will result in your save being wiped. Export your save and back it up first!')}
+                </div>`) : '')}
+            </div>
+            <div class="subsection">
+            <div class="title">${loc('Version history')}</div>`
         let logUpdates = ''
         let logPerUpdate = ''
         let logIndex = ''
         let logResult = []
         let logId = 0
-        while (typeof (logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof (logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
-            logPerUpdate = `<div class="subsection update${logIndex === `[Update notes ${logId}]small` ? ' small' : ''}">`
-            logPerUpdate += `<div class="title">${logResult[0]}</div>`
-            logResult.shift()
-            for (let str of logResult) {
-                if(str.indexOf('[Update Log General Names]') >= 0) {
-                    str = str.replaceAll('[Update Log General Names]', choose(loc('[Update Log General Names]')))
+        while (typeof(logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof(logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
+            let logOptions = logIndex.substring(logIndex.indexOf(']') + 1).split('|')
+            let isSmallList = false, isAppList = false
+            if (logOptions.includes('small')) isSmallList = true
+            if (logOptions.includes('app')) isAppList = true
+            if ((App && isAppList) || !isAppList) {
+                logPerUpdate = `<div class="subsection update${isSmallList ? ' small' : ''}">`
+                logPerUpdate += `<div class="title">${logResult[0]}</div>`
+                for (let i = 1; i < logResult.length; i++) {
+                    let options = logResult[i].split('|')
+                    let str = options.pop()
+                    let isAppItem = false
+                    if (options.length > 0) {
+                        if (options.includes('app')) isAppItem = true
+                    }
+                    if ((App && isAppItem) || !isAppItem) {
+                        str = str.replaceAll('[Update Log General Names]', choose(loc('[Update Log General Names]')))
+                        logPerUpdate += `<div class="listing">${str}</div>`
+                    }
                 }
-                logPerUpdate += `<div class="listing">${str}</div>`
+                logUpdates = `${logPerUpdate}</div>${logUpdates}`
             }
-            logUpdates = `${logPerUpdate}</div>${logUpdates}`
             logId++
         }
-        if(logUpdates.length > 0) {
-            betterJapanese.origins.updateLog = Game.updateLog
-            Game.updateLog = Game.updateLog.substring(0, Game.updateLog.search(/<div class="subsection update(?: small)?">/))
-            Game.updateLog = Game.updateLog.substring(0, Game.updateLog.lastIndexOf('<div class="listing" style="font-weight:bold;font-style:italic;opacity:0.5;">'))
-            Game.updateLog += `</div>${logUpdates}</div>`
-        }
+        Game.updateLog += `</div>${logUpdates}</div></div>`
 
         // 巡り続ける読本のフレーバーテキスト翻訳、thisを使うので非ラムダ式(以降同様)
         let upgrade = Game.Upgrades['Endless book of prose']
@@ -225,8 +322,23 @@ const betterJapanese = {
         }
 
         // 一級品の壁紙アソートメントの説明翻訳
-        upgrade = Game.Upgrades['Distinguished wallpaper assortment']
-        upgrade.desc = loc('Contains more wallpapers for your background selector.')
+        Game.Upgrades['Distinguished wallpaper assortment'].desc = loc('Contains more wallpapers for your background selector.')
+
+        // ゴールデンスイッチの説明翻訳
+        let func = function() {
+            if (!Game.Has('Residual luck')) return this.ddesc
+
+            let bonus = 0
+            let upgrades = Game.goldenCookieUpgrades
+            for (let i in upgrades) {
+                if (Game.Has(upgrades[i])) bonus++
+            }
+
+            return `<div style="text-align:center;">${Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)}<br><br>${loc('The effective boost is <b>+%1%</b><br>thanks to %2<br>and your <b>%3</b> %4.', [Beautify(Math.round(50 + bonus * 10)), getUpgradeName('Residual luck'), bonus, loc('golden cookie upgrade', bonus)])}</div><div class="line"></div>${this.ddesc}`
+        }
+
+        Game.Upgrades['Golden switch [off]'].descFunc = func
+        Game.Upgrades['Golden switch [on]'].descFunc = func
 
         // 猫の場合「購入済み」タグが変化することを翻訳にも反映
         betterJapanese.origins.crateTooltip = Game.crateTooltip
@@ -242,342 +354,72 @@ const betterJapanese = {
             return tooltipText
         }
 
+        // 英語以外でも施設固有の生産方法をツールチップに表示
+        for (let i in Game.Objects) {
+            let obj = Game.Objects[i]
+            if (typeof (betterJapanese.origins.tooltip) === 'undefined') {
+                betterJapanese.origins.tooltip = obj.tooltip
+            }
+            obj.actionNameJP = loc(obj.actionName)
+            obj.tooltip = function() {
+                const strDivDescriptionBlock = '<div class="descriptionBlock">'
+                let defaultTooltip = betterJapanese.origins.tooltip.bind(this)().split(strDivDescriptionBlock)
+                // Game.Object[X].tooltipのdescriptionBlockは存在しないか4つのどちらか
+                if (defaultTooltip.length > 1) {
+                    defaultTooltip[4] = loc('<b>%1</b> %2 so far', [loc('%1 cookie', LBeautify(this.totalCookies)), this.actionNameJP]) + '</div>'
+                    return defaultTooltip.join(strDivDescriptionBlock) + '</div>'
+                }
+                return defaultTooltip
+            }
+        }
+
+        // 英語以外でも施設固有の角砂糖によるレベルアップの恩恵を表示
+        for (let i in Game.Objects) {
+            let obj = Game.Objects[i]
+            if (typeof (betterJapanese.origins.levelTooltip) === 'undefined') {
+                betterJapanese.origins.levelTooltip = obj.levelTooltip
+            }
+            obj.levelTooltip = function() {
+                const strDivLine = '<div class="line"></div>'
+                let defaultTooltip = betterJapanese.origins.levelTooltip.bind(this)().split(strDivLine)
+                defaultTooltip[1] = `${loc(this.extraName.replace('[X]', '%1'), Beautify(this.level))} ${loc('Granting <b>+%1% %2 CpS</b>.', [Beautify(this.level), this.single])}`
+                return defaultTooltip.join(strDivLine)
+            }
+        }
+
+        // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
+        let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+        eval(`Game.getNewTicker = ${tickerOrigin}`)
+
+        // ニュースを英語で出力させるように
+        betterJapanese.origins.getNewTicker = Game.getNewTicker
+        Game.getNewTicker = function(manual) {
+            let isDefaultEN = EN
+            EN = true
+            betterJapanese.origins.getNewTicker(manual)
+            if (!isDefaultEN) EN = false
+        }
+
+        // ニュースの文章を翻訳
+        betterJapanese.origins.tickerDraw = Game.TickerDraw
+        Game.TickerDraw = function() {
+            Game.Ticker = betterJapanese.locTicker(Game.Ticker)
+            betterJapanese.origins.tickerDraw()
+        }
+
+        betterJapanese.origins.parseLoc = parseLoc
+        parseLoc = function(str, params) {
+            // 独自実装されている翻訳でコケないように修正
+            if (str.constructor === Object) return ''
+
+            // 翻訳対象の文章の末尾に%が付いている場合に消えてしまう問題を修正
+            let baseStr = betterJapanese.origins.parseLoc(str, params)
+            if (typeof str === 'string' && str.endsWith('%')) baseStr += '%'
+            return baseStr
+        }
+
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
-    },
-
-    initAfterDOMCreated: function() {
-        let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
-        // ベーカリー名欄
-        Game.bakeryNameL.textContent = loc('%1\'s bakery', Game.bakeryName)
-        // プロトコル切り替え欄
-        Game.attachTooltip(
-                l('httpsSwitch'),
-                `<div style="padding:8px;width:350px;text-align:center;font-size:11px;">${loc('You are currently playing Cookie Clicker on the <b>%1</b> protocol.<br>The <b>%2</b> version uses a different save slot than this one.<br>Click this lock to reload the page and switch to the <b>%2</b> version!', [(Game.https ? 'HTTPS' : 'HTTP'), (Game.https ? 'HTTP' : 'HTTPS')])}</div>`,
-                'this'
-            )
-        // チャレンジモード名、概要
-        let ascensionModeDescsEN = []
-        for (let obj of funcInitString.match(/Game\.ascensionModes=\{.+?\};/)[0].matchAll(/desc:loc\("(.+?)"\)/g)) {
-            ascensionModeDescsEN.push(obj[1].replaceAll('\\"', '"'))
-        }
-        for (let am in Game.ascensionModes) {
-            Game.ascensionModes[am].dname = loc(Game.ascensionModes[am].name + ' [ascension type]')
-            Game.ascensionModes[am].desc = loc(ascensionModeDescsEN[am])
-        }
-        // 昇天画面上部メニュー
-        l('ascendButton').outerHTML = `<a id="ascendButton" class="option framed large red" ${Game.getTooltip(`<div style="min-width:300px;text-align:center;font-size:11px;padding:8px;" id="tooltipReincarnate">${loc('Click this once you\'ve bought<br>everything you need!')}</div>`, 'bottom-right')} style="font-size:16px;margin-top:0px;"><span class="fancyText" style="font-size:20px;">${loc('Reincarnate')}</span></a>`
-        l('ascendInfo').getElementsByClassName('ascendData')[0].innerHTML = loc('You are ascending.<br>Drag the screen around<br>or use arrow keys!<br>When you\'re ready,<br>click Reincarnate.')
-        Game.UpdateAscensionModePrompt()
-        // 設定画面オンオフ
-        ON = ' ' + loc('ON')
-        OFF = ' ' + loc('OFF')
-        // 施設非表示欄
-        for (let pm of document.getElementsByClassName('productMute')) {
-            let id = pm.id.split('productMute')[1]
-            pm.outerHTML = `<div class="productButton productMute" ${Game.getTooltip(`<div style="width:150px;text-align:center;font-size:11px;" id="tooltipMuteBuilding"><b>${loc('Mute')}</b><br>(${loc('Minimize this building')})</div>`, 'this')} onclick="Game.ObjectsById[${id}].mute(1);PlaySound(Game.ObjectsById[${id}].muted?\'snd/clickOff2.mp3\':\'snd/clickOn2.mp3\');" id="productMute${id}">${loc('Mute')}</div>`
-        }
-        l('buildingsMute').children[0].innerHTML = loc('Muted:')
-        // ミニゲーム名
-        Game.Objects['Farm'].minigameName = loc('Garden')
-        Game.Objects['Factory'].minigameName = loc('Dungeon')
-        Game.Objects['Bank'].minigameName = loc('Stock Market')
-        Game.Objects['Temple'].minigameName = loc('Pantheon')
-        Game.Objects['Wizard tower'].minigameName = loc('Grimoire')
-        // 施設名、概要、ビジネスシーズン時の施設名、概要
-        for (let i in Game.Objects) {
-            Game.Objects[i].dname = loc(Game.Objects[i].name)
-            Game.Objects[i].single = Game.Objects[i].dname
-            Game.Objects[i].plural = Game.Objects[i].dname
-            Game.Objects[i].desc = loc(FindLocStringByPart(Game.Objects[i].name + ' quote'))
-            Game.foolObjects[i].name = loc(FindLocStringByPart(Game.Objects[i].name + ' business name')) || Game.foolObjects[i].name
-            Game.foolObjects[i].desc = loc(FindLocStringByPart(Game.Objects[i].name + ' business quote')) || Game.foolObjects[i].desc
-        }
-        Game.foolObjects['Unknown'].name = loc('Investment')
-        Game.foolObjects['Unknown'].desc = loc('You\'re not sure what this does, you just know it means profit.')
-        // アップグレード名、実績名
-        LocalizeUpgradesAndAchievs()
-        // バフ名
-        for (let bf in Game.buffs) {
-            Game.buffs[bf].dname = loc(Game.buffs[bf].name)
-        }
-        // サンタレベル名
-        let santaLevelsEN = Game.Init.toString().match(/Game\.santaLevels=\['(.+?)'\];/)[1].split('\',\'')
-        for (let sl in santaLevelsEN) {
-            Game.santaLevels[sl] = loc(santaLevelsEN[sl])
-        }
-        // ドラゴンオーラ名、概要
-        let dragonAuraDescsEN = []
-        for (let obj of funcInitString.match(/Game\.dragonAuras=\{.+?\};/)[0].matchAll(/desc:loc\((.+?)\)/g)) {
-            let res = null
-            if (obj[1][0] == '"' && obj[1][obj[1].length - 1] == '"') {
-                dragonAuraDescsEN.push(loc(obj[1].substring(1, obj[1].length - 1)))
-            } else if ((res = obj[1].match(/"(.+?)",(\d+?)/)) != null) {
-                dragonAuraDescsEN.push(loc(res[1], Number(res[2])))
-            } else if ((res = obj[1].match(/"(.+?)",\[(\d+?),(\d+?)]/)) != null) {
-                dragonAuraDescsEN.push(loc(res[1], [Number(res[2]), Number(res[3])]))
-            }
-        }
-        for (let dl in Game.dragonAuras) {
-            Game.dragonAuras[dl].dname = loc(Game.dragonAuras[dl].name)
-            Game.dragonAuras[dl].desc = loc(dragonAuraDescsEN[dl])
-        }
-        // ドラゴンレベル概要
-        let dragonLevelNamesEN = []
-        for (let obj of funcInitString.match(/Game\.dragonLevels=\[.+?\];/)[0].matchAll(/name:'(.+?)'/g)) {
-            dragonLevelNamesEN.push(obj[1])
-        }
-        for (let i = 0; i < Game.dragonLevels.length; i++) {
-            let it = Game.dragonLevels[i]
-            it.name = loc(dragonLevelNamesEN[i])
-            if (i < 3) {
-                it.action = loc('Chip it')
-            } else if (i == 3) {
-                it.action = loc('Hatch it')
-            } else if (i < Game.dragonLevels.length - 3) {
-                it.action = `${loc('Train %1', Game.dragonAuras[i - 3].dname)}<br><small>${loc('Aura: %1', Game.dragonAuras[i - 3].desc)}</small>`
-            } else if (i == Game.dragonLevels.length - 3) {
-                it.action = `${loc('Bake dragon cookie')}<br><small>${loc('elicious!')}</small>`
-            } else if (i == Game.dragonLevels.length - 2) {
-                it.action = `${loc('Train secondary aura')}<br><small>${loc('Lets you use two dragon auras simultaneously')}</small>`
-            } else if (i == Game.dragonLevels.length - 1) {
-                it.action = loc('Your dragon is fully trained.')
-            }
-        }
-        // ミルク名
-        for (let ml in Game.AllMilks) {
-            Game.AllMilks[ml].name = loc(Game.AllMilks[ml].bname)
-        }
-        // 中央メニュー欄各種ボタン
-        l('prefsButton').firstChild.innerHTML = loc('Options')
-        l('statsButton').firstChild.innerHTML = loc('Stats')
-        l('logButton').firstChild.innerHTML = loc('Info')
-        l('legacyButton').firstChild.innerHTML = loc('Legacy')
-        Game.adaptWidth = function(node) {
-            let el = node.firstChild
-            el.style.padding = ''
-            let width = el.clientWidth / 95
-            if (width > 1) {
-                el.style.fontSize = (parseInt(window.getComputedStyle(el).fontSize) * 1 / width) + 'px'
-                el.style.transform = `scale(1,${width})`
-            }
-        }
-        Game.adaptWidth(l('prefsButton'))
-        Game.adaptWidth(l('legacyButton'))
-        // 更新時「情報」ボタン上通知
-        l('checkForUpdate').childNodes[0].textContent = loc('New update!')
-        // 右メニュー欄
-        l('buildingsTitle').childNodes[0].textContent = loc('Buildings')
-        l('storeTitle').childNodes[0].textContent = loc('Store')
-        // アップグレード、実績用の汎用概要文取得関数
-        let strCookieProductionMultiplierPlus = loc('Cookie production multiplier <b>+%1%</b>.', '[x]')
-		let getStrCookieProductionMultiplierPlus = function(x) {
-            return strCookieProductionMultiplierPlus.replace('[x]', x)
-        }
-		let getStrThousandFingersGain = function(x) {
-            return loc('Multiplies the gain from %1 by <b>%2</b>.', [getUpgradeName('Thousand fingers'), x])
-        }
-		let strKittenDesc = loc('You gain <b>more CpS</b> the more milk you have.')
-		let getStrClickingGains = function(x) {
-            return loc('Clicking gains <b>+%1% of your CpS</b>.', x)
-        }
-        // クッキー系アップグレード概要
-        for (let result of funcInitString.matchAll(/Game\.NewUpgradeCookie\(.*?name:'(.+?)(?<!\\)',/g)) {
-            let name = result[1].replaceAll('\\\'', '\'')
-            let obj = Game.Upgrades[name]
-            let pow = typeof(obj.power) === 'function' ? obj.power(obj) : obj.power
-            obj.ddesc = loc('Cookie production multiplier <b>+%1%</b>.', pow)
-        }
-        // シナジー系アップグレード概要
-        for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.SynergyUpgrade\('(.+?)(?<!\\)',/g)) {
-            let name = result[1].replaceAll('\\\'', '\'')
-            let obj = Game.Upgrades[name]
-            obj.ddesc = loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie1.plural), 5, obj.buildingTie2.single]) + '<br>' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie2.plural), 0.1, obj.buildingTie1.single])
-        }
-        // ティアありアップグレード概要
-        for (let result of funcInitString.matchAll(/(?<!\/\/)Game.TieredUpgrade\('(.+?)(?<!\\)','(<q>.+?<\/q>)?(?<!\\)',.+?,('fortune'|(?:\d+?))\)/g)) {
-            let name = result[1].replaceAll('\\\'', '\'')
-            let obj = Game.Upgrades[name]
-            if (result[3] === '\'fortune\'') {
-                obj.ddesc = loc('%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.', [cap(obj.buildingTie1.plural), 7, 7])
-            } else {
-                obj.ddesc = loc('%1 are <b>twice</b> as efficient.', cap(obj.buildingTie1.plural))
-            }
-        }
-        // 施設別抑制解除系アップグレード概要
-        for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.NewUnshackleBuilding\({building:'(.+?)(?<!\\)',/g)) {
-            let name = result[1].replaceAll('\\\'', '\'')
-            let building = Game.Objects[name]
-            let obj = Game.Upgrades['Unshackled ' + building.bplural]
-            if (name === 'Cursor') {
-                obj.ddesc = getStrThousandFingersGain(25)
-            } else {
-                obj.ddesc = loc('Tiered upgrades for <b>%1</b> provide an extra <b>+%2%</b> production.<br>Only works with unshackled upgrade tiers.', [cap(building.plural), Math.round((building.id == 1 ? 0.5 : (20 - building.id) * 0.1) * 100)])
-            }
-        }
-        // ティア別抑制解除系アップグレード概要
-        for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.NewUnshackleUpgradeTier\({tier:(\d+?),/g)) {
-            let tier = Number(result[1])
-            let obj
-            if (tier == 1) {
-                obj = Game.Upgrades['Unshackled flavor']
-            } else {
-                obj = Game.Upgrades['Unshackled ' + Game.Tiers[tier].name.toLowerCase()]
-            }
-            tier = Game.Tiers[tier]
-            obj.ddesc = loc('Unshackles all <b>%1-tier upgrades</b>, making them more powerful.<br>Only applies to unshackled buildings.', cap(loc('[Tier]' + tier.name, 0, tier.name)))
-        }
-        // グランマシナジー系アップグレード概要
-        for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.GrandmaSynergy\('(.+?)(?<!\\)',/g)) {
-            let obj = Game.Upgrades[result[1].replaceAll('\\\'', '\'')]
-            obj.ddesc = loc('%1 are <b>twice</b> as efficient.', cap(Game.Objects['Grandma'].plural)) + ' ' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie.plural), 1, loc('%1 grandma', LBeautify(obj.buildingTie.id - 1))])
-        }
-        let angelUpgrades = ['Angels', 'Archangels', 'Virtues', 'Dominions', 'Cherubim', 'Seraphim', 'God']// 天使系アップグレード
-        let demonUpgrades = ['Belphegor', 'Mammon', 'Abaddon', 'Satan', 'Asmodeus', 'Beelzebub', 'Lucifer']// 悪魔系アップグレード
-        // その他アップグレード概要
-        for (let result of funcInitString.matchAll(/(?<!\/\/|=)new Game\.Upgrade\('(.+?)(?<!\\)',(.+?)(?<!\([^,\)]+?),((?:[^,]|(?:(?<=\([^\)]+?),(?=[^\(]+?\))))+)(?<!\([^,\)]+?),(?:\[\d+?,\d+?\]|Game.GetIcon\(.+?\))(?:,function\(\){.+?})?\);/g)) {
-            let obj = Game.Upgrades[result[1].replaceAll('\\\'', '\'')]
-            if (obj.name.indexOf('Permanent upgrade slot ') == 0) {
-                obj.ddesc = loc('Placing an upgrade in this slot will make its effects <b>permanent</b> across all playthroughs.')
-            } else if(angelUpgrades.includes(obj.name)) {
-                let match = result[2].match(/desc\((\d+?),(\d+?)\)/)
-                obj.ddesc = loc('You gain another <b>+%1%</b> of your regular CpS while the game is closed, for a total of <b>%2%</b>.', [Number(match[1]), Number(match[2])])
-            } else if(demonUpgrades.includes(obj.name)) {
-                let match = result[2].match(/desc\((\d+?)\)/)
-                obj.ddesc = loc('You retain optimal cookie production while the game is closed for twice as long, for a total of <b>%1</b>.', Game.sayTime(Number(match[1]) * 60 * 60 * Game.fps, -1))
-            } else {
-                obj.ddesc = eval(result[2])
-            }
-        }
-        // アップグレードフレーバーテキスト
-        for (let upg in Game.Upgrades) {
-            let obj = Game.Upgrades[upg]
-            let quote = loc(FindLocStringByPart('Upgrade quote ' + obj.id))
-            if (typeof(quote) !== 'undefined') {
-                let qpos = obj.ddesc.indexOf('<q>')
-                if (qpos >= 0) {
-                    obj.ddesc = obj.ddesc.substring(0, qpos)
-                }
-                obj.ddesc += `<q>${quote}</q>`
-            }
-        }
-        // ティアあり実績概要
-        for (let result of funcInitString.matchAll(/Game.TieredAchievement\('(.+?)(?<!\\)',/g)) {
-            let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
-            obj.baseDesc = loc('Have <b>%1</b>.', loc('%1 ' + obj.buildingTie.bsingle, LBeautify(Game.Tiers[obj.tier].achievUnlock)))
-        }
-        // 施設別生産量実績概要
-        for (let result of funcInitString.matchAll(/Game.ProductionAchievement\('(.+?)(?<!\\)','(.+?)',(\d+?)(?:,(\d+?),(\d+?))?\);/g)) {
-            let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
-			let building = Game.Objects[result[2].replaceAll('\\\'', '\'')]
-			let n = 12 + building.n + (typeof(result[5]) === 'undefined' ? 0 : Number(result[5])) + 7 * (Number(result[3]) - 1)
-			let pow = Math.pow(10, n)
-			obj.baseDesc = loc('Make <b>%1</b> just from %2.', [loc('%1 cookie', {n: pow, b: toFixed(pow)}), building.plural])
-        }
-        // 全体生産量実績概要
-        for (let result of funcInitString.matchAll(/Game.BankAchievement\('(.+?)(?<!\\)'/g)) {
-            let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
-            obj.baseDesc = loc('Bake <b>%1</b> in one ascension.', loc('%1 cookie', {n: obj.threshold, b: toFixed(obj.threshold)}))
-        }
-        // CpS実績概要
-        for (let result of funcInitString.matchAll(/Game.CpsAchievement\(('.+?(?<!\\)')(?:,'.+?')?\);/g)) {
-            let name = eval(result[1].replaceAll(/Beautify\((.+?)\)/g, 'formatEveryThirdPower(formatLong)($1)')).replaceAll('\\\'', '\'')
-            let obj = Game.Achievements[name]
-            obj.baseDesc = loc('Bake <b>%1</b> per second.', loc('%1 cookie', {n: obj.threshold, b: toFixed(obj.threshold)}))
-        }
-        // その他実績概要
-        for (let result of funcInitString.matchAll(/new Game.Achievement\('(.+?)(?<!\\)',(.+?),\[\d+?,\d+?\]\);/g)) {
-            let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
-            obj.baseDesc = eval(result[2])
-        }
-        // 施設レベル実績概要
-		for (let i in Game.Objects)	{
-			if (Game.Objects[i].levelAchiev10) {
-                Game.Objects[i].levelAchiev10.baseDesc = loc('Reach level <b>%1</b> %2.', [10, Game.Objects[i].plural])
-                Game.Objects[i].levelAchiev10.desc = Game.Objects[i].levelAchiev10.baseDesc
-            }
-		}
-        // 実績フレーバーテキスト
-        for (let acv in Game.Achievements) {
-            let obj = Game.Achievements[acv]
-			obj.ddesc = BeautifyInText(obj.baseDesc)
-            let quote = loc(FindLocStringByPart('Achievement quote ' + obj.id))
-            if (typeof(quote) !== 'undefined') {
-                let qpos = obj.ddesc.indexOf('<q>')
-                if (qpos >= 0) {
-                    obj.ddesc = obj.ddesc.substring(0, qpos)
-                }
-                obj.ddesc += `<q>${quote}</q>`
-            }
-        }
-        Game.RebuildUpgrades()
-        Game.BuildStore()
-        
-        // トップバー
-        Game.attachTooltip(
-            l('topbarOrteil'),
-            '<div style="padding:8px;width:250px;text-align:center;">Orteilのサブドメインに戻るよ!<br>他のゲームがたくさんあるよ!</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarDashnet'),
-            '<div style="padding:8px;width:250px;text-align:center;">私たちのホームページに戻るよ!</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarTwitter'),
-            '<div style="padding:8px;width:250px;text-align:center;">ゲームの更新をたまに告知する、Orteilのtwitterだよ。</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarTumblr'),
-            '<div style="padding:8px;width:250px;text-align:center;">ゲームの更新をたまに告知する、Orteilのtumblrだよ。</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarDiscord'),
-            '<div style="padding:8px;width:250px;text-align:center;">私たちの公式Discordサーバーだよ。<br>CookieClickerや他のゲームの質問や小技を共有できるよ!</div>',
-            'this'
-        )
-        l('topbarMerch').innerHTML = '買ってね!'
-        Game.attachTooltip(
-            l('topbarMerch'),
-            '<div style="padding:8px;width:250px;text-align:center;">CookieClickerシャツ、フード、ステッカーが!</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarPatreon'),
-            '<div style="padding:8px;width:250px;text-align:center;">Patreonで支援してCookieClickerの更新を援助してね!<br>パトロンには素敵なご褒美も!</div>',
-            'this'
-        )
-        l('topbarMobileCC').innerHTML = 'Android版CookieClicker'
-        Game.attachTooltip(
-            l('topbarMobileCC'),
-            '<div style="padding:8px;width:250px;text-align:center;">スマホでCookieClickerを遊ぼう!<br>(Androidだけです。iOSバージョンは後ほど)</div>',
-            'this'
-        )
-        l('topbarSteamCC').innerHTML = 'Steam版CookieClicker'
-        Game.attachTooltip(
-            l('topbarSteamCC'),
-            '<div style="padding:8px;width:250px;text-align:center;">Steam上でCookieClickerを入手しよう!<br>音楽はC418さんが監修。</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarRandomgen'),
-            '<div style="padding:8px;width:250px;text-align:center;">ランダム生成機で何か書けるように作ったよ。</div>',
-            'this'
-        )
-        Game.attachTooltip(
-            l('topbarIGM'),
-            '<div style="padding:8px;width:250px;text-align:center;">シンプルなスクリプト言語でオリジナル放置ゲームを作れるように作ったよ。</div>',
-            'this'
-        )
-        l('linkVersionBeta').innerHTML = 'ベータテストに参加!'
-        l('links').children[0].children[2].innerHTML = 'クラシック'
-        // 右メニュー広告欄
-        l('smallSupport').children[4].innerHTML = '^ スポンサードリンク ^'
-        l('support').children[0].innerHTML = 'v スポンサードリンク v'
-        'Cookie Clickerは主に広告によって支えられています。<br>このサイトをブロックしないよう考えていただくか<a href="https://www.patreon.com/dashnet" target="_blank">Patreon</a>を確認してください!'
     },
 
     register: function() {
@@ -594,7 +436,7 @@ const betterJapanese = {
 
     load: function() {
         let conf = localStorage.getItem('BJPConfig')
-        if (conf) this.config = JSON.parse(conf)
+        if (conf) this.config = Object.assign(this.config, JSON.parse(conf))
     },
 
     log: function(msg) {
@@ -607,11 +449,21 @@ const betterJapanese = {
             Game.RefreshStore()
             Game.upgradesToRebuild = 1
         }
+
+        let openPrompt = () => {
+            betterJapanese.openIgnorePrompt()
+        }
+
         this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます。変更は再起動後に適用されます。', updateAll)
-        // this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', betterJapanese.openIgnorePrompt)
+        this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', openPrompt)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
+    },
+
+    fixStats: function() {
+        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
+        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
     },
 
     writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
@@ -664,28 +516,45 @@ const betterJapanese = {
         document.body.append(element)
     },
 
-    checkUpdate: async function() {
-        this.log('Checking updates')
-
-        if (this.isDev) return await this.updateLanguagePack(this.apiUrl.dev)
-        let res = await fetch(this.apiUrl.release).then(res => res.json()).catch((err) => {
-            this.log(`An error occurred while checking for updates: ${err}`)
-            return this.config
+    getJSON: async function(url) {
+        let res = await fetch(url).then(res => res.json()).catch((err) => {
+            this.log(`An error occurred while retrieving data: ${err}`)
+            return null
         })
 
-        if (res.hash !== this.config.hash) {
-            if (await this.updateLanguagePack(res.url)) {
-                this.config.hash = res.hash
-                this.save()
-                this.showUpdateNotification()
-            }
-        } else {
-            this.log('No updates available')
-        }
+        if (!res) return null
+
+        return res
     },
 
-    showUpdateNotification: function() {
-        Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
+    getAssetsData: async function() {
+        // キャッシュがあればキャッシュを返す
+        if(this.api.cache) return this.api.cache
+
+        // なければ取得して定義
+        this.api.cache = await this.getJSON(this.api.url.release)
+        this.api.endpoints.TRANSLATE = !this.isDev ? this.api.cache?.url?.translate : this.api.url.dev + '/translate.json'
+        this.api.endpoints.CATEGORY = !this.isDev ? this.api.cache?.url?.category : this.api.url.dev + '/category.json'
+        
+        return this.api.cache
+    },
+
+    checkUpdate: async function(force = false) {
+        this.log('Checking updates')
+
+        // 開発者モードがONであれば強制的に更新
+        if (this.isDev) return await this.updateLanguagePack()
+
+        // APIからアセットのデータを取得
+        let data = await this.getAssetsData()
+
+        // データが正しく取得できなかったら終了
+        if (!data) return this.log('An error occurred while checking updates')
+
+        // 更新がなかったら終了
+        if (data.hash === this.config.hash && !force) return this.log('No updates available')
+
+        return await this.updateLanguagePack()
     },
 
     reload: function() {
@@ -695,28 +564,221 @@ const betterJapanese = {
 
     reloadLanguagePack: async function() {
         await this.checkUpdate()
-        this.showUpdateNotification()
         ModLanguage('JA', JSON.parse(localStorage.getItem('BJPLangPack')))
     },
 
-    updateLanguagePack: async function(url) {
-        let base = {
-            '': {
-                'language': 'JA',
-                'plural-forms': 'nplurals=2;plural=(n!=1);'
-            },
+    updateLanguagePack: async function() {
+        let assetsData = await this.getAssetsData()
+
+        // assetsDataが存在せず、なおかつ開発者モードではなければ終了
+        if (!assetsData && !this.isDev) return null
+
+        // TODO: apiのエンドポイント変更
+
+        let translateJson = await this.getJSON(this.api.endpoints.TRANSLATE)
+        let ignoreList = this.config.ignoreList
+
+        for (let key of ignoreList) {
+            delete translateJson[key]
         }
 
-        try {
-            let lang = await fetch(url).then(res => res.json())
-            localStorage.setItem('BJPLangPack', JSON.stringify(Object.assign(base, lang)))
-        } catch {
-            this.log('Update failed')
-            return false
+        translateJson[''] = {
+            'language': 'JA',
+            'plural-forms': 'nplurals=2;plural=(n!=1);'
         }
 
+        localStorage.setItem('BJPLangPack', JSON.stringify(translateJson))
         this.log('Update successfull')
-        return true
+
+        Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
+    },
+
+    openIgnorePrompt: async function() {
+        betterJapanese.tmpIgnoreList = {}
+
+        let content = `
+            <h3>非公式日本語訳 置き換え除外リスト</h3>
+            <div style="display: flex;">
+                <div style="width: 50%; padding: 10px;">
+                    <h4>カテゴリから選択</h4>
+                    <p>カテゴリから一括して単語の置き換えの除外を設定することが出来ます。</p>
+                    <div id="ignorelist-category" style="height: 50vh; overflow-y: scroll; text-align: left;">読み込み中</div>
+                </div>
+                <div style="width: 50%; padding: 10px;">
+                    <h4>単語を個別に選択</h4>
+                    <p>単語の左にあるチェックボックスにチェックを付けるとその単語の置き換えを無効化します。</p>
+                    <input id="ignorelist-search" type="search" placeholder="単語を検索" onchange="betterJapanese.createIgnoreWordList()">
+                    <div id="ignorelist-content" style="height: 50vh; overflow-y: scroll; text-align: left;">読み込み中</div>
+                </div>
+            </div>
+        `
+
+        Game.Prompt(content, [['保存', 'betterJapanese.saveIgnoreList();Game.ClosePrompt();'], 'キャンセル'], null, 'ignoreList')
+
+        document.getElementById('ignorelist-search').addEventListener('input', betterJapanese.createIgnoreWordList)
+        document.getElementById('ignorelist-content').addEventListener('change', (e) => {
+            if (!e.target.name || !e.target.name.startsWith('word:')) return
+            let key = e.target.name.replace('word:', '').replace(/\\"/g, '"')
+            betterJapanese.tmpIgnoreList[key] = e.target.checked
+        })
+
+        let checkButton = (obj, state, position) => {
+            let element = document.getElementsByName(position)[0]
+            element.checked = state
+            if (state) element.indeterminate = false
+
+            if (obj.constructor === Object) {
+                Object.keys(obj).forEach(key => checkButton(obj[key], state, `${position}/${key}`))
+                return
+            }
+
+            obj.forEach(key => {
+                betterJapanese.tmpIgnoreList[key] = state
+            })
+        }
+
+        document.getElementById('ignorelist-category').addEventListener('change', (e) => {
+            if(!e.target.name || !e.target.name.startsWith('category:')) return
+            let category = e.target.name.replace('category:', '').split('/')
+            let currentPosition = betterJapanese.tmpCategoryList
+
+            category.forEach(key => {
+                currentPosition = currentPosition[key]
+            })
+
+            checkButton(currentPosition, e.target.checked, e.target.name)
+
+            let key = e.target.name
+            for (let i = 0; i < category.length - 1; i++) {
+                // 一番最後のスラッシュ以降を消す
+                key = key.replace(/[^\/]*$/, '')
+                console.log(key)
+
+                let elements = document.querySelectorAll(`[name^=${key.replace(/(\:|\/)/g, '\\$1') }]`)
+                let parent = document.getElementsByName(key.replace(/\/$/, ''))[0]
+
+                if (!elements) continue
+
+                let checkState = 0
+                let isContainIndeterminate = false
+
+                elements.forEach(e => {
+                    if (e.indeterminate) isContainIndeterminate = true
+                    if (e.checked) checkState++
+                })
+
+                if (isContainIndeterminate) checkState = -1
+
+                switch(checkState) {
+                    case 0: {
+                        parent.indeterminate = false
+                        parent.checked = false
+                        break
+                    }
+
+                    case elements.length: {
+                        parent.indeterminate = false
+                        parent.checked = true
+                        break
+                    }
+
+                    default: {
+                        parent.indeterminate = true
+                        parent.checked = false
+                        break
+                    }
+                }
+
+                key = key.replace(/\/$/, '')
+            }
+
+            this.createIgnoreWordList()
+        })
+
+        betterJapanese.createIgnoreWordList()
+        betterJapanese.createIgnoreCategoryList()
+    },
+
+    createIgnoreWordList: async function() {
+        let searchWord = document.getElementById('ignorelist-search')?.value || ''
+        let translateList = await betterJapanese.getJSON(betterJapanese.api.endpoints.TRANSLATE)
+        let ignoreList = betterJapanese.processIgnoreList()
+
+        let translateListHtml = []
+        for (let key of Object.keys(translateList)) {
+            let value = translateList[key]
+            let isChecked = ignoreList.includes(key)
+
+            if (value.constructor === Object) continue
+            if (value.constructor === Array) value = value[0]
+
+            if (searchWord && !value.match(searchWord)) continue
+
+            key = key.replace(/"/g, '\\$1')
+
+            translateListHtml.push(`<div><label><input type="checkbox" name="word:${key}" ${isChecked ? 'checked' : ''}>${value.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')}</label></div>`)
+        }
+
+        if (!translateListHtml.length) translateListHtml.push('<p>該当する単語が見つかりませんでした。</p>')
+
+        document.getElementById('ignorelist-content').innerHTML = translateListHtml.join('')
+    },
+
+    createIgnoreCategoryList: async function() {
+        let categoryList = await betterJapanese.getJSON(betterJapanese.api.endpoints.CATEGORY)
+        betterJapanese.tmpCategoryList = categoryList
+        let categoryListHtml = '<ul>'
+
+        let createNest = (category, parent) => {
+            for (let key of Object.keys(category)) {
+                let value = category[key]
+                let current = parent ? `${parent}/${key}` : key
+                let isExistChild = value.constructor === Object
+
+                if (isExistChild) {
+                    let id = `accordion:${current}`
+                    categoryListHtml += `<input type="checkbox" id="${id}" class="accordion-parent"><label for=${id}>`
+                }
+
+                categoryListHtml += `<li><label><input type="checkbox" name="category:${current}">${key}</label></li>`
+
+                if (isExistChild) {
+                    categoryListHtml += '</label><ul class="accordion-child">'
+                    createNest(value, current)
+                    categoryListHtml += '</ul>'
+                }
+            }
+        }
+
+        createNest(categoryList)
+        categoryListHtml += '</ul>'
+
+        document.getElementById('ignorelist-category').innerHTML = categoryListHtml
+    },
+
+    processIgnoreList: function() {
+        let array = betterJapanese.config.ignoreList.concat()
+
+        for (let key of Object.keys(betterJapanese.tmpIgnoreList)) {
+            // 変更予定リストに含まれている要素がtrueであればignoreListに追加
+            if (betterJapanese.tmpIgnoreList[key]) {
+                array.push(key)
+                continue
+            }
+
+            // 変更予定リストに含まれている要素がfalseでなおかつignoreListに追加されていればignoreListから削除
+            if (array.includes(key)) {
+                array.splice(array.indexOf(key), 1)
+            }
+        }
+
+        return array
+    },
+
+    saveIgnoreList: function() {
+        betterJapanese.config.ignoreList = betterJapanese.processIgnoreList()
+        betterJapanese.checkUpdate(true)
+        // Game.Notify('日本語訳改善Mod', '置き換え除外リストを保存しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
     },
 
     formatEveryFourthPower: function() {
@@ -764,8 +826,66 @@ const betterJapanese = {
         return `${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie1.plural), 5, upgrade.buildingTie2.single])}<br>${loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(upgrade.buildingTie2.plural), 0.1, upgrade.buildingTie1.single])}`
     },
 
-    openIgnorePrompt: function() {
-        Game.Prompt('非公式翻訳の置き換え除外リスト', ['保存', 'キャンセル'])
+    locTicker: function(tickerText) {
+        let baseTickerText = tickerText
+        let newsRegex = /N.*ws : /
+        let isStartWithHtmlTag = tickerText.startsWith('<')
+        let isContainsNewsText = tickerText.match(newsRegex)
+
+        // "News : "があれば除去
+        let ticker = isContainsNewsText ? tickerText.replace(newsRegex, '') : tickerText
+
+        // htmlタグが含まれている場合はタグを除去
+        if (isStartWithHtmlTag) ticker = ticker.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')
+
+        // 翻訳
+        let localizedStr = betterJapanese.replaceString(ticker)
+
+        // 先程削除したNewsを追加 (含んでいなければ何もしない)
+        if (isContainsNewsText) localizedStr = loc('News :').replace(' ', '&nbsp;') + ' ' + localizedStr
+
+        // htmlタグが含まれている場合はタグを追加
+        if (isStartWithHtmlTag) localizedStr = baseTickerText.replace(ticker, localizedStr)
+
+        return localizedStr
+    },
+
+    replaceString(str) {
+        // locStringsから探して見つかれば返す
+        let staticLocStr = locStrings[str]
+        if(staticLocStr) return staticLocStr
+
+        // 動的なニュース(Ticker (Dynamic))のリストが読み込めていなければそのまま返す
+        let dynamicLocList = locStrings['Ticker (Dynamic)']
+        if (!dynamicLocList) return str
+
+        // 動的ニュースリストから対象のニュースを探す
+        let targetStr = Object.keys(dynamicLocList).find((text) => {
+            // エスケープが必要な文字をエスケープしてから動的な部分 (%1や%2など) を置き換え
+            return betterJapanese.getReplacedRegex(text).test(str)
+        })
+
+        if (!targetStr) return str
+
+        let dynamicLocStr = dynamicLocList[targetStr]
+
+        // 置き換える単語を取得
+        let strParams = betterJapanese.getReplacedRegex(targetStr).exec(str)
+
+        // 置き換え
+        for (let i = 0; i < strParams.length - 1; i++) {
+            dynamicLocStr = dynamicLocStr.replace(`%${i + 1}`, betterJapanese.replaceString(strParams[i + 1]))
+        }
+
+        return dynamicLocStr
+    },
+
+    getReplacedRegex: function(str, splitRegex = /%\d+/g) {
+        let regex = str.replace(/(\\|\*|\+|\.|\?|\{|\}|\(|\)|\^|\$|\|)/g, '\\$1')
+        if (str.match('%1 %2')) regex = regex.replace('%1', '(.*?)')
+        regex = regex.replace(splitRegex, '(.*)')
+
+        return new RegExp(regex, 'g')
     },
     
     devCheck: function(isDev = false) {
