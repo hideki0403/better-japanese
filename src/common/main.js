@@ -29,6 +29,7 @@ const betterJapanese = {
         short: [] // 塵劫記用の単位
     },
     tmpIgnoreList: {},
+    tmpCategoryList: {},
     isRegisteredHook: false,
 
     init: function() {
@@ -146,6 +147,41 @@ const betterJapanese = {
         #prompt input {
             width: auto;
             margin: 4px;
+        }
+
+        .accordion-parent {
+            display: none;
+        }
+
+        .accordion-child {
+            display: none;
+        }
+
+        .accordion-parent:checked + label + .accordion-child {
+            display: block;
+        }
+
+        .accordion-parent + label > li:after {
+            content: "▼";
+            margin-left: 10px;
+            background-color: #555;
+            padding: 2px;
+            border-radius: 8px;
+        }
+
+        .accordion-parent:checked + label > li:after {
+            content: "▲";
+        }
+
+        #prompt li {
+            margin: 5px 0;
+            padding: 5px;
+            background: #222;
+        }
+
+        #prompt ul ul {
+            list-style: none;
+            padding-left: 20px;
         }
         `
 
@@ -558,26 +594,112 @@ const betterJapanese = {
     },
 
     openIgnorePrompt: async function() {
-        // let categoryList = await betterJapanese.getJSON(betterJapanese.api.endpoints.CATEGORY)
         betterJapanese.tmpIgnoreList = {}
 
         let content = `
             <h3>非公式日本語訳 置き換え除外リスト</h3>
-            <p>単語の左にあるチェックボックスにチェックを付けるとその単語の置き換えを無効化します。</p>
-            <input id="ignorelist-search" type="search" placeholder="単語を検索" onchange="betterJapanese.createIgnoreList()">
-            <form id="ignorelist-content" style="height: 50vh; overflow-y: scroll; text-align: left; margin: 10px;">読み込み中</form>
+            <div style="display: flex;">
+                <div style="width: 50%; padding: 10px;">
+                    <h4>カテゴリから選択</h4>
+                    <p>カテゴリから一括して単語の置き換えの除外を設定することが出来ます。</p>
+                    <div id="ignorelist-category" style="height: 50vh; overflow-y: scroll; text-align: left;">読み込み中</div>
+                </div>
+                <div style="width: 50%; padding: 10px;">
+                    <h4>単語を個別に選択</h4>
+                    <p>単語の左にあるチェックボックスにチェックを付けるとその単語の置き換えを無効化します。</p>
+                    <input id="ignorelist-search" type="search" placeholder="単語を検索" onchange="betterJapanese.createIgnoreWordList()">
+                    <div id="ignorelist-content" style="height: 50vh; overflow-y: scroll; text-align: left;">読み込み中</div>
+                </div>
+            </div>
         `
 
         Game.Prompt(content, [['保存', 'betterJapanese.saveIgnoreList();Game.ClosePrompt();'], 'キャンセル'], null, 'ignoreList')
-        document.getElementById('ignorelist-search').addEventListener('input', betterJapanese.createIgnoreList)
+
+        document.getElementById('ignorelist-search').addEventListener('input', betterJapanese.createIgnoreWordList)
         document.getElementById('ignorelist-content').addEventListener('change', (e) => {
-            betterJapanese.tmpIgnoreList[e.target.name.replace(/\\"/g, '"')] = e.target.checked
+            if (!e.target.name || !e.target.name.startsWith('word:')) return
+            let key = e.target.name.replace('word:', '').replace(/\\"/g, '"')
+            betterJapanese.tmpIgnoreList[key] = e.target.checked
         })
 
-        betterJapanese.createIgnoreList()
+        let checkButton = (obj, state, position) => {
+            let element = document.getElementsByName(position)[0]
+            element.checked = state
+            if (state) element.indeterminate = false
+
+            if (obj.constructor === Object) {
+                Object.keys(obj).forEach(key => checkButton(obj[key], state, `${position}/${key}`))
+                return
+            }
+
+            obj.forEach(key => {
+                betterJapanese.tmpIgnoreList[key] = state
+            })
+        }
+
+        document.getElementById('ignorelist-category').addEventListener('change', (e) => {
+            if(!e.target.name || !e.target.name.startsWith('category:')) return
+            let category = e.target.name.replace('category:', '').split('/')
+            let currentPosition = betterJapanese.tmpCategoryList
+
+            category.forEach(key => {
+                currentPosition = currentPosition[key]
+            })
+
+            checkButton(currentPosition, e.target.checked, e.target.name)
+
+            let key = e.target.name
+            for (let i = 0; i < category.length - 1; i++) {
+                // 一番最後のスラッシュ以降を消す
+                key = key.replace(/[^\/]*$/, '')
+                console.log(key)
+
+                let elements = document.querySelectorAll(`[name^=${key.replace(/(\:|\/)/g, '\\$1') }]`)
+                let parent = document.getElementsByName(key.replace(/\/$/, ''))[0]
+
+                if (!elements) continue
+
+                let checkState = 0
+                let isContainIndeterminate = false
+
+                elements.forEach(e => {
+                    if (e.indeterminate) isContainIndeterminate = true
+                    if (e.checked) checkState++
+                })
+
+                if (isContainIndeterminate) checkState = -1
+
+                switch(checkState) {
+                    case 0: {
+                        parent.indeterminate = false
+                        parent.checked = false
+                        break
+                    }
+
+                    case elements.length: {
+                        parent.indeterminate = false
+                        parent.checked = true
+                        break
+                    }
+
+                    default: {
+                        parent.indeterminate = true
+                        parent.checked = false
+                        break
+                    }
+                }
+
+                key = key.replace(/\/$/, '')
+            }
+
+            this.createIgnoreWordList()
+        })
+
+        betterJapanese.createIgnoreWordList()
+        betterJapanese.createIgnoreCategoryList()
     },
 
-    createIgnoreList: async function() {
+    createIgnoreWordList: async function() {
         let searchWord = document.getElementById('ignorelist-search')?.value || ''
         let translateList = await betterJapanese.getJSON(betterJapanese.api.endpoints.TRANSLATE)
         let ignoreList = betterJapanese.processIgnoreList()
@@ -594,12 +716,44 @@ const betterJapanese = {
 
             key = key.replace(/"/g, '\\$1')
 
-            translateListHtml.push(`<div><input type="checkbox" name="${key}" ${isChecked ? 'checked' : ''}><label for="${key}">${value.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')}</label></div>`)
+            translateListHtml.push(`<div><label><input type="checkbox" name="word:${key}" ${isChecked ? 'checked' : ''}>${value.replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, '')}</label></div>`)
         }
 
         if (!translateListHtml.length) translateListHtml.push('<p>該当する単語が見つかりませんでした。</p>')
 
         document.getElementById('ignorelist-content').innerHTML = translateListHtml.join('')
+    },
+
+    createIgnoreCategoryList: async function() {
+        let categoryList = await betterJapanese.getJSON(betterJapanese.api.endpoints.CATEGORY)
+        betterJapanese.tmpCategoryList = categoryList
+        let categoryListHtml = '<ul>'
+
+        let createNest = (category, parent) => {
+            for (let key of Object.keys(category)) {
+                let value = category[key]
+                let current = parent ? `${parent}/${key}` : key
+                let isExistChild = value.constructor === Object
+
+                if (isExistChild) {
+                    let id = `accordion:${current}`
+                    categoryListHtml += `<input type="checkbox" id="${id}" class="accordion-parent"><label for=${id}>`
+                }
+
+                categoryListHtml += `<li><label><input type="checkbox" name="category:${current}">${key}</label></li>`
+
+                if (isExistChild) {
+                    categoryListHtml += '</label><ul class="accordion-child">'
+                    createNest(value, current)
+                    categoryListHtml += '</ul>'
+                }
+            }
+        }
+
+        createNest(categoryList)
+        categoryListHtml += '</ul>'
+
+        document.getElementById('ignorelist-category').innerHTML = categoryListHtml
     },
 
     processIgnoreList: function() {
