@@ -62,7 +62,7 @@ jobs:
       - name: create release
         if: steps.check-tag.outputs.exists == 'false'
         uses: softprops/action-gh-release@v1
-        with: 
+        with:
           name: v${{ steps.package-version.outputs.current-version }}
           tag_name: v${{ steps.package-version.outputs.current-version }}
           prerelease: ${{ steps.pre-release.outputs.pre }}
