@@ -1,6 +1,6 @@
 {
   "name": "better-japanese",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "publish": "node ./tools/publish.js",
     "init": "git checkout develop && npm install",
     "test": "npx eslint ./",
-    "autofix": "npx eslint ./src/*.js --fix",
+    "autofix": "npx eslint ./src/**/*.js --fix",
     "diff": "node ./tools/diff.js"
   },
   "repository": {
