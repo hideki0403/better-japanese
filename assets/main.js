@@ -14,6 +14,7 @@ const betterJapanese = {
     config: {
         hash: '0',
         replaceJP: true,
+        replaceNews: true,
         numberJP: true,
         shortFormatJP: false,
         secondFormatJP: true,
@@ -185,8 +186,6 @@ const betterJapanese = {
         // 設定の「日本語訳の改善」がOFFになっている場合はここから下は実行しない (ニュース欄やアップデート履歴が壊れる)
         if (!betterJapanese.config.replaceJP) return
 
-        console.log(betterJapanese.config.replaceJP)
-
         // 背景の名前を翻訳
         for (let i = 1; i < Game.AllBGs.length; i++) {
             Game.AllBGs[i].enName = Game.AllBGs[i].name
@@ -195,7 +194,7 @@ const betterJapanese = {
 
         // 在庫市場のquoteを実装
         while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
-        if (typeof(betterJapanese.origins.goodTooltip) === 'undefined') {
+        if (typeof (betterJapanese.origins.goodTooltip) === 'undefined') {
             betterJapanese.origins.goodTooltip = Game.Objects['Bank'].minigame.goodTooltip
         }
         Game.Objects['Bank'].minigame.goodTooltip = function(id) {
@@ -252,7 +251,7 @@ const betterJapanese = {
         let logIndex = ''
         let logResult = []
         let logId = 0
-        while (typeof(logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof(logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
+        while (typeof (logIndex = FindLocStringByPart(`Update notes ${logId}`)) === 'string' && typeof (logResult = loc(logIndex)) === 'object' && logResult.length > 1) {
             let logOptions = logIndex.substring(logIndex.indexOf(']') + 1).split('|')
             let isSmallList = false, isAppList = false
             if (logOptions.includes('small')) isSmallList = true
@@ -287,7 +286,7 @@ const betterJapanese = {
             let n = 26
             let i = Math.floor(Game.T * 0.1)
             let originDesc = this.originDescFunc()
-            if(originDesc.indexOf('<q>') >= 0) {
+            if (originDesc.indexOf('<q>') >= 0) {
                 originDesc = originDesc.substring(0, originDesc.indexOf('<q>'))
             }
             return `${originDesc}<q style="font-family:Courier;">${str.substr(i % str.length, n) + (i % str.length > (str.length - n) ? str.substr(0, i % str.length - (str.length - n)) : '')}</q>`
@@ -302,7 +301,7 @@ const betterJapanese = {
                 Math.seedrandom()
                 return `${this.desc}<q>${loc(FindLocStringByPart(`Upgrade quote ${this.id}`))}</q>`
             }
-            
+
             Math.seedrandom()
             return `${this.desc}<q>${loc('Mice clicking mice (Absolutely blasphemouse!)')}</q>`
         }
@@ -350,13 +349,13 @@ const betterJapanese = {
         betterJapanese.origins.crateTooltip = Game.crateTooltip
         Game.crateTooltip = function(me, context) {
             let tooltipText = betterJapanese.origins.crateTooltip(me, context)
-            if(Game.sesame) {
+            if (Game.sesame) {
                 tooltipText = tooltipText.replace(/<div style="font-size:9px;">.*<\/div>/, `<div style="font-size:9px;">ID : ${me.id} | 順序 : ${Math.floor(me.order)}${me.tier ? ` | ティア : ${me.tier}` : ''}</div>`)
             }
-            if(me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten) {
+            if (me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten) {
                 return tooltipText.replace(`<div class="tag" style="background-color:#fff;">${loc('Purchased')}</div>`, `<div class="tag" style="background-color:#fff;">${loc('[Tag]Purrchased')}</div>`)
             }
-            
+
             return tooltipText
         }
 
@@ -393,6 +392,20 @@ const betterJapanese = {
             }
         }
 
+        betterJapanese.origins.parseLoc = parseLoc
+        parseLoc = function(str, params) {
+            // 独自実装されている翻訳でコケないように修正
+            if (str.constructor === Object) return ''
+
+            // 翻訳対象の文章の末尾に%が付いている場合に消えてしまう問題を修正
+            let baseStr = betterJapanese.origins.parseLoc(str, params)
+            if (typeof str === 'string' && str.endsWith('%')) baseStr += '%'
+            return baseStr
+        }
+
+        // ニュース欄の置き換えを無効化しているのであればここで終了
+        if (!betterJapanese.config.replaceNews) return
+
         // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
         let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
         eval(`Game.getNewTicker = ${tickerOrigin}`)
@@ -411,17 +424,6 @@ const betterJapanese = {
         Game.TickerDraw = function() {
             Game.Ticker = betterJapanese.locTicker(Game.Ticker)
             betterJapanese.origins.tickerDraw()
-        }
-
-        betterJapanese.origins.parseLoc = parseLoc
-        parseLoc = function(str, params) {
-            // 独自実装されている翻訳でコケないように修正
-            if (str.constructor === Object) return ''
-
-            // 翻訳対象の文章の末尾に%が付いている場合に消えてしまう問題を修正
-            let baseStr = betterJapanese.origins.parseLoc(str, params)
-            if (typeof str === 'string' && str.endsWith('%')) baseStr += '%'
-            return baseStr
         }
 
         // hookを削除
@@ -461,6 +463,7 @@ const betterJapanese = {
         }
 
         this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '日本語訳を非公式翻訳版に置き換えます。変更は再起動後に適用されます。', updateAll)
+        this.writeButton('toggleBJPButton', 'replaceNews', 'ニュース欄の改善', 'ニュース欄の挙動および翻訳を置き換えます。変更は再起動後に適用されます。', updateAll)
         this.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', openPrompt)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
@@ -484,7 +487,7 @@ const betterJapanese = {
         // ボタンを生成
         let elementButton = document.createElement('a')
         elementButton.className = 'smallFancyButton option'
-        if (targetProp) elementButton.className += ` prefButton ${this.config[targetProp] ? 'on' : 'off'}` 
+        if (targetProp) elementButton.className += ` prefButton ${this.config[targetProp] ? 'on' : 'off'}`
         elementButton.id = buttonId
 
         let onclickStr = targetProp ? `betterJapanese.toggleButton('${buttonId}', '${targetProp}', '${desc}');` : ''
@@ -535,13 +538,13 @@ const betterJapanese = {
 
     getAssetsData: async function() {
         // キャッシュがあればキャッシュを返す
-        if(this.api.cache) return this.api.cache
+        if (this.api.cache) return this.api.cache
 
         // なければ取得して定義
         this.api.cache = await this.getJSON(this.api.url.release)
         this.api.endpoints.TRANSLATE = !this.isDev ? this.api.cache?.url?.translate : this.api.url.dev + '/translate.json'
         this.api.endpoints.CATEGORY = !this.isDev ? this.api.cache?.url?.category : this.api.url.dev + '/category.json'
-        
+
         return this.api.cache
     },
 
@@ -596,7 +599,7 @@ const betterJapanese = {
         localStorage.setItem('BJPLangPack', JSON.stringify(translateJson))
         this.config.hash = assetsData.hash
         this.save()
-        
+
         this.log('Update successfull')
 
         Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
@@ -649,7 +652,7 @@ const betterJapanese = {
         }
 
         document.getElementById('ignorelist-category').addEventListener('change', (e) => {
-            if(!e.target.name || !e.target.name.startsWith('category:')) return
+            if (!e.target.name || !e.target.name.startsWith('category:')) return
             let category = e.target.name.replace('category:', '').split('/')
             let currentPosition = betterJapanese.tmpCategoryList
 
@@ -663,9 +666,8 @@ const betterJapanese = {
             for (let i = 0; i < category.length - 1; i++) {
                 // 一番最後のスラッシュ以降を消す
                 key = key.replace(/[^\/]*$/, '')
-                console.log(key)
 
-                let elements = document.querySelectorAll(`[name^=${key.replace(/(\:|\/)/g, '\\$1') }]`)
+                let elements = document.querySelectorAll(`[name^=${key.replace(/(\:|\/)/g, '\\$1')}]`)
                 let parent = document.getElementsByName(key.replace(/\/$/, ''))[0]
 
                 if (!elements) continue
@@ -680,7 +682,7 @@ const betterJapanese = {
 
                 if (isContainIndeterminate) checkState = -1
 
-                switch(checkState) {
+                switch (checkState) {
                     case 0: {
                         parent.indeterminate = false
                         parent.checked = false
@@ -835,7 +837,7 @@ const betterJapanese = {
 
                 return str !== 'NaN' ? str : value.toPrecision(3).toString()
 
-            } 
+            }
 
             // 第二単位を付けない
             return Math.round(value * 10000 / (10 ** (numeral * 4))) / 10000 + prefixes[preIndex] + suffixes[sufIndex]
@@ -873,7 +875,7 @@ const betterJapanese = {
     replaceString(str) {
         // locStringsから探して見つかれば返す
         let staticLocStr = locStrings[str]
-        if(staticLocStr) return staticLocStr
+        if (staticLocStr) return staticLocStr
 
         // 動的なニュース(Ticker (Dynamic))のリストが読み込めていなければそのまま返す
         let dynamicLocList = locStrings['Ticker (Dynamic)']
@@ -907,7 +909,7 @@ const betterJapanese = {
 
         return new RegExp(regex, 'g')
     },
-    
+
     devCheck: function(isDev = false) {
         if (betterJapanese.initialized) return
 
