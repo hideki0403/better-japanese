@@ -4204,6 +4204,8 @@
 	]
 	*/
 
+	"#CATEGORY: ニュース": "ニュースの翻訳",
+
 	"News :": "ニュース :",
 
 	// Ticker (Animal)
@@ -5041,6 +5043,8 @@
 		"You've been neglecting your %1.": "お前は%1を侮っている。",
 		"Remember to visit your %1 sometimes.": "たまには%1を訪れよ。"
 	},
+
+	"#ENDCATEGORY: ニュース": "",
 
 	// タグ
 	"[Tag]Heavenly": "天国系",
