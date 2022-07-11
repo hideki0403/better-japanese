@@ -426,6 +426,14 @@ const betterJapanese = {
             betterJapanese.origins.tickerDraw()
         }
 
+        // ミニゲームでの砂糖使用時に表示する確認ツールチップを翻訳
+        betterJapanese.origins.refillLump = Game.refillLump
+        eval('Game.refillLump=' + Game.refillLump.toString().replace('\'refill\'', 'loc(\'refill\')'))
+
+        // イースターのエッグ解放時に表示するツールチップのアップグレード名を翻訳
+        betterJapanese.origins.dropEgg = Game.DropEgg
+        eval('Game.DropEgg=' + Game.DropEgg.toString().replace(/(Game\.Notify\(loc\("You found an egg\!"\),'\<b\>'\+)drop(\+'\<\/b\>',Game\.Upgrades\[drop\]\.icon\);)/, '$1Game.Upgrades[drop].dname$2'))
+
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
