@@ -490,7 +490,7 @@
 	"Your cookies have been doubled.<br>+10% golden cookies for the next 24 hours.": "手持ちのクッキーが2倍になりました。<br>次の 24時間 、ゴールデンクッキーが +10% 出やすくなります。",
 	"Sugar lump cooldowns cleared!": "角砂糖の使用タイマーがリセットされました!",
 	"Botched harvest!": "適当に収穫した!",
-	"Do you want to spend %1 to %2?": "%1 消費して、%2か?",
+	"Do you want to spend %1 to %2?": "%1 消費して、%2しますか?",
 	"Heralds": "紋章官",
 	"%1 herald": [
 		"%1名の紋章官",
@@ -601,7 +601,7 @@
 	"Granting <b>+%1% %2 CpS</b>.": "<b>%2のCpS +%1%</b> 上昇中。",
 	"Click to level up for %1.": "クリックすると %1 消費してレベルアップします。",
 	"Levelling up this building unlocks a minigame.": "この建物のレベルを上げることでミニゲームが解放されます。",
-	"level up your %1": "%1のレベルを上げます",
+	"level up your %1": "%1をレベルアップ",
 	"Mute": "非表示",
 	"Minimize this building": "施設を最小化します",
 	"Muted:": "非表示中 :",
@@ -761,7 +761,7 @@
 	"Each grandma (up to %1) makes sugar lumps ripen <b>%2</b> sooner.": "角砂糖の成長がグランマ1人につき(最大%1人) <b>%2</b> 早くなる。",
 	"Activating this will <b>triple your CpS</b> for 1 hour, at the cost of <b>1 sugar lump</b>.": "<b>1角砂糖</b> を消費して有効化することで、1時間 <b>CpSが3倍</b> になる。",
 	"May only be used once per ascension.": "転生1回につき、1回しか使うことができない。",
-	"activate the sugar frenzy": "砂糖フィーバーを有効化します",
+	"activate the sugar frenzy": "砂糖フィーバーを有効化",
 	"Sugar frenzy!": "砂糖フィーバー!",
 	"CpS x%1 for 1 hour!": "1時間CpSが x%1 !",
 	"Garden plants grow every second.<br>Garden seeds are free to plant.<br>You can switch soils at any time.": "作物が毎秒成長する。<br>作物が植え放題になる。<br>いつでも土壌を切り替えられるようになる。",
@@ -5638,5 +5638,5 @@
 	"check out our %1 with rad cookie shirts, hoodies and stickers": "イカすクッキーシャツやパーカー、ステッカーがある%1をチェック",
 	"Shop": "ショップ",
 	"disable your adblocker (if you want!)": "アドブロッカーの無効化(お任せするよ!)",
-	"refill": "回復"
+	"refill": "回復します"
 }
