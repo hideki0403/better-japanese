@@ -403,27 +403,27 @@ const betterJapanese = {
             return baseStr
         }
 
-        // ニュース欄の置き換えを無効化しているのであればここで終了
-        if (!betterJapanese.config.replaceNews) return
+        // ニュース欄の改善を有効化していれば置き換え
+        if (betterJapanese.config.replaceNews) {
+            // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
+            let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+            eval(`Game.getNewTicker = ${tickerOrigin}`)
 
-        // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
-        let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
-        eval(`Game.getNewTicker = ${tickerOrigin}`)
+            // ニュースを英語で出力させるように
+            betterJapanese.origins.getNewTicker = Game.getNewTicker
+            Game.getNewTicker = function(manual) {
+                let isDefaultEN = EN
+                EN = true
+                betterJapanese.origins.getNewTicker(manual)
+                if (!isDefaultEN) EN = false
+            }
 
-        // ニュースを英語で出力させるように
-        betterJapanese.origins.getNewTicker = Game.getNewTicker
-        Game.getNewTicker = function(manual) {
-            let isDefaultEN = EN
-            EN = true
-            betterJapanese.origins.getNewTicker(manual)
-            if (!isDefaultEN) EN = false
-        }
-
-        // ニュースの文章を翻訳
-        betterJapanese.origins.tickerDraw = Game.TickerDraw
-        Game.TickerDraw = function() {
-            Game.Ticker = betterJapanese.locTicker(Game.Ticker)
-            betterJapanese.origins.tickerDraw()
+            // ニュースの文章を翻訳
+            betterJapanese.origins.tickerDraw = Game.TickerDraw
+            Game.TickerDraw = function() {
+                Game.Ticker = betterJapanese.locTicker(Game.Ticker)
+                betterJapanese.origins.tickerDraw()
+            }
         }
 
         // ミニゲームでの砂糖使用時に表示する確認ツールチップを翻訳
