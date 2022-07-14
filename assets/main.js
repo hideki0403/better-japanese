@@ -858,7 +858,8 @@ const betterJapanese = {
 
     locTicker: function(tickerText) {
         let baseTickerText = tickerText
-        let newsRegex = /N.*ws : /
+        let newsFormat = loc('News :').replace(' ', '&nbsp;')
+        let newsRegex = new RegExp(`N.*ws : |${newsFormat} `)
         let isStartWithHtmlTag = tickerText.startsWith('<')
         let isContainsNewsText = tickerText.match(newsRegex)
 
@@ -872,7 +873,7 @@ const betterJapanese = {
         let localizedStr = betterJapanese.replaceString(ticker)
 
         // 先程削除したNewsを追加 (含んでいなければ何もしない)
-        if (isContainsNewsText) localizedStr = loc('News :').replace(' ', '&nbsp;') + ' ' + localizedStr
+        if (isContainsNewsText) localizedStr = `${newsFormat} ${localizedStr}`
 
         // htmlタグが含まれている場合はタグを追加
         if (isStartWithHtmlTag) localizedStr = baseTickerText.replace(ticker, localizedStr)
@@ -895,7 +896,10 @@ const betterJapanese = {
             return betterJapanese.getReplacedRegex(text).test(str)
         })
 
-        if (!targetStr) return str
+        if (!targetStr) {
+            betterJapanese.log(`翻訳が見つかりませんでした。\nString: ${str}`)
+            return str
+        }
 
         let dynamicLocStr = dynamicLocList[targetStr]
 
