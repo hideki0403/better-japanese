@@ -416,27 +416,27 @@ const betterJapanese = {
             return baseStr
         }
 
-        // ニュース欄の置き換えを無効化しているのであればここで終了
-        if (!betterJapanese.config.replaceNews) return
+        // ニュース欄の改善を有効化していれば置き換え
+        if (betterJapanese.config.replaceNews) {
+            // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
+            let tickerOrigin = Game.getNewTicker.toString().replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+            eval(`Game.getNewTicker = ${tickerOrigin}`)
 
-        // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
-        let tickerOrigin = Game.getNewTicker.toString().replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
-        Function(`Game.getNewTicker = ${tickerOrigin}`)()
+            // ニュースを英語で出力させるように
+            betterJapanese.origins.getNewTicker = Game.getNewTicker
+            Game.getNewTicker = function(manual) {
+                let isDefaultEN = EN
+                EN = true
+                betterJapanese.origins.getNewTicker(manual)
+                if (!isDefaultEN) EN = false
+            }
 
-        // ニュースを英語で出力させるように
-        betterJapanese.origins.getNewTicker = Game.getNewTicker
-        Game.getNewTicker = function(manual) {
-            let isDefaultEN = EN
-            EN = true
-            betterJapanese.origins.getNewTicker(manual)
-            if (!isDefaultEN) EN = false
-        }
-
-        // ニュースの文章を翻訳
-        betterJapanese.origins.tickerDraw = Game.TickerDraw
-        Game.TickerDraw = function() {
-            Game.Ticker = betterJapanese.locTicker(Game.Ticker)
-            betterJapanese.origins.tickerDraw()
+            // ニュースの文章を翻訳
+            betterJapanese.origins.tickerDraw = Game.TickerDraw
+            Game.TickerDraw = function() {
+                Game.Ticker = betterJapanese.locTicker(Game.Ticker)
+                betterJapanese.origins.tickerDraw()
+            }
         }
 
         // ミニゲームでの砂糖使用時に表示する確認ツールチップを翻訳
@@ -875,7 +875,8 @@ const betterJapanese = {
 
     locTicker: function(tickerText) {
         let baseTickerText = tickerText
-        let newsRegex = /N.*ws : /
+        let newsFormat = loc('News :').replace(' ', '&nbsp;')
+        let newsRegex = new RegExp(`N.*ws : |${newsFormat} `)
         let isStartWithHtmlTag = tickerText.startsWith('<')
         let isContainsNewsText = tickerText.match(newsRegex)
 
@@ -889,7 +890,7 @@ const betterJapanese = {
         let localizedStr = betterJapanese.replaceString(ticker)
 
         // 先程削除したNewsを追加 (含んでいなければ何もしない)
-        if (isContainsNewsText) localizedStr = loc('News :').replace(' ', '&nbsp;') + ' ' + localizedStr
+        if (isContainsNewsText) localizedStr = `${newsFormat} ${localizedStr}`
 
         // htmlタグが含まれている場合はタグを追加
         if (isStartWithHtmlTag) localizedStr = baseTickerText.replace(ticker, localizedStr)
@@ -912,7 +913,10 @@ const betterJapanese = {
             return betterJapanese.getReplacedRegex(text).test(str)
         })
 
-        if (!targetStr) return str
+        if (!targetStr) {
+            betterJapanese.log(`翻訳が見つかりませんでした。\nString: ${str}`)
+            return str
+        }
 
         let dynamicLocStr = dynamicLocList[targetStr]
 
