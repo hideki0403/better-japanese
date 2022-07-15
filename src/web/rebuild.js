@@ -503,6 +503,50 @@ function rebuildLocalization() {
     l('smallSupport').children[4].innerHTML = '^ スポンサードリンク ^'
     l('support').children[0].innerHTML = 'v スポンサードリンク v'
     'Cookie Clickerは主に広告によって支えられています。<br>このサイトをブロックしないよう考えていただくか<a href="https://www.patreon.com/dashnet" target="_blank">Patreon</a>を確認してください!'
+
+    // 通知欄の再翻訳
+    for (let note of Game.Notes) {
+        let icon = JSON.stringify(note.pic)
+        if (icon === JSON.stringify([25, 7])) {
+            // バックアップ催促の通知
+            note.title = loc('Back up your save!')
+            note.desc = `${loc('Hello again! Just a reminder that you may want to back up your Cookie Clicker save every once in a while, just in case.<br>To do so, go to Options and hit "Export save" or "Save to file"!')}<div class="line"></div><a style="float:right;" onclick="Game.prefs.showBackupWarning=0;==CLOSETHIS()==">${loc('Don\'t show this again')}</a>`.replaceAll('==CLOSETHIS()==', 'Game.CloseNote(' + note.id + ');')
+        } else if (note.pic[1] === 11 && note.pic[0] >= 0 && note.pic[0] < 16) {
+            // オフライン中の収入の通知
+            let res = note.desc.match(/(\d+)(?:,(\d+)|\.(\d+)( \w+))?/)
+            let newval
+            if (res[2]) {
+                newval = Number(res[1] + res[2])
+            } else if(res[3] && res[4]) {
+                newval = Number(`${res[1]}.${res[3]}`) * 1000 ** (formatLong.indexOf(res[4]) + 1)
+            } else {
+                newval = Number(res[1])
+            }
+            note.title = loc('Welcome back!')
+            note.desc = loc('You earned <b>%1</b> while you were away.', loc('%1 cookie', LBeautify(newval)))
+        } else if (icon === JSON.stringify([20, 3])) {
+            // バレンタインシーズン開始の通知
+            note.title = loc('Valentine\'s Day!')
+            note.desc = loc('It\'s <b>Valentine\'s season</b>!<br>Love\'s in the air and cookies are just that much sweeter!')
+        } else if (icon === JSON.stringify([17, 6])) {
+            // ビジネスシーズン開始の通知
+            note.title = loc('Business Day!')
+            note.desc = loc('It\'s <b>Business season</b>!<br>Don\'t panic! Things are gonna be looking a little more corporate for a few days.')
+        } else if (icon === JSON.stringify([13, 8])) {
+            // ハロウィンシーズン開始の通知
+            note.title = loc('Halloween!')
+            note.desc = loc('It\'s <b>Halloween season</b>!<br>Everything is just a little bit spookier!')
+        } else if (icon === JSON.stringify([12, 10])) {
+            // クリスマスシーズン開始の通知
+            note.title = loc('Christmas time!')
+            note.desc = loc('It\'s <b>Christmas season</b>!<br>Bring good cheer to all and you just may get cookies in your stockings!')
+        } else if (icon === JSON.stringify([0, 12])) {
+            // イースターシーズン開始の通知
+            note.title = loc('Easter!')
+            note.desc = loc('It\'s <b>Easter season</b>!<br>Keep an eye out and you just might click a rabbit or two!')
+        }
+    }
+    Game.UpdateNotes()
 }
 
 if(typeof betterJapanese !== 'undefined') rebuildLocalization()

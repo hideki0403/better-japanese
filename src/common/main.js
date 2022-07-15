@@ -407,8 +407,8 @@ const betterJapanese = {
         if (!betterJapanese.config.replaceNews) return
 
         // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
-        let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
-        eval(`Game.getNewTicker = ${tickerOrigin}`)
+        let tickerOrigin = Game.getNewTicker.toString().replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+        Function(`Game.getNewTicker = ${tickerOrigin}`)()
 
         // ニュースを英語で出力させるように
         betterJapanese.origins.getNewTicker = Game.getNewTicker
@@ -428,15 +428,15 @@ const betterJapanese = {
 
         // ミニゲームでの砂糖使用時に表示する確認ツールチップを翻訳
         betterJapanese.origins.refillLump = Game.refillLump
-        eval('Game.refillLump=' + Game.refillLump.toString().replace('\'refill\'', 'loc(\'refill\')'))
+        Function('Game.refillLump = ' + Game.refillLump.toString().replace('\'refill\'', 'loc(\'refill\')'))()
 
         // イースターのエッグ解放時に表示するツールチップのアップグレード名を翻訳
         betterJapanese.origins.dropEgg = Game.DropEgg
-        eval('Game.DropEgg=' + Game.DropEgg.toString().replace(/(Game\.Notify\(loc\("You found an egg\!"\),'\<b\>'\+)drop(\+'\<\/b\>',Game\.Upgrades\[drop\]\.icon\);)/, '$1Game.Upgrades[drop].dname$2'))
+        Function('Game.DropEgg = ' + Game.DropEgg.toString().replace(/(Game\.Notify\(loc\("You found an egg\!"\),'\<b\>'\+)drop(\+'\<\/b\>',Game\.Upgrades\[drop\]\.icon\);)/, '$1Game.Upgrades[drop].dname$2'))()
 
         // 転生後に表示されるツールチップを翻訳
         betterJapanese.origins.reincarnate = Game.Reincarnate
-        eval('Game.Reincarnate=' + Game.Reincarnate.toString().replace(/(Game\.Notify\()'Reincarnated'(,loc\("Hello, cookies!"\),\[10,0\],4\);)/, '$1loc("Reincarnated")$2'))
+        Function('Game.Reincarnate = ' + Game.Reincarnate.toString().replace(/(Game\.Notify\()'Reincarnated'(,loc\("Hello, cookies!"\),\[10,0\],4\);)/, '$1loc("Reincarnated")$2'))()
         
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
