@@ -171,7 +171,7 @@ function rebuildLocalization() {
         let name = result[1].replaceAll('\\\'', '\'')
         let obj = Game.Upgrades[name]
         let pow = typeof (obj.power) === 'function' ? obj.power(obj) : obj.power
-        obj.baseDesc = loc('Cookie production multiplier <b>+%1%</b>.', pow)
+        obj.baseDesc = getStrCookieProductionMultiplierPlus(pow)
     }
     
     // シナジー系アップグレード概要
@@ -253,7 +253,7 @@ function rebuildLocalization() {
     // ゲーム開始時と概要欄が変わってしまうため、バレンタインのアップグレードの再翻訳
     for(let heart of Game.heartDrops) {
         let obj = Game.Upgrades[heart]
-        obj.baseDesc = loc('Cookie production multiplier <b>+%1%</b>.', 2)
+        obj.baseDesc = getStrCookieProductionMultiplierPlus(2)
     }
 
     // アップグレードフレーバーテキスト
