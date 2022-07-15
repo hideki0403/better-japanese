@@ -194,7 +194,7 @@ const betterJapanese = {
 
         // 在庫市場のquoteを実装
         while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
-        if (typeof (betterJapanese.origins.goodTooltip) === 'undefined') {
+        if (!betterJapanese.origins.goodTooltip) {
             betterJapanese.origins.goodTooltip = Game.Objects['Bank'].minigame.goodTooltip
         }
         Game.Objects['Bank'].minigame.goodTooltip = function(id) {
@@ -434,6 +434,10 @@ const betterJapanese = {
         betterJapanese.origins.dropEgg = Game.DropEgg
         eval('Game.DropEgg=' + Game.DropEgg.toString().replace(/(Game\.Notify\(loc\("You found an egg\!"\),'\<b\>'\+)drop(\+'\<\/b\>',Game\.Upgrades\[drop\]\.icon\);)/, '$1Game.Upgrades[drop].dname$2'))
 
+        // 転生後に表示されるツールチップを翻訳
+        betterJapanese.origins.reincarnate = Game.Reincarnate
+        eval('Game.Reincarnate=' + Game.Reincarnate.toString().replace(/(Game\.Notify\()'Reincarnated'(,loc\("Hello, cookies!"\),\[10,0\],4\);)/, '$1loc("Reincarnated")$2'))
+        
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },

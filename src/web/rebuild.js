@@ -1,5 +1,10 @@
 function rebuildLocalization() {
     let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
+    let GetTooltipFunc = (text, position) => {
+        let str = position ? Game.getTooltip(text, position) : Game.getTooltip(text)
+        const mouseOverText = 'onMouseOver="'
+        return Function('event', str.substring(str.indexOf(mouseOverText) + mouseOverText.length, str.length - '"'.length))
+    }
 
     // ベーカリー名欄
     Game.bakeryNameL.textContent = loc('%1\'s bakery', Game.bakeryName)
@@ -22,13 +27,10 @@ function rebuildLocalization() {
     }
     
     // 昇天画面上部メニュー
-    l('ascendButton').outerHTML = `<a id="ascendButton" class="option framed large red" ${Game.getTooltip(`<div style="min-width:300px;text-align:center;font-size:11px;padding:8px;" id="tooltipReincarnate">${loc('Click this once you\'ve bought<br>everything you need!')}</div>`, 'bottom-right')} style="font-size:16px;margin-top:0px;"><span class="fancyText" style="font-size:20px;">${loc('Reincarnate')}</span></a>`
+    l('ascendButton').onmouseover = GetTooltipFunc(`<div style="min-width:300px;text-align:center;font-size:11px;padding:8px;" id="tooltipReincarnate">${loc('Click this once you\'ve bought<br>everything you need!')}</div>`, 'bottom-right')
+    l('ascendButton').children[0].innerHTML = loc('Reincarnate')
     l('ascendInfo').getElementsByClassName('ascendData')[0].innerHTML = loc('You are ascending.<br>Drag the screen around<br>or use arrow keys!<br>When you\'re ready,<br>click Reincarnate.')
     Game.UpdateAscensionModePrompt()
-    AddEvent(l('ascendButton'), 'click', function() {
-        PlaySound('snd/tick.mp3')
-        Game.Reincarnate()
-    })
     
     // 設定画面オンオフ
     ON = ' ' + loc('ON')
@@ -36,8 +38,8 @@ function rebuildLocalization() {
     
     // 施設非表示欄
     for (let pm of document.getElementsByClassName('productMute')) {
-        let id = pm.id.split('productMute')[1]
-        pm.outerHTML = `<div class="productButton productMute" ${Game.getTooltip(`<div style="width:150px;text-align:center;font-size:11px;" id="tooltipMuteBuilding"><b>${loc('Mute')}</b><br>(${loc('Minimize this building')})</div>`, 'this')} onclick="Game.ObjectsById[${id}].mute(1);PlaySound(Game.ObjectsById[${id}].muted?\'snd/clickOff2.mp3\':\'snd/clickOn2.mp3\');" id="productMute${id}">${loc('Mute')}</div>`
+        pm.onmouseover = GetTooltipFunc(`<div style="width:150px;text-align:center;font-size:11px;" id="tooltipMuteBuilding"><b>${loc('Mute')}</b><br>(${loc('Minimize this building')})</div>`, 'this')
+        pm.innerHTML = loc('Mute')
     }
     l('buildingsMute').children[0].innerHTML = loc('Muted:')
     
@@ -180,7 +182,7 @@ function rebuildLocalization() {
     }
     
     // ティアありアップグレード概要
-    for (let result of funcInitString.matchAll(/(?<!\/\/)Game.TieredUpgrade\('(.+?)(?<!\\)','(<q>.+?<\/q>)?(?<!\\)',.+?,('fortune'|(?:\d+?))\)/g)) {
+    for (let result of funcInitString.matchAll(/(?<!\/\/)Game\.TieredUpgrade\('(.+?)(?<!\\)','(<q>.+?<\/q>)?(?<!\\)',.+?,('fortune'|(?:\d+?))\)/g)) {
         let name = result[1].replaceAll('\\\'', '\'')
         let obj = Game.Upgrades[name]
         if (result[3] === '\'fortune\'') {
@@ -225,7 +227,7 @@ function rebuildLocalization() {
     let demonUpgrades = ['Belphegor', 'Mammon', 'Abaddon', 'Satan', 'Asmodeus', 'Beelzebub', 'Lucifer']// 悪魔系アップグレード
     
     // その他アップグレード概要
-    for (let result of funcInitString.matchAll(/(?<!\/\/|=)new Game\.Upgrade\('(.+?)(?<!\\)',(.+?)(?<!\([^,\)]+?),((?:[^,]|(?:(?<=\([^\)]+?),(?=[^\(]+?\))))+)(?<!\([^,\)]+?),(?:\[\d+?,\d+?\]|Game.GetIcon\(.+?\))(?:,function\(\){.+?})?\);/g)) {
+    for (let result of funcInitString.matchAll(/(?<!\/\/|=)new Game\.Upgrade\('(.+?)(?<!\\)',(.+?)(?<!\([^,\)]+?),((?:[^,]|(?:(?<=\([^\)]+?),(?=[^\(]+?\))))+)(?<!\([^,\)]+?),(?:\[\d+?,\d+?\]|Game\.GetIcon\(.+?\))(?:,function\(\){.+?})?\);/g)) {
         let obj = Game.Upgrades[result[1].replaceAll('\\\'', '\'')]
         if (obj.name.indexOf('Permanent upgrade slot ') == 0) {
             obj.baseDesc = loc('Placing an upgrade in this slot will make its effects <b>permanent</b> across all playthroughs.')
@@ -236,32 +238,40 @@ function rebuildLocalization() {
             let match = result[2].match(/desc\((\d+?)\)/)
             obj.baseDesc = loc('You retain optimal cookie production while the game is closed for twice as long, for a total of <b>%1</b>.', Game.sayTime(Number(match[1]) * 60 * 60 * Game.fps, -1))
         } else {
-            obj.baseDesc = eval(result[2])
+            obj.baseDesc = Function('getStrThousandFingersGain', 'strKittenDesc', 'getStrCookieProductionMultiplierPlus', 'getStrClickingGains', 'return ' + result[2])(getStrThousandFingersGain, strKittenDesc, getStrCookieProductionMultiplierPlus, getStrClickingGains)
         }
     }
     
+    // Game.lastで翻訳されているアップグレードの再翻訳
+    Game.Upgrades['Birthday cookie'].baseDesc = loc('Cookie production multiplier <b>+%1%</b> for every year Cookie Clicker has existed (currently: <b>+%2%</b>).', [1, Beautify(Math.floor((Date.now() - new Date(2013, 7, 8)) / (1000 * 60 * 60 * 24 * 365)))])
+    Game.Upgrades['Elderwort biscuits'].baseDesc = `${getStrCookieProductionMultiplierPlus(2)}<br>${loc('%1 are <b>%2%</b> more powerful.', [cap(Game.Objects['Grandma'].plural), 2])}<br>${loc('Dropped by %1 plants.', loc('Elderwort').toLowerCase())}`
+	Game.Upgrades['Bakeberry cookies'].baseDesc = `${getStrCookieProductionMultiplierPlus(2)}<br>${loc('Dropped by %1 plants.', loc('Bakeberry').toLowerCase())}`
+	Game.Upgrades['Duketater cookies'].baseDesc = `${getStrCookieProductionMultiplierPlus(10)}<br>${loc('Dropped by %1 plants.', loc('Duketater').toLowerCase())}`
+	Game.Upgrades['Green yeast digestives'].baseDesc = `${loc('Golden cookies give <b>%1%</b> more cookies.', 1)}<br>${loc('Golden cookie effects last <b>%1%</b> longer.', 1)}<br>${loc('Golden cookies appear <b>%1%</b> more often.', 1)}<br>${loc('Random drops are <b>%1% more common</b>.', 3)}<br>${loc('Dropped by %1 plants.', loc('Green rot').toLowerCase())}`
+    Game.Upgrades['Wheat slims'].baseDesc = `${getStrCookieProductionMultiplierPlus(1)}<br>${loc('Dropped by %1 plants.', loc('Baker\'s wheat').toLowerCase())}`
+
     // アップグレードフレーバーテキスト
     for (let upg in Game.Upgrades) {
         let obj = Game.Upgrades[upg]
-        let quote = loc(FindLocStringByPart('Upgrade quote ' + obj.id))
-        if (typeof (quote) !== 'undefined') {
-            let qpos = obj.baseDesc.indexOf('<q>')
-            if (qpos >= 0) {
-                obj.baseDesc = obj.baseDesc.substring(0, qpos)
-            }
-            obj.baseDesc += `<q>${quote}</q>`
+        let qpos = obj.baseDesc.indexOf('<q>')
+        if (qpos >= 0) {
+            obj.baseDesc = obj.baseDesc.substring(0, qpos)
         }
-        obj.ddesc = obj.baseDesc
+        obj.ddesc = BeautifyInText(obj.baseDesc)
+        let quote = loc(FindLocStringByPart('Upgrade quote ' + obj.id))
+        if (quote) {
+            obj.ddesc += `<q>${quote}</q>`
+        }
     }
     
     // ティアあり実績概要
-    for (let result of funcInitString.matchAll(/Game.TieredAchievement\('(.+?)(?<!\\)',/g)) {
+    for (let result of funcInitString.matchAll(/Game\.TieredAchievement\('(.+?)(?<!\\)',/g)) {
         let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
         obj.baseDesc = loc('Have <b>%1</b>.', loc('%1 ' + obj.buildingTie.bsingle, LBeautify(Game.Tiers[obj.tier].achievUnlock)))
     }
     
     // 施設別生産量実績概要
-    for (let result of funcInitString.matchAll(/Game.ProductionAchievement\('(.+?)(?<!\\)','(.+?)',(\d+?)(?:,(\d+?),(\d+?))?\);/g)) {
+    for (let result of funcInitString.matchAll(/Game\.ProductionAchievement\('(.+?)(?<!\\)','(.+?)',(\d+?)(?:,(\d+?),(\d+?))?\);/g)) {
         let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
         let building = Game.Objects[result[2].replaceAll('\\\'', '\'')]
         let n = 12 + building.n + (typeof (result[5]) === 'undefined' ? 0 : Number(result[5])) + 7 * (Number(result[3]) - 1)
@@ -270,22 +280,22 @@ function rebuildLocalization() {
     }
     
     // 全体生産量実績概要
-    for (let result of funcInitString.matchAll(/Game.BankAchievement\('(.+?)(?<!\\)'/g)) {
+    for (let result of funcInitString.matchAll(/Game\.BankAchievement\('(.+?)(?<!\\)'/g)) {
         let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
         obj.baseDesc = loc('Bake <b>%1</b> in one ascension.', loc('%1 cookie', { n: obj.threshold, b: toFixed(obj.threshold) }))
     }
     
     // CpS実績概要
-    for (let result of funcInitString.matchAll(/Game.CpsAchievement\(('.+?(?<!\\)')(?:,'.+?')?\);/g)) {
-        let name = eval(result[1].replaceAll(/Beautify\((.+?)\)/g, 'formatEveryThirdPower(formatLong)($1)')).replaceAll('\\\'', '\'')
+    for (let result of funcInitString.matchAll(/Game\.CpsAchievement\(('.+?(?<!\\)')(?:,'.+?')?\);/g)) {
+        let name = Function('return ' + result[1].replaceAll(/Beautify\((.+?)\)/g, 'formatEveryThirdPower(formatLong)($1)'))().replaceAll('\\\'', '\'')
         let obj = Game.Achievements[name]
         obj.baseDesc = loc('Bake <b>%1</b> per second.', loc('%1 cookie', { n: obj.threshold, b: toFixed(obj.threshold) }))
     }
     
     // その他実績概要
-    for (let result of funcInitString.matchAll(/new Game.Achievement\('(.+?)(?<!\\)',(.+?),\[\d+?,\d+?\]\);/g)) {
+    for (let result of funcInitString.matchAll(/new Game\.Achievement\('(.+?)(?<!\\)',(.+?),\[\d+?,\d+?\]\);/g)) {
         let obj = Game.Achievements[result[1].replaceAll('\\\'', '\'')]
-        obj.baseDesc = eval(result[2])
+        obj.baseDesc = Function('return ' + result[2])()
     }
     
     // 施設レベル実績概要
@@ -299,17 +309,130 @@ function rebuildLocalization() {
     // 実績フレーバーテキスト
     for (let acv in Game.Achievements) {
         let obj = Game.Achievements[acv]
+        let qpos = obj.baseDesc.indexOf('<q>')
+        if (qpos >= 0) {
+            obj.baseDesc = obj.baseDesc.substring(0, qpos)
+        }
         obj.ddesc = BeautifyInText(obj.baseDesc)
         let quote = loc(FindLocStringByPart('Achievement quote ' + obj.id))
         if (typeof (quote) !== 'undefined') {
-            let qpos = obj.ddesc.indexOf('<q>')
-            if (qpos >= 0) {
-                obj.ddesc = obj.ddesc.substring(0, qpos)
-            }
             obj.ddesc += `<q>${quote}</q>`
         }
     }
-    
+
+    // ミニゲーム菜園関連の再翻訳
+    let Mg = Game.Objects['Farm'].minigame
+    funcInitString = Mg.init.toString().replace(/[\r\n\t]/g,　'')
+    // 作物の再翻訳
+    let plantsString = funcInitString.match(/M\.plants=\{(.+?)\};/)[1]
+    for (let res of plantsString.matchAll(/'([^']+?)':\{name:'(.+?)(?<!\\)',.+?,effsStr:(.+?),q:/g)) {
+        let plant = Mg.plants[res[1]]
+        plant.name = loc(res[2].replaceAll('\\\'', '\''))
+        plant.effsStr = Function('return ' + res[3])()
+    }
+    // 土の再翻訳
+    let soilsString = funcInitString.match(/M\.soils=\{(.+?)\};/)[1]
+    for (let res of soilsString.matchAll(/'([^']+?)':\{name:loc\("(.+?)(?<!\\)"\),.+?,effsStr:(.+?),q:/g)) {
+        let soil = Mg.soils[res[1]]
+        soil.name = loc(res[2])
+        soil.effsStr = Function('return ' + res[3])()
+    }
+    // ツールの再翻訳
+    for (let res of funcInitString.substring(funcInitString.indexOf('M.tools=')).matchAll(/'([^']+?)':\{name:loc\("(.+?)"\),.+?,(?:desc:(.+?),)?(?:descFunc|func):/g)) {
+        let tool = Mg.tools[res[1]]
+        tool.name = loc(res[2])
+        if (res[3]) {
+            tool.desc = Function('return ' + res[3])()
+        }
+    }
+
+    // ミニゲーム神殿関連の再翻訳
+    Mg = Game.Objects['Temple'].minigame
+    // 精霊の再翻訳
+    for (let res of Mg.init.toString().replace(/[\r\n\t]/g, '').matchAll(/'([^']+?)':\{.+?,desc1:(.+?),desc2:(.+?),desc3:(.+?),(?:descAfter:(.+?),)?quote:/g)) {
+        let god = Mg.gods[res[1]]
+        god.name = loc(FindLocStringByPart(`GOD ${god.id + 1} NAME`))
+        god.quote = loc(FindLocStringByPart(`GOD ${god.id + 1} QUOTE`))
+        god.desc1 = Function('return ' + res[2])()
+        god.desc2 = Function('return ' + res[3])()
+        god.desc3 = Function('return ' + res[4])()
+        if (res[5]) {
+            god.descAfter = Function('return ' + res[5])()
+        }
+    }
+    // メイン画面を再翻訳
+    l('templeSwaps').onmosueover = GetTooltipFunc(`<div style="padding:8px;width:350px;font-size:11px;text-align:center;">${loc('Each time you slot a spirit, you use up one worship swap.<div class="line"></div>If you have 2 swaps left, the next one will refill after %1.<br>If you have 1 swap left, the next one will refill after %2.<br>If you have 0 swaps left, you will get one after %3.<div class="line"></div>Unslotting a spirit costs no swaps.', [Game.sayTime(60 * 60 * 1 * Game.fps), Game.sayTime(60 * 60 * 4 * Game.fps), Game.sayTime(60 * 60 * 16 * Game.fps)])}</div>`)
+
+    // ミニゲーム在庫市場関連の再翻訳
+    Mg = Game.Objects['Bank'].minigame
+    funcInitString = Mg.init.toString().replaceAll(/[\r\n\t]/g, '')
+    // オフィスの再翻訳
+    let counter = 0
+    for (let res of funcInitString.match(/M\.offices=\[(.+?)\];/)[1].matchAll(/{name:loc\("(.+?)"\),.+?,desc:(.+?)},/g)) {
+        Mg.offices[counter].name = loc(res[1])
+        Mg.offices[counter].desc = Function('return ' + res[2])()
+        counter++
+    }
+    // ローンの再翻訳
+    counter = 0
+    for (let res of funcInitString.match(/M\.loanTypes=\[(.+?)\];/)[1].matchAll(/\[loc\("(.+?)"\),.+?,loc\("(.+?)"\)\]/g)) {
+        Mg.loanTypes[counter][0] = loc(res[1])
+        Mg.loanTypes[counter][6] = loc(res[2])
+        counter++
+    }
+    // メイン画面を再翻訳
+    l('bankHeader').children[0].children[0].innerHTML = loc('Profits: %1. All prices are in $econds of your highest raw cookies per second.', '<span id="bankBalance">$0</span>') + ' <span id="bankNextTick"></span>'
+    l('bankBrokersBuy').innerHTML = loc('Hire')
+    for (let i = 1; i <= 3; i++) {
+        l('bankLoan' + i).innerHTML = loc('Loan #%1', i)
+    }
+    let buyStr = loc('Buy')
+    let sellStr = loc('Sell')
+    for (let i = 0; i < Mg.goodsById.length; i++) {
+        let good = Mg.goodsById[i]
+        good.name = loc(FindLocStringByPart(`STOCK ${i + 1} TYPE`))
+        good.symbol = loc(FindLocStringByPart(`STOCK ${i + 1} LOGO`))
+        good.company = loc(FindLocStringByPart(`STOCK ${i + 1} NAME`))
+        let goodDiv = l('bankGood-' + i)
+        let bankSymbols = goodDiv.children[0].querySelectorAll('.bankSymbol')
+        let str = bankSymbols[0].innerHTML
+        bankSymbols[0].innerHTML = `${good.symbol} ${str.substring(str.indexOf('<'))}`
+        str = bankSymbols[1].innerHTML
+        bankSymbols[1].innerHTML = `${loc('value:')} ${str.substring(str.indexOf('<'))}`
+        str = bankSymbols[2].innerHTML
+        bankSymbols[2].innerHTML = `${loc('stock:')} ${str.substring(str.indexOf('<'))}`
+        bankSymbols = goodDiv.children[1].querySelectorAll('.bankSymbol')
+        for (let j = 0; j <= 1; j++) {
+            bankSymbols[j].style['display'] = (buyStr.length > 4 || sellStr.length > 4) ? 'block' : ''
+            bankSymbols[j].style['padding'] = (buyStr.length > 4 || sellStr.length > 4) ? '0px' : ''
+            bankSymbols[j].style['width'] = (buyStr.length > 4 || sellStr.length > 4) ? '100%' : ''
+        }
+        bankSymbols[0].innerHTML = buyStr
+        bankSymbols[1].innerHTML = sellStr
+        l(`bankGood-${i}_Max`).innerHTML = cap(loc('max'))
+        l(`bankGood-${i}_-All`).innerHTML = cap(loc('all'))
+    }
+    l('bankGraphLines').innerHTML = loc('Line style')
+    l('bankGraphCols').innerHTML = loc('Color mode')
+    if (l('bankCheatSpeeda') != null) {
+        l('bankCheatSpeeda').innerHTML = loc('Toggle speed')
+    }
+    l('bankGraphBox').children[1].innerHTML = loc('DOUGH JONES INDEX')
+
+    // ミニゲーム魔導書関連の再翻訳
+    Mg = Game.Objects['Wizard tower'].minigame
+    // 魔法を再翻訳
+    for (let res of Mg.init.toString().replace(/[\r\n\t]/g, '').matchAll(/'((?:[^']|\\')+?)(?<!\\)':\{name:loc\("(.+?)"\),desc:(.+?),(?:failDesc:(.+?),)?icon:/g)) {
+        let spell = Mg.spells[res[1].replaceAll('\\\'', '\'')]
+        spell.name = loc(res[2])
+        spell.desc = Function('return ' + res[3])()
+        if (res[4]) {
+            spell.failDesc = Function('return ' + res[4])()
+        }
+    }
+    // 魔法メーターのツールチップを再翻訳
+    l('grimoireBarText').nextElementSibling.onmouserover = GetTooltipFunc(`<div style="padding:8px;width:300px;font-size:11px;text-align:center;">${loc('This is your magic meter. Each spell costs magic to use.<div class="line"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class="line"></div>Magic refills over time. The lower your magic meter, the slower it refills.')}</div>`)
+
     Game.RebuildUpgrades()
     Game.BuildStore()
 
