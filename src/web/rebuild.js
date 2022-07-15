@@ -250,6 +250,12 @@ function rebuildLocalization() {
 	Game.Upgrades['Green yeast digestives'].baseDesc = `${loc('Golden cookies give <b>%1%</b> more cookies.', 1)}<br>${loc('Golden cookie effects last <b>%1%</b> longer.', 1)}<br>${loc('Golden cookies appear <b>%1%</b> more often.', 1)}<br>${loc('Random drops are <b>%1% more common</b>.', 3)}<br>${loc('Dropped by %1 plants.', loc('Green rot').toLowerCase())}`
     Game.Upgrades['Wheat slims'].baseDesc = `${getStrCookieProductionMultiplierPlus(1)}<br>${loc('Dropped by %1 plants.', loc('Baker\'s wheat').toLowerCase())}`
 
+    // ゲーム開始時と概要欄が変わってしまうため、バレンタインのアップグレードの再翻訳
+    for(let heart of Game.heartDrops) {
+        let obj = Game.Upgrades[heart]
+        obj.baseDesc = loc('Cookie production multiplier <b>+%1%</b>.', 2)
+    }
+
     // アップグレードフレーバーテキスト
     for (let upg in Game.Upgrades) {
         let obj = Game.Upgrades[upg]
@@ -260,6 +266,7 @@ function rebuildLocalization() {
         obj.ddesc = BeautifyInText(obj.baseDesc)
         let quote = loc(FindLocStringByPart('Upgrade quote ' + obj.id))
         if (quote) {
+            obj.baseDesc += `<q>${quote}</q>`
             obj.ddesc += `<q>${quote}</q>`
         }
     }
@@ -316,6 +323,7 @@ function rebuildLocalization() {
         obj.ddesc = BeautifyInText(obj.baseDesc)
         let quote = loc(FindLocStringByPart('Achievement quote ' + obj.id))
         if (typeof (quote) !== 'undefined') {
+            obj.baseDesc += `<q>${quote}</q>`
             obj.ddesc += `<q>${quote}</q>`
         }
     }
