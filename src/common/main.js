@@ -115,6 +115,15 @@ const betterJapanese = {
             return negative ? '-' + output : output + decimal
         }
 
+        // 指数表記の場合表示が崩れる現象を修正
+        if (!betterJapanese.origins.simpleBeautify) betterJapanese.origins.simpleBeautify = SimpleBeautify
+        SimpleBeautify = function(val) {
+            if (val.toString().indexOf('e+') >= 0) {
+                return val.toString().replace(/(?<=.)(\d{3})(?=\d)/g, '$1,')
+            }
+            return betterJapanese.origins.simpleBeautify(val)
+        }
+
         // カスタムCSSを適用
         let customStyle = document.createElement('style')
         customStyle.innerHTML = `
