@@ -38,7 +38,7 @@ const betterJapanese = {
     init: function() {
         let versionPath = App ? `file:///${App.mods['BetterJapanese'].dir.replace(/\\/g, '/')}/version.json` : 'https://pages.yukineko.me/better-japanese/version.json'
         this.getJSON(versionPath).then(res => {
-            res ? this.version = res.version : this.version = '0.0.0'
+            this.version = res ? res.version : '0.0.0'
         })
 
         this.fallbackTimer = setTimeout(() => {
