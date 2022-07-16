@@ -1,5 +1,15 @@
 const betterJapanese = {
     name: 'betterJapanese',
+    version: null,
+    config: {
+        hash: '0',
+        replaceJP: true,
+        replaceNews: true,
+        numberJP: true,
+        shortFormatJP: false,
+        secondFormatJP: true,
+        ignoreList: []
+    },
     api: {
         url: {
             release: 'https://pages.yukineko.me/better-japanese/api/release.json',
@@ -10,15 +20,6 @@ const betterJapanese = {
             'CATEGORY': null
         },
         cache: null
-    },
-    config: {
-        hash: '0',
-        replaceJP: true,
-        replaceNews: true,
-        numberJP: true,
-        shortFormatJP: false,
-        secondFormatJP: true,
-        ignoreList: []
     },
     isDev: false,
     initialized: false,
@@ -35,6 +36,11 @@ const betterJapanese = {
     isRegisteredHook: false,
 
     init: function() {
+        let versionPath = App ? `file:///${App.mods['BetterJapanese'].dir.replace(/\\/g, '/')}/version.json` : 'https://pages.yukineko.me/better-japanese/version.json'
+        this.getJSON(versionPath).then(res => {
+            res ? this.version = res.version : this.version = '0.0.0'
+        })
+
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
             this.initialized = true
@@ -55,7 +61,7 @@ const betterJapanese = {
 
         // メニューに独自ボタンを実装
         // この方法で実装しないとCCSEなどのメニュー独自実装Modと競合してしまう
-        let origin = eval('Game.UpdateMenu.toString()').split('\n')
+        let origin = Game.UpdateMenu.toString().split('\n')
         origin.splice(origin.length - 1, 0, `
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
@@ -63,9 +69,10 @@ const betterJapanese = {
             
             if (Game.onMenu == 'stats') {
                 betterJapanese.fixStats()
+                betterJapanese.injectStats()
             }
         `)
-        eval(`Game.UpdateMenu = ${origin.join('\n')}`)
+        Function(`Game.UpdateMenu = ${origin.join('\n')}`)()
 
         // 時間表記からカンマを取り除く
         if (!betterJapanese.origins.sayTime) betterJapanese.origins.sayTime = Game.sayTime
@@ -487,6 +494,15 @@ const betterJapanese = {
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
+    },
+
+    injectStats: function() {
+        let target = l('statsGeneral')
+        let div = document.createElement('div')
+        div.innerHTML = `<b>日本語訳改善Mod:</b> ${betterJapanese.version}`
+        div.className = 'listing'
+
+        if (target) target.parentNode.appendChild(div)
     },
 
     fixStats: function() {
