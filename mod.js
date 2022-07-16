@@ -7,4 +7,4 @@ if (language && conf.replaceJP) {
     ModLanguage('JA', JSON.parse(language))
 }
 
-Game.LoadMod(`https://pages.yukineko.me/better-japanese/assets/main.js?v=${Game.version}`)
+Game.LoadMod(`https://pages.yukineko.me/better-japanese/assets/main.js?nocache=${Date.now()}`)
