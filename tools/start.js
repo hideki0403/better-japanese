@@ -16,6 +16,8 @@ const eslint = new ESLINT()
 const color = require('chalk')
 log.enabled = true
 
+const version = require(path.join(rootDir, './package.json')).version
+
 async function initFormatter() {
     formatter = await eslint.loadFormatter('stylish')
 }
@@ -87,6 +89,8 @@ async function copyFiles(file) {
 }
 
 copyFiles()
+
+fs.writeJSONSync(path.join(distDir, './version.json'), { version })
 
 const watcher = chokidar.watch([srcDir, assetsDir, localeFile])
 

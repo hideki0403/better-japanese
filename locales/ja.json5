@@ -529,7 +529,7 @@
 	"You will keep your achievements, building levels and sugar lumps.": "実績と施設レベル、角砂糖は引き継がれます。",
 	"Ascending": "昇天中",
 	"So long, cookies.": "クッキーたち、またね。",
-	"You forfeit your %1.": "貯蓄していた %1クッキー を失いました。",
+	"You forfeit your %1.": "貯蓄していた %1 を失いました。",
 	"Prestige level:": "名声レベル :",
 	"Heavenly chips:": "ヘブンリーチップス :",
 	"%1 prestige level": [
@@ -3558,7 +3558,7 @@
 	"Cryogenically preserve your garden.<br>Plants no longer grow, spread or die; they provide no benefits.<br>Soil cannot be changed.<div class=\"line\"></div>Using this will effectively pause your garden.": "菜園を極低温で状態維持する。<br>全作物の成長が止まり、拡散や枯死も起こらず、効果も発揮しない。<br>土壌変更も出来ない。<div class=\"line\"></div>使用することで菜園を効果的に保存することが出来る。",
 	"Garden is frozen. Unfreeze to resume.": "菜園を冷凍しています。解凍するには再度押してください。",
 	"Sacrifice garden": "生贄の畑",
-	"A swarm of sugar hornets comes down on your garden, <span class=\"red\">destroying every plant as well as every seed you've unlocked</span> - leaving only a %1 seed.<br>In exchange, they will grant you <span class=\"green\">%2</span>.<br>This action is only available with a complete seed log.": "砂糖蜂の群れが菜園にやって来る、<span class=\"red\">開放したほぼすべての種が破壊される</span> - %1のみ残る。<br>引き換えに、 <span class=\"green\">%2</span> が与えられる。<br>この動作は品種記録が完成しているときにのみ利用可能。",
+	"A swarm of sugar hornets comes down on your garden, <span class=\"red\">destroying every plant as well as every seed you've unlocked</span> - leaving only a %1 seed.<br>In exchange, they will grant you <span class=\"green\">%2</span>.<br>This action is only available with a complete seed log.": "砂糖蜂の群れが菜園にやって来て、<span class=\"red\">開放したほぼすべての種が破壊される</span> - %1のみ残る。<br>引き換えに、 <span class=\"green\">%2</span> が与えられる。<br>この動作は品種記録が完成しているときにのみ利用可能。",
 	"Do you REALLY want to sacrifice your garden to the sugar hornets?<br><small>You will be left with an empty plot and only the %1 seed unlocked.<br>In return, you will gain <b>%2 sugar lumps</b>.</small>": "あなたは 本 当 に 砂糖蜂に庭園を捧げたいのですか?<br><small>まっさらになった庭園と%1の種子だけが解除された状態となります。<br>その対価として、 <b>%2角砂糖</b> を手に入れます。",
 	"Sacrifice!": "生贄に!",
 	"You've sacrificed your garden to the sugar hornets, destroying your crops and your knowledge of seeds.<br>In the remains, you find <b>%1 sugar lumps</b>.": "菜園を砂糖蜂の生贄にし、作物と種に関する知識を破壊されました。<br>残骸の中に、 <b>%1角砂糖</b> 見つけました。",
@@ -3788,7 +3788,7 @@
 
 	"#CATEGORY: フレーバーテキスト/在庫市場": "「在庫市場」のフレーバーテキスト",
 
-	"Buy that vintage car you've always wanted. Just pay us back.": "いつも欲しがってたヴィンテージの車を購入しよう。とにかく金を返してもらうんだ。",
+	"Buy that vintage car you've always wanted. Just pay us back.": "いつも欲しがってたヴィンテージの車を購入しよう。返済はしっかりとしろ。",
 	"Bad credit? No problem. It's your money, and you need it now.": "良くない信用取引だって?問題ない。それは元々あなたの金であり、今あなたが求めるものだ。",
 	"Finance your next house, boat, spouse, etc. You've earned it.": "次の家やボート、配偶者、その他もろもろを融通してもらえ。それらはあなたが稼いできたものだ。",
 
@@ -3849,9 +3849,9 @@
 	"#CATEGORY: ミニゲーム/神殿/UI": "ミニゲーム「神殿」のUI部分の翻訳",
 
 	"Pantheon": "神殿",
-	"Diamond slot": "ダイアモンド",
-	"Ruby slot": "ルビー",
-	"Jade slot": "翡翠",
+	"Diamond slot": "ダイアモンドのスロット",
+	"Ruby slot": "ルビーのスロット",
+	"Jade slot": "翡翠のスロット",
 	"empty": "空き",
 	"Release to assign %1 to this slot.": "このスロットに %1 を配置するには、ドロップしてください。",
 	"Drag a spirit onto this slot to assign it.": "聖霊を配置するには、聖霊をこのスロットの上にドラッグしてください。",
@@ -5638,5 +5638,7 @@
 	"check out our %1 with rad cookie shirts, hoodies and stickers": "イカすクッキーシャツやパーカー、ステッカーがある%1をチェック",
 	"Shop": "ショップ",
 	"disable your adblocker (if you want!)": "アドブロッカーの無効化(お任せするよ!)",
-	"refill": "回復"
+	"refill": "回復",
+	"Reincarnated": "転生しました",
+	"DOUGH JONES INDEX": "ドウ平均株価"
 }

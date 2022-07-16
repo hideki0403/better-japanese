@@ -1,5 +1,15 @@
 const betterJapanese = {
     name: 'betterJapanese',
+    version: null,
+    config: {
+        hash: '0',
+        replaceJP: true,
+        replaceNews: true,
+        numberJP: true,
+        shortFormatJP: false,
+        secondFormatJP: true,
+        ignoreList: []
+    },
     api: {
         url: {
             release: 'https://pages.yukineko.me/better-japanese/api/release.json',
@@ -10,15 +20,6 @@ const betterJapanese = {
             'CATEGORY': null
         },
         cache: null
-    },
-    config: {
-        hash: '0',
-        replaceJP: true,
-        replaceNews: true,
-        numberJP: true,
-        shortFormatJP: false,
-        secondFormatJP: true,
-        ignoreList: []
     },
     isDev: false,
     initialized: false,
@@ -35,6 +36,11 @@ const betterJapanese = {
     isRegisteredHook: false,
 
     init: function() {
+        let versionPath = App ? `file:///${App.mods['BetterJapanese'].dir.replace(/\\/g, '/')}/version.json` : 'https://pages.yukineko.me/better-japanese/version.json'
+        this.getJSON(versionPath).then(res => {
+            res ? this.version = res.version : this.version = '0.0.0'
+        })
+
         this.fallbackTimer = setTimeout(() => {
             this.checkUpdate()
             this.initialized = true
@@ -45,7 +51,7 @@ const betterJapanese = {
         if (!this.isRegisteredHook) this.initAfterLoad()
 
         // Web版で既にDOMが構築されていた場合はDOMを再構成するスクリプトを読み込む (一部の翻訳が適用されないため)
-        if (!App && Game.ready) Game.LoadMod('https://pages.yukineko.me/better-japanese/rebuild.js')
+        if (!App && Game.ready) Game.LoadMod(`https://pages.yukineko.me/better-japanese/rebuild.js?nocache=${Date.now()}`)
 
         this.log('Initialized')
     },
@@ -55,7 +61,7 @@ const betterJapanese = {
 
         // メニューに独自ボタンを実装
         // この方法で実装しないとCCSEなどのメニュー独自実装Modと競合してしまう
-        let origin = eval('Game.UpdateMenu.toString()').split('\n')
+        let origin = Game.UpdateMenu.toString().split('\n')
         origin.splice(origin.length - 1, 0, `
             if (Game.onMenu == 'prefs') {
                 betterJapanese.injectMenu()
@@ -63,12 +69,13 @@ const betterJapanese = {
             
             if (Game.onMenu == 'stats') {
                 betterJapanese.fixStats()
+                betterJapanese.injectStats()
             }
         `)
-        eval(`Game.UpdateMenu = ${origin.join('\n')}`)
+        Function(`Game.UpdateMenu = ${origin.join('\n')}`)()
 
         // 時間表記からカンマを取り除く
-        betterJapanese.origins.sayTime = Game.sayTime
+        if (!betterJapanese.origins.sayTime) betterJapanese.origins.sayTime = Game.sayTime
         Game.sayTime = function(time, detail) {
             return betterJapanese.origins.sayTime(time, detail).replaceAll(', ', '')
         }
@@ -95,7 +102,7 @@ const betterJapanese = {
         ]
 
         // 設定によって日本語単位を使用するように変更、同時にカンマ区切りも場合によって変更
-        betterJapanese.origins.beautify = Beautify
+        if (!betterJapanese.origins.beautify) betterJapanese.origins.beautify = Beautify
         Beautify = function(val, floats) {
             let negative = (val < 0)
             let decimal = ''
@@ -113,6 +120,15 @@ const betterJapanese = {
             }
             if (output == '0') negative = false
             return negative ? '-' + output : output + decimal
+        }
+
+        // 指数表記の場合表示が崩れる現象を修正
+        if (!betterJapanese.origins.simpleBeautify) betterJapanese.origins.simpleBeautify = SimpleBeautify
+        SimpleBeautify = function(val) {
+            if (val.toString().indexOf('e+') >= 0) {
+                return val.toString().replace(/(?<=.)(\d{3})(?=\d)/g, '$1,')
+            }
+            return betterJapanese.origins.simpleBeautify(val)
         }
 
         // カスタムCSSを適用
@@ -194,9 +210,7 @@ const betterJapanese = {
 
         // 在庫市場のquoteを実装
         while (!Game.Objects['Bank'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
-        if (typeof (betterJapanese.origins.goodTooltip) === 'undefined') {
-            betterJapanese.origins.goodTooltip = Game.Objects['Bank'].minigame.goodTooltip
-        }
+        if (!betterJapanese.origins.goodTooltip) betterJapanese.origins.goodTooltip = Game.Objects['Bank'].minigame.goodTooltip
         Game.Objects['Bank'].minigame.goodTooltip = function(id) {
             return function() {
                 let desc = betterJapanese.origins.goodTooltip(id)()
@@ -206,8 +220,13 @@ const betterJapanese = {
             }
         }
 
+        // 菜園情報の画像を差し替え
+        while (!Game.Objects['Farm'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
+        if (!betterJapanese.origins.toolInfoDescFunc) betterJapanese.origins.toolInfoDescFunc = Game.Objects['Farm'].minigame.tools['info'].descFunc
+        Function('Game.Objects[\'Farm\'].minigame.tools[\'info\'].descFunc=' + Game.Objects['Farm'].minigame.tools['info'].descFunc.toString().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png'))()
+
         // 情報欄の翻訳
-        betterJapanese.origins.updateLog = Game.updateLog
+        if (!betterJapanese.origins.updateLog) betterJapanese.origins.updateLog = Game.updateLog
         Game.updateLog = `
             <div class="selectable">
 	            <div class="section">${loc('Info')}</div>
@@ -280,7 +299,7 @@ const betterJapanese = {
         // 巡り続ける読本のフレーバーテキスト翻訳、thisを使うので非ラムダ式(以降同様)
         let upgrade = Game.Upgrades['Endless book of prose']
         upgrade.desc = loc('%1 are <b>twice</b> as efficient.', cap(upgrade.buildingTie1.plural))
-        upgrade.originDescFunc = upgrade.descFunc
+        if(!upgrade.originDescFunc) upgrade.originDescFunc = upgrade.descFunc
         upgrade.descFunc = function() {
             let str = loc(FindLocStringByPart(`Upgrade quote ${this.id}`), Game.bakeryName)
             let n = 26
@@ -346,7 +365,7 @@ const betterJapanese = {
         Game.Upgrades['Golden switch [on]'].descFunc = func
 
         // 猫の場合「購入済み」タグが変化することを翻訳にも反映
-        betterJapanese.origins.crateTooltip = Game.crateTooltip
+        if (!betterJapanese.origins.crateTooltip) betterJapanese.origins.crateTooltip = Game.crateTooltip
         Game.crateTooltip = function(me, context) {
             let tooltipText = betterJapanese.origins.crateTooltip(me, context)
             if (Game.sesame) {
@@ -355,16 +374,13 @@ const betterJapanese = {
             if (me.type == 'upgrade' && me.bought > 0 && me.pool != 'tech' && me.kitten) {
                 return tooltipText.replace(`<div class="tag" style="background-color:#fff;">${loc('Purchased')}</div>`, `<div class="tag" style="background-color:#fff;">${loc('[Tag]Purrchased')}</div>`)
             }
-
             return tooltipText
         }
 
         // 英語以外でも施設固有の生産方法をツールチップに表示
         for (let i in Game.Objects) {
             let obj = Game.Objects[i]
-            if (typeof (betterJapanese.origins.tooltip) === 'undefined') {
-                betterJapanese.origins.tooltip = obj.tooltip
-            }
+            if (!betterJapanese.origins.tooltip) betterJapanese.origins.tooltip = obj.tooltip
             obj.actionNameJP = loc(obj.actionName)
             obj.tooltip = function() {
                 const strDivDescriptionBlock = '<div class="descriptionBlock">'
@@ -381,9 +397,7 @@ const betterJapanese = {
         // 英語以外でも施設固有の角砂糖によるレベルアップの恩恵を表示
         for (let i in Game.Objects) {
             let obj = Game.Objects[i]
-            if (typeof (betterJapanese.origins.levelTooltip) === 'undefined') {
-                betterJapanese.origins.levelTooltip = obj.levelTooltip
-            }
+            if (betterJapanese.origins.levelTooltip) betterJapanese.origins.levelTooltip = obj.levelTooltip
             obj.levelTooltip = function() {
                 const strDivLine = '<div class="line"></div>'
                 let defaultTooltip = betterJapanese.origins.levelTooltip.bind(this)().split(strDivLine)
@@ -392,7 +406,7 @@ const betterJapanese = {
             }
         }
 
-        betterJapanese.origins.parseLoc = parseLoc
+        if (!betterJapanese.origins.parseLoc) betterJapanese.origins.parseLoc = parseLoc
         parseLoc = function(str, params) {
             // 独自実装されている翻訳でコケないように修正
             if (str.constructor === Object) return ''
@@ -406,11 +420,11 @@ const betterJapanese = {
         // ニュース欄の改善を有効化していれば置き換え
         if (betterJapanese.config.replaceNews) {
             // ニュースのフォーチュンクッキーの表示が壊れる問題を修正
-            let tickerOrigin = eval('Game.getNewTicker.toString()').replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
-            eval(`Game.getNewTicker = ${tickerOrigin}`)
+            let tickerOrigin = Game.getNewTicker.toString().replace('me.name.indexOf(\'#\')', 'me.dname.indexOf(\'No.\')').replace(/me\.baseDesc/g, 'me.ddesc')
+            Function(`Game.getNewTicker = ${tickerOrigin}`)()
 
             // ニュースを英語で出力させるように
-            betterJapanese.origins.getNewTicker = Game.getNewTicker
+            if (!betterJapanese.origins.getNewTicker) betterJapanese.origins.getNewTicker = Game.getNewTicker
             Game.getNewTicker = function(manual) {
                 let isDefaultEN = EN
                 EN = true
@@ -419,7 +433,7 @@ const betterJapanese = {
             }
 
             // ニュースの文章を翻訳
-            betterJapanese.origins.tickerDraw = Game.TickerDraw
+            if (!betterJapanese.origins.tickerDraw) betterJapanese.origins.tickerDraw = Game.TickerDraw
             Game.TickerDraw = function() {
                 Game.Ticker = betterJapanese.locTicker(Game.Ticker)
                 betterJapanese.origins.tickerDraw()
@@ -427,13 +441,17 @@ const betterJapanese = {
         }
 
         // ミニゲームでの砂糖使用時に表示する確認ツールチップを翻訳
-        betterJapanese.origins.refillLump = Game.refillLump
-        eval('Game.refillLump=' + Game.refillLump.toString().replace('\'refill\'', 'loc(\'refill\')'))
+        if (!betterJapanese.origins.refillLump) betterJapanese.origins.refillLump = Game.refillLump
+        Function('Game.refillLump = ' + Game.refillLump.toString().replace('\'refill\'', 'loc(\'refill\')'))()
 
         // イースターのエッグ解放時に表示するツールチップのアップグレード名を翻訳
-        betterJapanese.origins.dropEgg = Game.DropEgg
-        eval('Game.DropEgg=' + Game.DropEgg.toString().replace(/(Game\.Notify\(loc\("You found an egg\!"\),'\<b\>'\+)drop(\+'\<\/b\>',Game\.Upgrades\[drop\]\.icon\);)/, '$1Game.Upgrades[drop].dname$2'))
+        if (!betterJapanese.origins.dropEgg) betterJapanese.origins.dropEgg = Game.DropEgg
+        Function('Game.DropEgg = ' + Game.DropEgg.toString().replace(/(Game\.Notify\(loc\("You found an egg\!"\),'\<b\>'\+)drop(\+'\<\/b\>',Game\.Upgrades\[drop\]\.icon\);)/, '$1Game.Upgrades[drop].dname$2'))()
 
+        // 転生後に表示されるツールチップを翻訳
+        if (!betterJapanese.origins.reincarnate) betterJapanese.origins.reincarnate = Game.Reincarnate
+        Function('Game.Reincarnate = ' + Game.Reincarnate.toString().replace(/(Game\.Notify\()'Reincarnated'(,loc\("Hello, cookies!"\),\[10,0\],4\);)/, '$1loc("Reincarnated")$2'))()
+        
         // hookを削除
         Game.removeHook('create', betterJapanese.initAfterLoad)
     },
@@ -476,6 +494,15 @@ const betterJapanese = {
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
+    },
+
+    injectStats: function() {
+        let target = l('statsGeneral')
+        let div = document.createElement('div')
+        div.innerHTML = `<b>日本語訳改善Mod:</b> ${betterJapanese.version}`
+        div.className = 'listing'
+
+        if (target) target.parentNode.appendChild(div)
     },
 
     fixStats: function() {
