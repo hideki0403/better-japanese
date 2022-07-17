@@ -183,6 +183,37 @@ const betterJapanese = {
             padding: 5px;
             background: #222;
         }
+        
+        #prompt .accordion-words > li {
+            margin: 0px;
+            padding: 0px 0px 0px 4px;
+        }
+        
+        #prompt .accordion-words > li > label {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        #prompt .accordion-words div {
+            margin-top: 4px;
+        }
+        
+        #prompt .accordion-words ul {
+            list-style-type: disc;
+        }
+        
+        #prompt .accordion-words ul ul {
+            list-style-type: circle;
+        }
+        
+        #prompt .accordion-words ul ul ul {
+            list-style-type: square;
+        }
+
+        #prompt .accordion-words div li {
+            padding: 0px;
+            margin: 0px;
+        }
 
         #prompt ul ul {
             list-style: none;
@@ -653,6 +684,7 @@ const betterJapanese = {
             if (!e.target.name || !e.target.name.startsWith('word:')) return
             let key = e.target.name.replace('word:', '').replace(/\\"/g, '"')
             betterJapanese.tmpIgnoreList[key] = e.target.checked
+            document.querySelectorAll(`[name$=${CSS.escape(e.target.name)}]`).forEach(e => e.checked = state)
         })
 
         let checkButton = (obj, state, position) => {
@@ -667,26 +699,35 @@ const betterJapanese = {
 
             obj.forEach(key => {
                 betterJapanese.tmpIgnoreList[key] = state
+                document.querySelectorAll(`[name$=${CSS.escape('word:' + key)}]`).forEach(e => e.checked = state)
             })
         }
 
         document.getElementById('ignorelist-category').addEventListener('change', (e) => {
             if (!e.target.name || !e.target.name.startsWith('category:')) return
-            let category = e.target.name.replace('category:', '').split('/')
-            let currentPosition = betterJapanese.tmpCategoryList
+            let category, word, key
+            if ((word = e.target.name.match(/^category:(.+?)\/word:(.+)$/)) === null) {
+                category = e.target.name.replace('category:', '').split('/')
+                let currentPosition = betterJapanese.tmpCategoryList
+    
+                category.forEach(key => {
+                    currentPosition = currentPosition[key]
+                })
+    
+                checkButton(currentPosition, e.target.checked, e.target.name)
+                key = e.target.name
+            } else {
+                category = word[1].split('/')
+                category.push(word[2])
+                checkButton([word[2]], e.target.checked, e.target.name)
+                key = e.target.name.substring(0, e.target.name.length - word[2].length)
+            }
 
-            category.forEach(key => {
-                currentPosition = currentPosition[key]
-            })
-
-            checkButton(currentPosition, e.target.checked, e.target.name)
-
-            let key = e.target.name
             for (let i = 0; i < category.length - 1; i++) {
                 // 一番最後のスラッシュ以降を消す
                 key = key.replace(/[^\/]*$/, '')
 
-                let elements = document.querySelectorAll(`[name^=${key.replace(/(\:|\/)/g, '\\$1')}]`)
+                let elements = document.querySelectorAll(`[name^=${CSS.escape(key)}]`)
                 let parent = document.getElementsByName(key.replace(/\/$/, ''))[0]
 
                 if (!elements) continue
@@ -723,8 +764,6 @@ const betterJapanese = {
 
                 key = key.replace(/\/$/, '')
             }
-
-            this.createIgnoreWordList()
         })
 
         betterJapanese.createIgnoreWordList()
@@ -760,7 +799,13 @@ const betterJapanese = {
 
     createIgnoreCategoryList: async function() {
         let categoryList = await betterJapanese.getJSON(betterJapanese.api.endpoints.CATEGORY)
+        let translateList = await betterJapanese.getJSON(betterJapanese.api.endpoints.TRANSLATE)
         betterJapanese.tmpCategoryList = categoryList
+
+        const escapeHtmlChars = (unsafe) => {
+            return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll('\'', '&#x27;').replaceAll('`', '&#x60;')
+        }
+
         let categoryListHtml = '<ul>'
 
         let createNest = (category, parent) => {
@@ -769,18 +814,41 @@ const betterJapanese = {
                 let current = parent ? `${parent}/${key}` : key
                 let isExistChild = value.constructor === Object
 
-                if (isExistChild) {
-                    let id = `accordion:${current}`
-                    categoryListHtml += `<input type="checkbox" id="${id}" class="accordion-parent"><label for=${id}>`
-                }
+                let id = `accordion:${current}`
+                categoryListHtml += `<input type="checkbox" id="${id}" class="accordion-parent"><label for="${id}">`
 
                 categoryListHtml += `<li><label><input type="checkbox" name="category:${current}">${key}</label></li>`
 
+                categoryListHtml += `</label><ul class="accordion-child ${!isExistChild ? ' accordion-words' : ''}">`
                 if (isExistChild) {
-                    categoryListHtml += '</label><ul class="accordion-child">'
                     createNest(value, current)
-                    categoryListHtml += '</ul>'
+                } else {
+                    // 末端カテゴリの場合は属する翻訳文のツリー化
+                    for (let wordKey of value) {
+                        let wordValue = translateList[wordKey]
+                        categoryListHtml += `<li><label><input type="checkbox" name="category:${current}/word:${wordKey}"><div>`
+                        if (wordValue.constructor === Object) {
+                            categoryListHtml += escapeHtmlChars(wordKey)
+                            let toItemize = (obj) => {
+                                return `<li>
+                                    ${Object.values(obj).map((v) => {
+                                        if (v.constructor === String) {
+                                            return v
+                                        }
+                                        return `<ul>${toItemize(v)}</ul>`
+                                    }).join('</li><li>')}
+                                    </li>`
+                            }
+                            categoryListHtml += `<ul>${toItemize(wordValue)}</ul>`
+                        } else if (wordValue.constructor === Array) {
+                            categoryListHtml += `${escapeHtmlChars(wordKey)}<ul><li>${wordValue.map(str => escapeHtmlChars(str)).join('</li><li>')}</li></ul>`
+                        } else {
+                            categoryListHtml += escapeHtmlChars(wordValue)
+                        }
+                        categoryListHtml += '</div></label></li>'
+                    }
                 }
+                categoryListHtml += '</ul>'
             }
         }
 
