@@ -38,7 +38,7 @@ const betterJapanese = {
     init: function() {
         let versionPath = App ? `file:///${App.mods['BetterJapanese'].dir.replace(/\\/g, '/')}/version.json` : 'https://pages.yukineko.me/better-japanese/version.json'
         this.getJSON(versionPath).then(res => {
-            res ? this.version = res.version : this.version = '0.0.0'
+            this.version = res ? res.version : '0.0.0'
         })
 
         this.fallbackTimer = setTimeout(() => {
@@ -397,7 +397,7 @@ const betterJapanese = {
         // 英語以外でも施設固有の角砂糖によるレベルアップの恩恵を表示
         for (let i in Game.Objects) {
             let obj = Game.Objects[i]
-            if (betterJapanese.origins.levelTooltip) betterJapanese.origins.levelTooltip = obj.levelTooltip
+            if (!betterJapanese.origins.levelTooltip) betterJapanese.origins.levelTooltip = obj.levelTooltip
             obj.levelTooltip = function() {
                 const strDivLine = '<div class="line"></div>'
                 let defaultTooltip = betterJapanese.origins.levelTooltip.bind(this)().split(strDivLine)
