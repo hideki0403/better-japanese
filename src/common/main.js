@@ -723,7 +723,7 @@ const betterJapanese = {
 
             obj.forEach(key => {
                 betterJapanese.tmpIgnoreList[key] = state
-                document.querySelectorAll(`[name$=word\:${CSS.escape(key.replace(/"/g, '&quot;'))}]`).forEach(e => e.checked = state)
+                document.querySelectorAll(`[name$=${CSS.escape('word:' + key.replace(/"/g, '&quot;'))}]`).forEach(e => e.checked = state)
             })
         }
 
@@ -851,7 +851,7 @@ const betterJapanese = {
             let elements = document.querySelectorAll(`[name^=${CSS.escape(position)}\\/]`)
             let parent = document.getElementsByName(position)[0]
 
-            if (!elements) continue
+            if (!elements || !parent) continue
 
             let checkState = 0
             let isContainIndeterminate = false
