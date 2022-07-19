@@ -1,6 +1,6 @@
 function rebuildLocalization() {
-    let funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
-    let GetTooltipFunc = (text, position) => {
+    const funcInitString = Game.Init.toString().replaceAll(/[\r\n\t]/g, '')
+    const GetTooltipFunc = (text, position) => {
         let str = position ? Game.getTooltip(text, position) : Game.getTooltip(text)
         const mouseOverText = 'onMouseOver="'
         return Function('event', str.substring(str.indexOf(mouseOverText) + mouseOverText.length, str.length - '"'.length))
@@ -128,6 +128,7 @@ function rebuildLocalization() {
     l('logButton').firstChild.innerHTML = loc('Info')
     l('legacyButton').firstChild.innerHTML = loc('Legacy')
     
+    if (!betterJapanese.origins.adaptWidth) betterJapanese.origins.adaptWidth = Game.adaptWidth
     Game.adaptWidth = function(node) {
         let el = node.firstChild
         el.style.padding = ''
@@ -223,8 +224,8 @@ function rebuildLocalization() {
         obj.baseDesc = loc('%1 are <b>twice</b> as efficient.', cap(Game.Objects['Grandma'].plural)) + ' ' + loc('%1 gain <b>+%2%</b> CpS per %3.', [cap(obj.buildingTie.plural), 1, loc('%1 grandma', LBeautify(obj.buildingTie.id - 1))])
     }
     
-    let angelUpgrades = ['Angels', 'Archangels', 'Virtues', 'Dominions', 'Cherubim', 'Seraphim', 'God']// 天使系アップグレード
-    let demonUpgrades = ['Belphegor', 'Mammon', 'Abaddon', 'Satan', 'Asmodeus', 'Beelzebub', 'Lucifer']// 悪魔系アップグレード
+    const angelUpgrades = ['Angels', 'Archangels', 'Virtues', 'Dominions', 'Cherubim', 'Seraphim', 'God']// 天使系アップグレード
+    const demonUpgrades = ['Belphegor', 'Mammon', 'Abaddon', 'Satan', 'Asmodeus', 'Beelzebub', 'Lucifer']// 悪魔系アップグレード
     
     // その他アップグレード概要
     for (let result of funcInitString.matchAll(/(?<!\/\/|=)new Game\.Upgrade\('(.+?)(?<!\\)',(.+?)(?<!\([^,\)]+?),((?:[^,]|(?:(?<=\([^\)]+?),(?=[^\(]+?\))))+)(?<!\([^,\)]+?),(?:\[\d+?,\d+?\]|Game\.GetIcon\(.+?\))(?:,function\(\){.+?})?\);/g)) {
@@ -394,8 +395,8 @@ function rebuildLocalization() {
     for (let i = 1; i <= 3; i++) {
         l('bankLoan' + i).innerHTML = loc('Loan #%1', i)
     }
-    let buyStr = loc('Buy')
-    let sellStr = loc('Sell')
+    const buyStr = loc('Buy')
+    const sellStr = loc('Sell')
     for (let i = 0; i < Mg.goodsById.length; i++) {
         let good = Mg.goodsById[i]
         good.name = loc(FindLocStringByPart(`STOCK ${i + 1} TYPE`))
