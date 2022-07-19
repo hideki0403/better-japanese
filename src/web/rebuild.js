@@ -410,6 +410,10 @@ function rebuildLocalization() {
         bankSymbols[1].innerHTML = `${loc('value:')} ${str.substring(str.indexOf('<'))}`
         str = bankSymbols[2].innerHTML
         bankSymbols[2].innerHTML = `${loc('stock:')} ${str.substring(str.indexOf('<'))}`
+        good.symbolNumL = l(`bankGood-${good.id}-sym`)
+        good.valL = l(`bankGood-${good.id}-val`)
+        good.stockL = l(`bankGood-${good.id}-stock`)
+        good.stockMaxL = l(`bankGood-${good.id}-stockMax`)
         bankSymbols = goodDiv.children[1].querySelectorAll('.bankSymbol')
         for (let j = 0; j <= 1; j++) {
             bankSymbols[j].style['display'] = (buyStr.length > 4 || sellStr.length > 4) ? 'block' : ''

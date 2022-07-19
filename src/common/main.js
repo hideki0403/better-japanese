@@ -261,7 +261,7 @@ const betterJapanese = {
         if (betterJapanese.config.replaceGardenImage) {
             while (!Game.Objects['Farm'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
             if (!betterJapanese.origins.toolInfoDescFunc) betterJapanese.origins.toolInfoDescFunc = Game.Objects['Farm'].minigame.tools['info'].descFunc
-            Game.Objects['Farm'].minigame.tools['info'].descFunc = Function(Game.Objects['Farm'].minigame.tools['info'].descFunc.toString().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png').replace(/M\./g, 'this.').replace(/[\r\n\t]/g, '').replace(/^function\(\)\{(.+)\}$/, '$1')).bind(Game.Objects['Farm'].minigame)
+            Game.Objects['Farm'].minigame.tools['info'].descFunc = Function('let M=Game.Objects[\'Farm\'].minigame;' + Game.Objects['Farm'].minigame.tools['info'].descFunc.toString().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png').replace(/^[^\{]+?\{(.+)\}$/, '$1')).bind()
         }
 
         // 情報欄の翻訳
@@ -990,29 +990,27 @@ const betterJapanese = {
     formatEveryFourthPower: function() {
         // 接尾辞挿入の4桁区切り版、secondで第二単位の使用を指定
         return function(value) {
-            let prefixes = betterJapanese.config.shortFormatJP ? betterJapanese.formats.short : betterJapanese.formats.prefix
-            let suffixes = betterJapanese.config.shortFormatJP ? [''] : betterJapanese.formats.suffixes
-            let second = betterJapanese.config.secondFormatJP
+            const prefixes = betterJapanese.config.shortFormatJP ? betterJapanese.formats.short : betterJapanese.formats.prefix
+            const suffixes = betterJapanese.config.shortFormatJP ? [''] : betterJapanese.formats.suffixes
 
             // infinityの場合は無限大を返す
             if (!isFinite(value)) return '無限大'// loc("Infinity")
 
-            if (value > 10 ** (prefixes.length * suffixes.length * 4)) {
-                return value.toPrecision(3).toString()
-            }
+            // 表示可能な数値を上回った場合は標準の指数表記で出力
+            if (value > 10 ** (prefixes.length * suffixes.length * 4)) return value.toPrecision(3).toString()
 
             // 小数点の場合は最大小数第3位まででそのまま出力
-            if (value < 1) {
-                return (Math.round(value * 1000) / 1000).toString()
-            }
+            if (value < 1) return (Math.round(value * 1000) / 1000).toString()
 
-            let numeral = Math.floor(Math.log10(value) / 4)
-            let preIndex = numeral % prefixes.length
-            let sufIndex = Math.floor(numeral / prefixes.length)
-            let dispNum = Math.round(value * 10000 / (10 ** (numeral * 4)))
+            const digitFloored = 10 ** Math.ceil(Math.log10(value) - 8)
+            if (digitFloored > 1) value = Math.round(value / digitFloored) * digitFloored // 表示される上位8桁以下を切り捨て
+            const numeral = Math.floor(Math.log10(value) / 4)
+            const preIndex = numeral % prefixes.length
+            const sufIndex = Math.floor(numeral / prefixes.length)
+            const dispNum = Math.round(value * 10000 / (10 ** (numeral * 4)))
 
             // 第二単位を付ける
-            if (second) {
+            if (betterJapanese.config.secondFormatJP) {
                 if (!preIndex && !sufIndex) return value
 
                 let str = Math.floor(dispNum / 10000) + (preIndex ? prefixes[preIndex] : suffixes[sufIndex])
@@ -1020,7 +1018,6 @@ const betterJapanese = {
                 str += suffixes[preIndex ? sufIndex : sufIndex - 1]
 
                 return str !== 'NaN' ? str : value.toPrecision(3).toString()
-
             }
 
             // 第二単位を付けない
