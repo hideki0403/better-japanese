@@ -32,7 +32,7 @@ const betterJapanese = {
         },
         cache: null
     },
-    isDev: true,
+    isDev: false,
     initialized: false,
     fallbackTimer: 0,
     origins: {},
@@ -261,7 +261,7 @@ const betterJapanese = {
         if (betterJapanese.config.replaceGardenImage) {
             while (!Game.Objects['Farm'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
             if (!betterJapanese.origins.toolInfoDescFunc) betterJapanese.origins.toolInfoDescFunc = Game.Objects['Farm'].minigame.tools['info'].descFunc
-            Function('Game.Objects[\'Farm\'].minigame.tools[\'info\'].descFunc=' + Game.Objects['Farm'].minigame.tools['info'].descFunc.toString().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png'))()
+            Game.Objects['Farm'].minigame.tools['info'].descFunc = Function(Game.Objects['Farm'].minigame.tools['info'].descFunc.toString().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png').replace(/M\./g, 'this.').replace(/[\r\n\t]/g, '').replace(/^function\(\)\{(.+)\}$/, '$1')).bind(Game.Objects['Farm'].minigame)
         }
 
         // 情報欄の翻訳
@@ -423,8 +423,9 @@ const betterJapanese = {
             }
         }
 
-        // 英語以外でも施設固有の生産方法をツールチップに表示
+        // 施設固有の表現をツールチップに表示
         if (betterJapanese.config.replaceBuildings) {
+            // 英語以外でも施設固有の生産方法をツールチップに表示
             for (let i in Game.Objects) {
                 let obj = Game.Objects[i]
                 if (!betterJapanese.origins.tooltip) betterJapanese.origins.tooltip = obj.tooltip
