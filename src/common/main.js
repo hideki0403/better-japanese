@@ -261,7 +261,10 @@ const betterJapanese = {
         if (betterJapanese.config.replaceGardenImage) {
             while (!Game.Objects['Farm'].hasOwnProperty('minigame')) await new Promise(resolve => setTimeout(resolve, 1000))
             if (!betterJapanese.origins.toolInfoDescFunc) betterJapanese.origins.toolInfoDescFunc = Game.Objects['Farm'].minigame.tools['info'].descFunc
-            Game.Objects['Farm'].minigame.tools['info'].descFunc = Function('let M=Game.Objects[\'Farm\'].minigame;' + Game.Objects['Farm'].minigame.tools['info'].descFunc.toString().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png').replace(/^[^\{]+?\{(.+)\}$/, '$1')).bind()
+
+            Game.Objects['Farm'].minigame.tools['info'].descFunc = function() {
+                return betterJapanese.origins.toolInfoDescFunc().replace('img/gardenTip.png', 'https://pages.yukineko.me/better-japanese/assets/gardenTip.png').replace(/^[^\{]+?\{(.+)\}$/, '$1')
+            }
         }
 
         // 情報欄の翻訳
