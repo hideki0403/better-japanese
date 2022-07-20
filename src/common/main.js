@@ -15,7 +15,7 @@ const betterJapanese = {
         replaceBuildings: true,
         replaceCSS: true,
         replaceNews: true,
-        showSpoilerAlert: false,
+        showSpoilerAlert: true,
         numberJP: true,
         shortFormatJP: false,
         secondFormatJP: true,
