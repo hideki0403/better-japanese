@@ -4,7 +4,6 @@ const betterJapanese = {
     config: {
         hash: '0',
         replaceJP: true,
-        replaceBeautify: true,
         replaceTime: true,
         replaceBackgroundName: true,
         replaceMarketQuote: true,
@@ -184,48 +183,46 @@ const betterJapanese = {
         // 塵劫記用の単位
         betterJapanese.formats.short = [...betterJapanese.formats.prefix, '阿僧祇', '那由多', '不可思議', '無量大数']
 
+        // 設定によって日本語単位を使用するように変更、同時にカンマ区切りも場合によって変更
+        if (!betterJapanese.origins.beautify) betterJapanese.origins.beautify = Beautify
+        Beautify = function(val, floats) {
+            let negative = (val < 0)
+            let decimal = ''
+            let fixed = val.toFixed(floats)
+            if (floats > 0 && Math.abs(val) < 1000 && Math.floor(fixed) != fixed) decimal = '.' + (fixed.toString()).split('.')[1]
+            val = Math.floor(Math.abs(val))
+            if (floats > 0 && fixed == val + 1) val++
+            let format = Game.prefs.format ? 2 : betterJapanese.config.numberJP ? 3 : 1
+            let formatter = numberFormatters[format]
+            let output = (val.toString().indexOf('e+') != -1 && format == 2) ? val.toPrecision(3).toString() : formatter(val).toString()
+            if (Game.prefs.format || (betterJapanese.config.numberJP && betterJapanese.config.secondFormatJP)) {
+                output = output.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            } else {
+                output = output.replace(/^(\d)(\d{3})/, '$1,$2')
+            }
+            if (output == '0') negative = false
+            return negative ? '-' + output : output + decimal
+        }
+
+        // 本家の挿入関数に追加
+        numberFormatters = [
+            formatEveryThirdPower(formatShort),
+            formatEveryThirdPower(formatLong),
+            rawFormatter,
+            betterJapanese.formatEveryFourthPower()
+        ]
+
+        // 指数表記の場合表示が崩れる現象を修正
+        if (!betterJapanese.origins.simpleBeautify) betterJapanese.origins.simpleBeautify = SimpleBeautify
+        SimpleBeautify = function(val) {
+            if (val.toString().indexOf('e+') >= 0) {
+                return val.toString().replace(/(?<=.)(\d{3})(?=\d)/g, '$1,')
+            }
+            return betterJapanese.origins.simpleBeautify(val)
+        }
+
         // 設定の「日本語訳の改善」がOFFになっている場合はここから下は実行しない (ニュース欄やアップデート履歴が壊れる)
         if (!betterJapanese.config.replaceJP) return
-
-        // 設定によって日本語単位を使用するように変更、同時にカンマ区切りも場合によって変更
-        if (betterJapanese.config.replaceBeautify) {
-            // 本家の挿入関数に追加
-            numberFormatters = [
-                formatEveryThirdPower(formatShort),
-                formatEveryThirdPower(formatLong),
-                rawFormatter,
-                betterJapanese.formatEveryFourthPower()
-            ]
-
-            if (!betterJapanese.origins.beautify) betterJapanese.origins.beautify = Beautify
-            Beautify = function(val, floats) {
-                let negative = (val < 0)
-                let decimal = ''
-                let fixed = val.toFixed(floats)
-                if (floats > 0 && Math.abs(val) < 1000 && Math.floor(fixed) != fixed) decimal = '.' + (fixed.toString()).split('.')[1]
-                val = Math.floor(Math.abs(val))
-                if (floats > 0 && fixed == val + 1) val++
-                let format = Game.prefs.format ? 2 : betterJapanese.config.numberJP ? 3 : 1
-                let formatter = numberFormatters[format]
-                let output = (val.toString().indexOf('e+') != -1 && format == 2) ? val.toPrecision(3).toString() : formatter(val).toString()
-                if (Game.prefs.format || (betterJapanese.config.numberJP && betterJapanese.config.secondFormatJP)) {
-                    output = output.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                } else {
-                    output = output.replace(/^(\d)(\d{3})/, '$1,$2')
-                }
-                if (output == '0') negative = false
-                return negative ? '-' + output : output + decimal
-            }
-    
-            // 指数表記の場合表示が崩れる現象を修正
-            if (!betterJapanese.origins.simpleBeautify) betterJapanese.origins.simpleBeautify = SimpleBeautify
-            SimpleBeautify = function(val) {
-                if (val.toString().indexOf('e+') >= 0) {
-                    return val.toString().replace(/(?<=.)(\d{3})(?=\d)/g, '$1,')
-                }
-                return betterJapanese.origins.simpleBeautify(val)
-            }
-        }
         
         // 時間表記からカンマを取り除く
         if (betterJapanese.config.replaceTime) {
@@ -567,6 +564,7 @@ const betterJapanese = {
             Game.Prompt(`
                 <h3>非公式日本語訳 詳細設定</h3>
                 <div>ゲームの処理を変更している翻訳処理について利用するか設定できます。<br>バグがあった場合、これらの翻訳はゲーム内容に影響を及ぼす可能性があります。</div>
+                ${!betterJapanese.config.replaceJP ? '<div class="line"></div><p style="color: red; font-weight: bold;">「日本語訳の改善」がオフのため、下記の設定はすべてオフとして処理されます。</p>' : ''}
                 <div class="line"></div>
                 <div class="listing" style="width: 100%; text-align: left; padding: 0px 10px;">
                     <div id="dummyIgnoreListJP"></div>
@@ -577,9 +575,9 @@ const betterJapanese = {
                     <div id="dummySettingJP"></div>
                 </div>
             `, ['閉じる'], null, 'settingsList')
+
             betterJapanese.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', betterJapanese.openIgnorePrompt, 'dummyIgnoreListJP')
             betterJapanese.writeButton('toggleShowSpoilerAlertButton', 'showSpoilerAlert', '除外リスト表示確認', '除外リストを表示する際にネタバレに対する確認を表示します。', null, 'dummyIgnoreListJP')
-            betterJapanese.writeButton('toggleReplaceBeautifyButton', 'replaceBeautify', '日本語単位の使用', '日本語単位を使用できるようにします。無効化した場合は「日本語単位」の設定および付随する設定が機能しなくなります。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceBackgroundNameButton', 'replaceBackgroundName', '背景名', '背景の名前を翻訳します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceMarketQuoteButton', 'replaceMarketQuote', '在庫市場のフレーバーテキスト', '在庫市場のフレーバーテキストを翻訳し、日本語で表示されるようにします。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceGardenImageButton', 'replaceGardenImage', '菜園情報の画像', '菜園情報内で表示される画像を日本語のものに置き換えます。', null, 'dummySettingJP')
