@@ -15,7 +15,7 @@ const betterJapanese = {
         replaceBuildings: true,
         replaceCSS: true,
         replaceNews: true,
-        enableIgnoreList: false,
+        showSpoilerAlert: false,
         numberJP: true,
         shortFormatJP: false,
         secondFormatJP: true,
@@ -575,7 +575,7 @@ const betterJapanese = {
                 </div>
             `, ['閉じる'], null, 'settingsList')
             betterJapanese.writeButton('openIgnoreWordList', null, '置き換え除外リスト', '非公式翻訳に置き換えたくない単語を指定することができます。', betterJapanese.openIgnorePrompt, 'dummyIgnoreListJP')
-            betterJapanese.writeButton('toggleEnableIgnoreListButton', 'enableIgnoreList', '除外リスト表示確認', '除外リストを表示する際にネタバレに対する確認を表示します。', null, 'dummyIgnoreListJP')
+            betterJapanese.writeButton('toggleShowSpoilerAlertButton', 'showSpoilerAlert', '除外リスト表示確認', '除外リストを表示する際にネタバレに対する確認を表示します。', null, 'dummyIgnoreListJP')
             betterJapanese.writeButton('toggleReplaceBeautifyButton', 'replaceBeautify', '日本語単位の使用', '日本語単位を使用できるようにします。無効化した場合は「日本語単位」の設定および付随する設定が機能しなくなります。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceBackgroundNameButton', 'replaceBackgroundName', '背景名', '背景の名前を翻訳します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceMarketQuoteButton', 'replaceMarketQuote', '在庫市場のフレーバーテキスト', '在庫市場のフレーバーテキストを翻訳し、日本語で表示されるようにします。', null, 'dummySettingJP')
@@ -739,7 +739,14 @@ const betterJapanese = {
         Game.Notify('日本語訳改善Mod', '翻訳データを更新しました。<br>再読み込み後から有効になります。<br><a onclick="betterJapanese.reload()">セーブデータを保存して再読み込み</a>')
     },
 
-    openIgnorePrompt: async function() {
+    openIgnorePrompt: async function(showSpoilerAlert = true) {
+        let spoilerAlert = `
+            <h3>ネタバレ注意</h3>
+            <p>置き換え除外リストにはCookieClickerのネタバレが含まれている可能性があります。表示してもよろしいですか？</p>
+        `
+        
+        if (showSpoilerAlert && betterJapanese.config.showSpoilerAlert) return Game.Prompt(spoilerAlert, [['開く', 'Game.ClosePrompt();betterJapanese.openIgnorePrompt(false);'], 'キャンセル'])
+
         betterJapanese.tmpIgnoreList = {}
 
         let content = `
