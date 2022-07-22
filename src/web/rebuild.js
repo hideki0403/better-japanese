@@ -331,23 +331,23 @@ function rebuildLocalization() {
 
     // ミニゲーム菜園関連の再翻訳
     let Mg = Game.Objects['Farm'].minigame
-    funcInitString = Mg.init.toString().replace(/[\r\n\t]/g,　'')
+    const funcFarmInitString = Mg.init.toString().replace(/[\r\n\t]/g,　'')
     // 作物の再翻訳
-    let plantsString = funcInitString.match(/M\.plants=\{(.+?)\};/)[1]
+    let plantsString = funcFarmInitString.match(/M\.plants=\{(.+?)\};/)[1]
     for (let res of plantsString.matchAll(/'([^']+?)':\{name:'(.+?)(?<!\\)',.+?,effsStr:(.+?),q:/g)) {
         let plant = Mg.plants[res[1]]
         plant.name = loc(res[2].replaceAll('\\\'', '\''))
         plant.effsStr = Function('return ' + res[3])()
     }
     // 土の再翻訳
-    let soilsString = funcInitString.match(/M\.soils=\{(.+?)\};/)[1]
+    let soilsString = funcFarmInitString.match(/M\.soils=\{(.+?)\};/)[1]
     for (let res of soilsString.matchAll(/'([^']+?)':\{name:loc\("(.+?)(?<!\\)"\),.+?,effsStr:(.+?),q:/g)) {
         let soil = Mg.soils[res[1]]
         soil.name = loc(res[2])
         soil.effsStr = Function('return ' + res[3])()
     }
     // ツールの再翻訳
-    for (let res of funcInitString.substring(funcInitString.indexOf('M.tools=')).matchAll(/'([^']+?)':\{name:loc\("(.+?)"\),.+?,(?:desc:(.+?),)?(?:descFunc|func):/g)) {
+    for (let res of funcFarmInitString.substring(funcFarmInitString.indexOf('M.tools=')).matchAll(/'([^']+?)':\{name:loc\("(.+?)"\),.+?,(?:desc:(.+?),)?(?:descFunc|func):/g)) {
         let tool = Mg.tools[res[1]]
         tool.name = loc(res[2])
         if (res[3]) {
@@ -374,17 +374,17 @@ function rebuildLocalization() {
 
     // ミニゲーム在庫市場関連の再翻訳
     Mg = Game.Objects['Bank'].minigame
-    funcInitString = Mg.init.toString().replaceAll(/[\r\n\t]/g, '')
+    const funcBunkInitString = Mg.init.toString().replaceAll(/[\r\n\t]/g, '')
     // オフィスの再翻訳
     let counter = 0
-    for (let res of funcInitString.match(/M\.offices=\[(.+?)\];/)[1].matchAll(/{name:loc\("(.+?)"\),.+?,desc:(.+?)},/g)) {
+    for (let res of funcBunkInitString.match(/M\.offices=\[(.+?)\];/)[1].matchAll(/{name:loc\("(.+?)"\),.+?,desc:(.+?)},/g)) {
         Mg.offices[counter].name = loc(res[1])
         Mg.offices[counter].desc = Function('return ' + res[2])()
         counter++
     }
     // ローンの再翻訳
     counter = 0
-    for (let res of funcInitString.match(/M\.loanTypes=\[(.+?)\];/)[1].matchAll(/\[loc\("(.+?)"\),.+?,loc\("(.+?)"\)\]/g)) {
+    for (let res of funcBunkInitString.match(/M\.loanTypes=\[(.+?)\];/)[1].matchAll(/\[loc\("(.+?)"\),.+?,loc\("(.+?)"\)\]/g)) {
         Mg.loanTypes[counter][0] = loc(res[1])
         Mg.loanTypes[counter][6] = loc(res[2])
         counter++
@@ -517,7 +517,21 @@ function rebuildLocalization() {
     l('support').children[0].innerHTML = 'v スポンサードリンク v'
     'Cookie Clickerは主に広告によって支えられています。<br>このサイトをブロックしないよう考えていただくか<a href="https://www.patreon.com/dashnet" target="_blank">Patreon</a>を確認してください!'
 
+    const getNumber = (str) => {
+        let res = str.match(/(\d+)((?:,\d+)+)?(.\d+)?( \w+)?/)
+        let newval
+        if (res) {
+            newval = res[1]
+            if (res[2]) newval += res[2].replace(/,/g, '')
+            if (res[3]) newval += res[3]
+            newval = Number(newval)
+            if (res[4]) newval *= 1000 ** (formatLong.indexOf(res[4]) + 1)
+            return newval
+        }
+    }
+
     // 通知欄の再翻訳
+    const researchUpgrades = Object.values(Game.Upgrades).filter(v => v.pool === 'tech')
     for (let note of Game.Notes) {
         let icon = JSON.stringify(note.pic)
         if (icon === JSON.stringify([25, 7])) {
@@ -526,17 +540,11 @@ function rebuildLocalization() {
             note.desc = `${loc('Hello again! Just a reminder that you may want to back up your Cookie Clicker save every once in a while, just in case.<br>To do so, go to Options and hit "Export save" or "Save to file"!')}<div class="line"></div><a style="float:right;" onclick="Game.prefs.showBackupWarning=0;==CLOSETHIS()==">${loc('Don\'t show this again')}</a>`.replaceAll('==CLOSETHIS()==', 'Game.CloseNote(' + note.id + ');')
         } else if (note.pic[1] === 11 && note.pic[0] >= 0 && note.pic[0] < 16) {
             // オフライン中の収入の通知
-            let res = note.desc.match(/(\d+)(?:,(\d+)|\.(\d+)( \w+))?/)
-            let newval
-            if (res[2]) {
-                newval = Number(res[1] + res[2])
-            } else if(res[3] && res[4]) {
-                newval = Number(`${res[1]}.${res[3]}`) * 1000 ** (formatLong.indexOf(res[4]) + 1)
-            } else {
-                newval = Number(res[1])
+            let number = getNumber(note.desc)
+            if (number) {
+                note.title = loc('Welcome back!')
+                note.desc = loc('You earned <b>%1</b> while you were away.', loc('%1 cookie', LBeautify(number)))
             }
-            note.title = loc('Welcome back!')
-            note.desc = loc('You earned <b>%1</b> while you were away.', loc('%1 cookie', LBeautify(newval)))
         } else if (icon === JSON.stringify([20, 3])) {
             // バレンタインシーズン開始の通知
             note.title = loc('Valentine\'s Day!')
@@ -557,6 +565,19 @@ function rebuildLocalization() {
             // イースターシーズン開始の通知
             note.title = loc('Easter!')
             note.desc = loc('It\'s <b>Easter season</b>!<br>Keep an eye out and you just might click a rabbit or two!')
+        } else if (icon === JSON.stringify([29, 14])) {
+            // オフライン中の角砂糖収穫の通知
+            let number = getNumber(note.desc)
+            if (number) {
+                note.desc = loc('You harvested <b>%1</b> while you were away.', loc('%1 sugar lump', LBeautify(number)))
+            }
+        } else {
+            // オフライン中の研究終了の通知
+            const result = researchUpgrades.filter(u => u.icon === Game.Notes[0].pic)
+            if (result.length > 0) {
+                note.title = loc('Research complete')
+                note.desc = loc('You have discovered: <b>%1</b>.', result[0].dname)
+            }
         }
     }
     Game.UpdateNotes()
