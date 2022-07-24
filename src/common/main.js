@@ -731,8 +731,6 @@ const betterJapanese = {
         // assetsDataが存在せず、なおかつ開発者モードではなければ終了
         if (!assetsData && !this.isDev) return null
 
-        // TODO: apiのエンドポイント変更
-
         let translateJson = await this.getJSON(this.api.endpoints.TRANSLATE)
         let ignoreList = this.config.ignoreList
 
