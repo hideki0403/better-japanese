@@ -15,6 +15,7 @@ const betterJapanese = {
         replaceCSS: true,
         replaceNews: true,
         showSpoilerAlert: true,
+        beautifyAscendNumber: true,
         numberJP: true,
         shortFormatJP: false,
         secondFormatJP: true,
@@ -78,7 +79,6 @@ const betterJapanese = {
             }
             
             if (Game.onMenu == 'stats') {
-                betterJapanese.fixStats()
                 betterJapanese.injectStats()
             }
         `)
@@ -219,6 +219,18 @@ const betterJapanese = {
                 return val.toString().replace(/(?<=.)(\d{3})(?=\d)/g, '$1,')
             }
             return betterJapanese.origins.simpleBeautify(val)
+        }
+
+        if (betterJapanese.config.beautifyAscendNumber) {
+            if (!betterJapanese.origins.logic) betterJapanese.origins.logic = Game.Logic
+            Game.Logic = Function(betterJapanese.origins.logic.toString().replace(/^(?:[^\{])+\{((?:.|[\r\n\t])+)\}/, '$1').replace('Game.ascendNumber.textContent=\'+\'+SimpleBeautify(ascendNowToGet);', 'Game.ascendNumber.textContent=\'+\'+Beautify(ascendNowToGet);'))
+            let customStyle = document.createElement('style')
+            customStyle.innerHTML = `
+            #ascendNumber {
+                white-space: nowrap;
+            }
+            `
+            document.head.appendChild(customStyle)
         }
 
         // 設定の「日本語訳の改善」がOFFになっている場合はここから下は実行しない (ニュース欄やアップデート履歴が壊れる)
@@ -585,11 +597,12 @@ const betterJapanese = {
             betterJapanese.writeButton('toggleReplaceSpecialUpgradesButton', 'replaceSpecialUpgrades', '特殊なアップグレード', 'アップグレードに英語以外では存在しない特殊なフレーバーテキストや概要を追加します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplacePurchasedTagButton', 'replacePurchasedTag', '特殊なタグ', '英語以外では変化しない特殊なタグを追加します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceBuildingsButton', 'replaceBuildings', '施設固有の表現', '一部の説明欄において施設によって異なる表現を追加します。', null, 'dummySettingJP')
-            betterJapanese.writeButton('toggleReplaceCSSButton', 'replaceCSS', 'CSSの変更', 'フレーバーテキストの囲み文字を変更します。', null, 'dummySettingJP')
+            betterJapanese.writeButton('toggleBeautifyAscendNumber', 'beautifyAscendNumber', 'ヘブンリーチップスの短縮表記', '画面右上および転生時のヘブンリーチップス入手数を短縮表記にし、改行しないようにします。', null, 'dummySettingJP')
+            betterJapanese.writeButton('toggleReplaceCSSButton', 'replaceCSS', 'CSSの変更', 'フレーバーテキストの囲み文字をかぎ括弧に変更します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceNewsButton', 'replaceNews', 'ニュース欄の改善', 'ニュース欄の挙動および翻訳を置き換えます。', null, 'dummySettingJP')
         }
 
-        this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '公式が想定していない部分も含め日本語訳に翻訳します。無効化すると表示がおかしくなる翻訳文が存在する場合があります。変更は再起動後に適用されます。')
+        this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '公式の翻訳を非公式日本語訳に置き換えます。また、公式では翻訳されていない部分も翻訳されます。変更は再起動後に適用されます。')
         this.writeButton('openBJPSettingsButton', null, '翻訳詳細設定', '主にゲームの処理を変更する翻訳処理に関する設定を表示します。上記設定について項目別に切り替えられます。', openSettings)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
@@ -597,17 +610,15 @@ const betterJapanese = {
     },
 
     injectStats: function() {
+        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
+        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
+
         let target = l('statsGeneral')
         let div = document.createElement('div')
         div.innerHTML = `<b>日本語訳改善Mod:</b> ${betterJapanese.version}`
         div.className = 'listing'
 
         if (target) target.parentNode.appendChild(div)
-    },
-
-    fixStats: function() {
-        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
-        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
     },
 
     writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
@@ -716,8 +727,6 @@ const betterJapanese = {
 
         // assetsDataが存在せず、なおかつ開発者モードではなければ終了
         if (!assetsData && !this.isDev) return null
-
-        // TODO: apiのエンドポイント変更
 
         let translateJson = await this.getJSON(this.api.endpoints.TRANSLATE)
         let ignoreList = this.config.ignoreList
@@ -1125,4 +1134,5 @@ if (App) {
     betterJapanese.devCheck(false)
 }
 
-betterJapanese.register()
+// 言語設定が日本語であれば登録
+if (localStorage.getItem('CookieClickerLang') === 'JA') betterJapanese.register()
