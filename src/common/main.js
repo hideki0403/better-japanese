@@ -15,6 +15,7 @@ const betterJapanese = {
         replaceCSS: true,
         replaceNews: true,
         showSpoilerAlert: true,
+        beautifyAscendNumber: true,
         numberJP: true,
         shortFormatJP: false,
         secondFormatJP: true,
@@ -219,6 +220,18 @@ const betterJapanese = {
                 return val.toString().replace(/(?<=.)(\d{3})(?=\d)/g, '$1,')
             }
             return betterJapanese.origins.simpleBeautify(val)
+        }
+
+        if (betterJapanese.config.beautifyAscendNumber) {
+            if (!betterJapanese.origins.logic) betterJapanese.origins.logic = Game.Logic
+            Game.Logic = Function(betterJapanese.origins.logic.toString().replace(/^(?:[^\{])+\{((?:.|[\r\n\t])+)\}/, '$1').replace('Game.ascendNumber.textContent=\'+\'+SimpleBeautify(ascendNowToGet);', 'Game.ascendNumber.textContent=\'+\'+Beautify(ascendNowToGet);'))
+            let customStyle = document.createElement('style')
+            customStyle.innerHTML = `
+            #ascendNumber {
+                white-space: nowrap;
+            }
+            `
+            document.head.appendChild(customStyle)
         }
 
         // 設定の「日本語訳の改善」がOFFになっている場合はここから下は実行しない (ニュース欄やアップデート履歴が壊れる)
@@ -585,7 +598,8 @@ const betterJapanese = {
             betterJapanese.writeButton('toggleReplaceSpecialUpgradesButton', 'replaceSpecialUpgrades', '特殊なアップグレード', 'アップグレードに英語以外では存在しない特殊なフレーバーテキストや概要を追加します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplacePurchasedTagButton', 'replacePurchasedTag', '特殊なタグ', '英語以外では変化しない特殊なタグを追加します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceBuildingsButton', 'replaceBuildings', '施設固有の表現', '一部の説明欄において施設によって異なる表現を追加します。', null, 'dummySettingJP')
-            betterJapanese.writeButton('toggleReplaceCSSButton', 'replaceCSS', 'CSSの変更', 'フレーバーテキストの囲み文字を変更します。', null, 'dummySettingJP')
+            betterJapanese.writeButton('toggleBeautifyAscendNumber', 'beautifyAscendNumber', '転生欄の表記変更', '転生時ヘブンリーチップス入手数を単位を用いた表記に変更します。', null, 'dummySettingJP')
+            betterJapanese.writeButton('toggleReplaceCSSButton', 'replaceCSS', 'CSSの変更', 'フレーバーテキストの囲み文字を変更し、転生時ヘブンリーチップス入手数の改行禁止します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceNewsButton', 'replaceNews', 'ニュース欄の改善', 'ニュース欄の挙動および翻訳を置き換えます。', null, 'dummySettingJP')
         }
 
