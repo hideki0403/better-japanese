@@ -79,7 +79,6 @@ const betterJapanese = {
             }
             
             if (Game.onMenu == 'stats') {
-                betterJapanese.fixStats()
                 betterJapanese.injectStats()
             }
         `)
@@ -611,17 +610,15 @@ const betterJapanese = {
     },
 
     injectStats: function() {
+        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
+        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
+
         let target = l('statsGeneral')
         let div = document.createElement('div')
         div.innerHTML = `<b>日本語訳改善Mod:</b> ${betterJapanese.version}`
         div.className = 'listing'
 
         if (target) target.parentNode.appendChild(div)
-    },
-
-    fixStats: function() {
-        const strLegacyStarted = '<div class="listing"><b>' + loc('Legacy started:') + '</b>'
-        l('menu').innerHTML = l('menu').innerHTML.replace(new RegExp(strLegacyStarted + ' (.+?), (.+?)</div>'), strLegacyStarted + ' $1、$2</div>')
     },
 
     writeButton: function(buttonId, targetProp = null, desc, label = null, callback = null, targetElementName = 'monospaceButton') {
