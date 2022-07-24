@@ -1134,4 +1134,5 @@ if (App) {
     betterJapanese.devCheck(false)
 }
 
-betterJapanese.register()
+// 言語設定が日本語であれば登録
+if (localStorage.getItem('CookieClickerLang') === 'JA') betterJapanese.register()
