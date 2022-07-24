@@ -598,12 +598,12 @@ const betterJapanese = {
             betterJapanese.writeButton('toggleReplaceSpecialUpgradesButton', 'replaceSpecialUpgrades', '特殊なアップグレード', 'アップグレードに英語以外では存在しない特殊なフレーバーテキストや概要を追加します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplacePurchasedTagButton', 'replacePurchasedTag', '特殊なタグ', '英語以外では変化しない特殊なタグを追加します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceBuildingsButton', 'replaceBuildings', '施設固有の表現', '一部の説明欄において施設によって異なる表現を追加します。', null, 'dummySettingJP')
-            betterJapanese.writeButton('toggleBeautifyAscendNumber', 'beautifyAscendNumber', '転生欄の表記変更', '転生時ヘブンリーチップス入手数を単位を用いた表記に変更します。', null, 'dummySettingJP')
-            betterJapanese.writeButton('toggleReplaceCSSButton', 'replaceCSS', 'CSSの変更', 'フレーバーテキストの囲み文字を変更し、転生時ヘブンリーチップス入手数の改行禁止します。', null, 'dummySettingJP')
+            betterJapanese.writeButton('toggleBeautifyAscendNumber', 'beautifyAscendNumber', 'ヘブンリーチップスの短縮表記', '画面右上および転生時のヘブンリーチップス入手数を短縮表記にし、改行しないようにします。', null, 'dummySettingJP')
+            betterJapanese.writeButton('toggleReplaceCSSButton', 'replaceCSS', 'CSSの変更', 'フレーバーテキストの囲み文字をかぎ括弧に変更します。', null, 'dummySettingJP')
             betterJapanese.writeButton('toggleReplaceNewsButton', 'replaceNews', 'ニュース欄の改善', 'ニュース欄の挙動および翻訳を置き換えます。', null, 'dummySettingJP')
         }
 
-        this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '公式が想定していない部分も含め日本語訳に翻訳します。無効化すると表示がおかしくなる翻訳文が存在する場合があります。変更は再起動後に適用されます。')
+        this.writeButton('toggleBJPButton', 'replaceJP', '日本語訳の改善', '公式の翻訳を非公式日本語訳に置き換えます。また、公式では翻訳されていない部分も翻訳されます。変更は再起動後に適用されます。')
         this.writeButton('openBJPSettingsButton', null, '翻訳詳細設定', '主にゲームの処理を変更する翻訳処理に関する設定を表示します。上記設定について項目別に切り替えられます。', openSettings)
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
