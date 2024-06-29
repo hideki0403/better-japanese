@@ -73,19 +73,33 @@ const betterJapanese = {
     initAfterLoad: async function() {
         betterJapanese.load()
 
-        // メニューに独自ボタンを実装
-        // この方法で実装しないとCCSEなどのメニュー独自実装Modと競合してしまう
-        let origin = Game.UpdateMenu.toString().split('\n')
-        origin.splice(origin.length - 1, 0, `
-            if (Game.onMenu == 'prefs') {
-                betterJapanese.injectMenu()
-            }
-            
-            if (Game.onMenu == 'stats') {
-                betterJapanese.injectStats()
-            }
-        `)
-        Function(`Game.UpdateMenu = ${origin.join('\n')}`)()
+        // メニューに独自ボタンを実装 
+        if (typeof Game.customMenu !== 'undefined') {
+            // CCSEのメニューインジェクションが利用できる場合はそちらを利用する
+            Game.customMenu.push(() => {
+                if (Game.onMenu == 'prefs') {
+                    betterJapanese.injectMenu()
+                }
+
+                if (Game.onMenu == 'stats') {
+                    betterJapanese.injectStats()
+                }
+            })
+        } else {
+            // CCSEがなければ独自実装で追加
+            // この方法で追加しないと他のメニュー独自実装Modと競合してしまう
+            let origin = Game.UpdateMenu.toString().split('\n')
+            origin.splice(origin.length - 1, 0, `
+                if (Game.onMenu == 'prefs') {
+                    betterJapanese.injectMenu()
+                }
+                
+                if (Game.onMenu == 'stats') {
+                    betterJapanese.injectStats()
+                }
+            `)
+            Function(`Game.UpdateMenu = ${origin.join('\n')}`)()
+        }
 
         // カスタムCSSを適用
         let customStyle = document.createElement('style')
