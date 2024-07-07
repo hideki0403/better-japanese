@@ -1,6 +1,6 @@
 {
   "name": "better-japanese",
-  "version": "1.5.8",
+  "version": "1.6.0",
   "description": "",
   "main": "index.js",
   "packageManager": "pnpm@9.4.0",
