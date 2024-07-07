@@ -20,6 +20,7 @@ const betterJapanese = {
         numberJP: true,
         shortFormatJP: false,
         secondFormatJP: true,
+        digitSeparator: true,
         ignoreList: []
     },
     api: {
@@ -539,9 +540,9 @@ const betterJapanese = {
             let formatter = numberFormatters[format]
             let output = (val.toString().indexOf('e+') != -1 && format == 2) ? val.toPrecision(3).toString() : formatter(val).toString()
             if (Game.prefs.format || (betterJapanese.config.numberJP && betterJapanese.config.secondFormatJP)) {
-                output = output.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                output = output.replace(/\B(?=(\d{3})+(?!\d))/g, betterJapanese.config.digitSeparator ? ',' : '')
             } else {
-                output = output.replace(/^(\d)(\d{3})/, '$1,$2')
+                output = output.replace(/^(\d)(\d{3})/, betterJapanese.config.digitSeparator ? '$1,$2' : '$1$2')
             }
             if (output == '0') negative = false
             return negative ? '-' + output : output + decimal
@@ -629,6 +630,7 @@ const betterJapanese = {
         this.writeButton('toggleNumberJPButton', 'numberJP', '日本語単位', '数の単位に日本語単位を用います。', updateAll)
         this.writeButton('toggleShortFormatJPButton', 'shortFormatJP', '塵劫記単位', '数の単位に塵劫記の単位(阿僧祇～無量大数)を用います。', updateAll)
         this.writeButton('toggleSecondFormatJPButton', 'secondFormatJP', '第二単位', `${loc('ON')}の場合はXXXX億YYYY万、${loc('OFF')}の場合はXXXX.YYYY億のように表示されます。`, updateAll)
+        this.writeButton('toggleDigitSeparatorButton', 'digitSeparator', '桁区切りの表示', '数値に桁区切り(カンマ)を表示します。', updateAll)
     },
 
     injectStats: function() {
